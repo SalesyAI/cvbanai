@@ -13,7 +13,8 @@ const VIEWS = {
     ERROR: 'error',
 }
 
-const API_BASE_URL = 'http://localhost:3001'
+// Use relative URL for Vercel deployment, absolute for local dev
+const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:3001' : ''
 
 function App() {
     const [currentView, setCurrentView] = useState(VIEWS.INPUT)
