@@ -91,13 +91,22 @@ export default async function handler(req, res) {
         console.log('Using sheet:', sheet.title);
 
         // Prepare row data - handles profiles table structure
+        const bangladeshTime = new Date().toLocaleString('en-GB', {
+            timeZone: 'Asia/Dhaka',
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+
         const rowData = {
-            'Signup Date': record.created_at || new Date().toISOString(),
-            'User ID': record.id || 'N/A',
-            'Email': record.email || 'N/A',
-            'Name': record.full_name || 'N/A',
-            'Provider': record.provider || 'email'
+            'Signup Date': bangladeshTime,
+            'Name': record.full_name || record.raw_user_meta_data?.full_name || 'N/A',
+            'Email': record.email || 'N/A'
         };
+
 
         console.log('Adding row:', JSON.stringify(rowData));
 
