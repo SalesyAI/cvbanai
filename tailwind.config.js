@@ -4,6 +4,7 @@ export default {
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
+    darkMode: 'class', // Enable class-based dark mode
     theme: {
         extend: {
             colors: {
@@ -19,25 +20,29 @@ export default {
                     500: '#14B8A6', // Mid Mint
                     600: '#134E4A', // Deep Teal (for active tabs in dark mode)
                 },
-                // Dark Mode Palette (60% background, 30% surfaces/text)
+                // Dark Mode Palette
                 dark: {
                     950: '#11181C', // Primary Background
                     900: '#1A2329', // Secondary Surface
                     800: '#232D36', // Slightly lighter surface for cards
                     700: '#2D3A45', // Borders, dividers
                 },
+                // Light Mode Palette
+                light: {
+                    50: '#FFFFFF',  // Pure White background
+                    100: '#F0FDFA', // Very pale mint tint (secondary surface)
+                    200: '#CCFBF1', // Mint tint for hover states
+                    300: '#99F6E4', // Stronger mint for accents
+                },
                 // Text Colors
                 text: {
-                    primary: '#ECFDF5',   // Pale Mint White (Dark mode primary text)
-                    secondary: '#A1A1AA', // Neutral Light Gray (Dark mode secondary text)
-                    muted: '#64748B',     // Slate Gray (Light mode secondary text)
-                    dark: '#134E4A',      // Deep Teal Charcoal (Light mode primary text)
+                    // Dark mode text
+                    'dark-primary': '#ECFDF5',   // Pale Mint White
+                    'dark-secondary': '#A1A1AA', // Neutral Light Gray
+                    // Light mode text
+                    'light-primary': '#134E4A',  // Deep Teal Charcoal
+                    'light-secondary': '#64748B', // Slate Gray
                 },
-                // Surface colors for light mode
-                surface: {
-                    light: '#FFFFFF',     // Pure White (Light mode background)
-                    mint: '#F0FDFA',      // Very pale mint tint (Light mode secondary)
-                }
             },
             animation: {
                 'float': 'float 6s ease-in-out infinite',
@@ -45,6 +50,7 @@ export default {
                 'fade-in': 'fadeIn 0.5s ease-out',
                 'slide-up': 'slideUp 0.5s ease-out',
                 'glow': 'glow 2s ease-in-out infinite alternate',
+                'theme-switch': 'themeSwitch 0.3s ease-out',
             },
             keyframes: {
                 float: {
@@ -63,10 +69,14 @@ export default {
                     '0%': { boxShadow: '0 0 20px rgba(13, 148, 136, 0.3)' },
                     '100%': { boxShadow: '0 0 40px rgba(13, 148, 136, 0.5)' },
                 },
+                themeSwitch: {
+                    '0%': { transform: 'scale(0.8) rotate(-10deg)', opacity: '0' },
+                    '100%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
+                },
             },
             backdropBlur: {
                 xs: '2px',
-            }
+            },
         },
     },
     plugins: [],
