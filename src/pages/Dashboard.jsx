@@ -31,9 +31,14 @@ export default function Dashboard() {
     const [refinedData, setRefinedData] = useState(null)
     const [showToast, setShowToast] = useState(false)
     const [toastMessage, setToastMessage] = useState('')
+    const [isVisible, setIsVisible] = useState(false)
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
     const firstName = displayName.split(' ')[0]
+
+    useEffect(() => {
+        setIsVisible(true)
+    }, [])
 
     const handleTabClick = (tabId) => {
         setActiveTab(tabId)
@@ -128,11 +133,12 @@ export default function Dashboard() {
     if (currentView === VIEWS.REFINING) {
         return (
             <div className="min-h-screen animated-bg flex items-center justify-center p-4">
-                <div className="text-center max-w-sm">
+                <div className="text-center max-w-sm animate-fade-in">
                     <div className="relative w-20 h-20 mx-auto mb-6">
                         <div className="absolute inset-0 rounded-full border-4 border-light-200 dark:border-dark-700"></div>
                         <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary-500 animate-spin"></div>
-                        <Sparkles className="absolute inset-0 m-auto w-8 h-8 text-primary-500 dark:text-primary-400" />
+                        <div className="absolute inset-2 rounded-full border-4 border-transparent border-b-accent-400 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+                        <Sparkles className="absolute inset-0 m-auto w-8 h-8 text-primary-500 dark:text-primary-400 animate-pulse" />
                     </div>
                     <h2 className="text-xl font-bold mb-2">AI is enhancing your resume<span className="loading-dots"></span></h2>
                     <p className="text-text-light-secondary dark:text-gray-400 text-sm">Making your experience shine with professional language</p>
@@ -159,19 +165,19 @@ export default function Dashboard() {
 
     // === PREMIUM VIEWS ===
     const LinkedInView = () => (
-        <div className="max-w-lg mx-auto py-8 px-4">
+        <div className="max-w-lg mx-auto py-8 px-4 animate-fade-in-up">
             <div className="text-center mb-8">
-                <div className="w-16 h-16 rounded-2xl bg-[#0A66C2] flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-[#0A66C2] flex items-center justify-center mx-auto mb-4 animate-bounce-soft">
                     <Linkedin className="w-8 h-8 text-white" />
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full mb-3">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full mb-3 animate-pulse-slow">
                     <Lock className="w-3 h-3" /> Premium Service
                 </div>
                 <h1 className="text-2xl font-bold mb-2">LinkedIn Optimizer</h1>
                 <p className="text-text-light-secondary dark:text-gray-400">Boost your profile visibility and attract recruiters</p>
             </div>
 
-            <div className="glass rounded-2xl p-6 mb-6">
+            <div className="glass rounded-2xl p-6 mb-6 hover:glow-teal transition-all duration-300">
                 <div className="text-center mb-6">
                     <span className="text-4xl font-bold">500</span>
                     <span className="text-text-light-secondary dark:text-gray-400 ml-1">TK</span>
@@ -185,15 +191,15 @@ export default function Dashboard() {
                         'Connection request templates',
                         'Visibility improvement tactics'
                     ].map((item, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm">
+                        <li key={i} className="flex items-start gap-3 text-sm stagger-item" style={{ animationDelay: `${i * 0.1}s` }}>
                             <Check className="w-4 h-4 text-primary-500 dark:text-accent-400 flex-shrink-0 mt-0.5" />
                             <span className="text-text-light-secondary dark:text-gray-300">{item}</span>
                         </li>
                     ))}
                 </ul>
 
-                <button className="w-full py-3 bg-[#0A66C2] hover:bg-[#0958a8] rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2">
-                    Unlock Now <ArrowRight className="w-4 h-4" />
+                <button className="group w-full py-3 bg-[#0A66C2] hover:bg-[#0958a8] rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:scale-95">
+                    Unlock Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
 
@@ -204,19 +210,19 @@ export default function Dashboard() {
     )
 
     const PortfolioView = () => (
-        <div className="max-w-lg mx-auto py-8 px-4">
+        <div className="max-w-lg mx-auto py-8 px-4 animate-fade-in-up">
             <div className="text-center mb-8">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-400 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-400 flex items-center justify-center mx-auto mb-4 animate-bounce-soft animate-glow-pulse">
                     <Globe className="w-8 h-8 text-white" />
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full mb-3">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full mb-3 animate-pulse-slow">
                     <Lock className="w-3 h-3" /> Premium Service
                 </div>
                 <h1 className="text-2xl font-bold mb-2">Ultimate Portfolio</h1>
                 <p className="text-text-light-secondary dark:text-gray-400">Your own professional portfolio website</p>
             </div>
 
-            <div className="gradient-border rounded-2xl p-6 mb-6">
+            <div className="gradient-border rounded-2xl p-6 mb-6 hover:glow-teal transition-all duration-300">
                 <div className="text-center mb-6">
                     <span className="text-4xl font-bold">1000</span>
                     <span className="text-text-light-secondary dark:text-gray-400 ml-1">TK</span>
@@ -231,15 +237,15 @@ export default function Dashboard() {
                         'Free hosting included',
                         'Shareable custom link'
                     ].map((item, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm">
+                        <li key={i} className="flex items-start gap-3 text-sm stagger-item" style={{ animationDelay: `${i * 0.1}s` }}>
                             <Check className="w-4 h-4 text-primary-500 dark:text-accent-400 flex-shrink-0 mt-0.5" />
                             <span className="text-text-light-secondary dark:text-gray-300">{item}</span>
                         </li>
                     ))}
                 </ul>
 
-                <button className="w-full py-3 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 glow-teal">
-                    Unlock Now <ArrowRight className="w-4 h-4" />
+                <button className="group w-full py-3 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 glow-teal hover:-translate-y-0.5 active:scale-95">
+                    Unlock Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
 
@@ -252,7 +258,7 @@ export default function Dashboard() {
     const HomeView = () => (
         <div className="max-w-3xl mx-auto py-6 px-4">
             {/* Welcome */}
-            <div className="mb-8">
+            <div className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <h1 className="text-2xl font-bold mb-1">Hey, {firstName} 👋</h1>
                 <p className="text-text-light-secondary dark:text-gray-400">Ready to build something amazing?</p>
             </div>
@@ -260,10 +266,11 @@ export default function Dashboard() {
             {/* Main CTA */}
             <button
                 onClick={handleStartNewResume}
-                className="w-full p-6 gradient-border rounded-2xl text-left mb-6 group hover:glow-teal transition-all duration-300"
+                className={`w-full p-6 gradient-border rounded-2xl text-left mb-6 group hover:glow-teal transition-all duration-500 hover:-translate-y-1 active:scale-[0.99] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                style={{ transitionDelay: '0.1s' }}
             >
                 <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-primary-500 dark:bg-primary-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <div className="w-14 h-14 rounded-xl bg-primary-500 dark:bg-primary-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                         <Plus className="w-7 h-7 text-white" />
                     </div>
                     <div className="flex-1">
@@ -280,15 +287,21 @@ export default function Dashboard() {
 
             {/* Features */}
             <div className="grid sm:grid-cols-2 gap-4 mb-8">
-                <div className="glass rounded-xl p-5">
-                    <div className="w-10 h-10 rounded-lg bg-accent-500/20 flex items-center justify-center mb-3">
+                <div
+                    className={`group glass rounded-xl p-5 hover:-translate-y-1 transition-all duration-300 cursor-default ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                    style={{ transitionDelay: '0.2s' }}
+                >
+                    <div className="w-10 h-10 rounded-lg bg-accent-500/20 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                         <Copy className="w-5 h-5 text-accent-500 dark:text-accent-400" />
                     </div>
                     <h3 className="font-semibold mb-1">Copy & Paste</h3>
                     <p className="text-sm text-text-light-secondary dark:text-gray-400">Get professional copy you can use anywhere</p>
                 </div>
-                <div className="glass rounded-xl p-5">
-                    <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center mb-3">
+                <div
+                    className={`group glass rounded-xl p-5 hover:-translate-y-1 transition-all duration-300 cursor-default ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                    style={{ transitionDelay: '0.3s' }}
+                >
+                    <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                         <Download className="w-5 h-5 text-primary-500 dark:text-primary-400" />
                     </div>
                     <h3 className="font-semibold mb-1">PDF Export</h3>
@@ -297,16 +310,16 @@ export default function Dashboard() {
             </div>
 
             {/* Recent */}
-            <div>
+            <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: '0.4s' }}>
                 <h2 className="font-semibold mb-3">Recent Resumes</h2>
-                <div className="glass rounded-xl p-8 text-center">
+                <div className="glass rounded-xl p-8 text-center hover:glow-mint transition-all duration-300">
                     <FileText className="w-10 h-10 text-text-light-secondary/20 dark:text-gray-700 mx-auto mb-3" />
                     <p className="text-text-light-secondary dark:text-gray-500 text-sm mb-4">No resumes yet</p>
                     <button
                         onClick={handleStartNewResume}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white text-sm font-medium transition-all"
+                        className="group inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white text-sm font-medium transition-all hover:-translate-y-0.5 active:scale-95"
                     >
-                        <Plus className="w-4 h-4" /> Create Your First
+                        <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" /> Create Your First
                     </button>
                 </div>
             </div>
@@ -318,9 +331,11 @@ export default function Dashboard() {
         <div className="min-h-screen animated-bg">
             {/* Toast */}
             {showToast && (
-                <div className="fixed top-4 right-4 z-50 animate-slide-up">
-                    <div className="glass px-5 py-3 rounded-xl flex items-center gap-3 shadow-lg">
-                        <Check className="w-5 h-5 text-primary-500 dark:text-primary-400" />
+                <div className="fixed top-4 right-4 z-50 toast-enter">
+                    <div className="glass px-5 py-3 rounded-xl flex items-center gap-3 shadow-lg glow-teal">
+                        <div className="w-6 h-6 rounded-full bg-primary-500/20 flex items-center justify-center">
+                            <Check className="w-4 h-4 text-primary-500 dark:text-primary-400" />
+                        </div>
                         <span className="text-sm font-medium">{toastMessage}</span>
                     </div>
                 </div>
@@ -329,19 +344,21 @@ export default function Dashboard() {
             {/* Header */}
             <header className="sticky top-0 z-30 bg-white/80 dark:bg-dark-950/80 backdrop-blur-lg border-b border-light-200 dark:border-dark-700">
                 <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-                    <Logo className="h-8" textColor="text-text-light-primary dark:text-white" />
+                    <Link to="/" className="group">
+                        <Logo className="h-8 group-hover:scale-105 transition-transform duration-300" textColor="text-text-light-primary dark:text-white" />
+                    </Link>
 
                     <div className="flex items-center gap-3">
                         <ThemeToggle />
                         <div className="flex items-center gap-2 pl-3 border-l border-light-200 dark:border-dark-700">
-                            <div className="w-8 h-8 rounded-full bg-primary-500 dark:bg-primary-400 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-primary-500 dark:bg-primary-400 flex items-center justify-center hover:scale-110 transition-transform cursor-default">
                                 <User className="w-4 h-4 text-white" />
                             </div>
                             <span className="text-sm font-medium hidden sm:block">{firstName}</span>
                         </div>
                         <button
                             onClick={handleLogout}
-                            className="p-2 text-text-light-secondary dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                            className="p-2 text-text-light-secondary dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all hover:scale-110 active:scale-95"
                             title="Logout"
                         >
                             <LogOut className="w-5 h-5" />
@@ -365,14 +382,14 @@ export default function Dashboard() {
                                 <button
                                     key={tab.id}
                                     onClick={() => handleTabClick(tab.id)}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${isActive
+                                    className={`group flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 hover:scale-[1.02] active:scale-95 ${isActive
                                             ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
                                             : 'text-text-light-secondary dark:text-gray-400 hover:bg-light-100 dark:hover:bg-dark-800'
                                         }`}
                                 >
-                                    <Icon className="w-4 h-4" />
+                                    <Icon className={`w-4 h-4 transition-transform duration-200 ${isActive ? '' : 'group-hover:scale-110'}`} />
                                     {tab.label}
-                                    {tab.locked && <Lock className="w-3 h-3 text-amber-500" />}
+                                    {tab.locked && <Lock className="w-3 h-3 text-amber-500 animate-pulse" />}
                                 </button>
                             )
                         })}

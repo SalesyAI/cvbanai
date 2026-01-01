@@ -26,7 +26,6 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: #FFFFFF;
   color: #134E4A;
-  /* Deep Teal - not pure black */
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -37,7 +36,6 @@ body {
 .dark body {
   background: #11181C;
   color: #ECFDF5;
-  /* Pale Mint White - not pure white */
 }
 
 /* Custom Scrollbar */
@@ -73,8 +71,6 @@ body {
 
 /* Glassmorphism utility */
 @layer components {
-
-  /* Light mode glass */
   .glass {
     background: rgba(240, 253, 250, 0.7);
     backdrop-filter: blur(12px);
@@ -82,7 +78,6 @@ body {
     border: 1px solid rgba(13, 148, 136, 0.1);
   }
 
-  /* Dark mode glass */
   .dark .glass {
     background: rgba(26, 35, 41, 0.7);
     border: 1px solid rgba(45, 212, 191, 0.1);
@@ -130,7 +125,7 @@ body {
     pointer-events: none;
   }
 
-  /* Teal glow - use sparingly for CTAs */
+  /* Glow effects */
   .glow-teal {
     box-shadow: 0 0 30px rgba(13, 148, 136, 0.2);
   }
@@ -139,7 +134,6 @@ body {
     box-shadow: 0 0 30px rgba(45, 212, 191, 0.25);
   }
 
-  /* Mint glow - for success states */
   .glow-mint {
     box-shadow: 0 0 30px rgba(94, 234, 212, 0.15);
   }
@@ -148,7 +142,6 @@ body {
     box-shadow: 0 0 30px rgba(94, 234, 212, 0.2);
   }
 
-  /* Legacy class names for backwards compat */
   .glow-violet {
     box-shadow: 0 0 30px rgba(13, 148, 136, 0.2);
   }
@@ -222,7 +215,13 @@ body {
   background: linear-gradient(90deg, rgba(45, 212, 191, 0.15), transparent);
 }
 
-/* Input focus states */
+/* Input focus states with smooth transitions */
+input,
+textarea,
+select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
 input:focus,
 textarea:focus,
 select:focus {
@@ -238,12 +237,300 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.15);
 }
 
+/* =================================
+   MICRO-ANIMATIONS & INTERACTIONS
+   ================================= */
+
 /* Smooth transitions for all interactive elements */
 button,
 a,
-input,
-.transition-all {
-  transition: all 0.2s ease;
+.interactive {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Button hover lift effect */
+button:hover:not(:disabled),
+.btn-lift:hover {
+  transform: translateY(-2px);
+}
+
+button:active:not(:disabled),
+.btn-lift:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Icon animations */
+.icon-bounce:hover {
+  animation: bounceSoft 0.5s ease-out;
+}
+
+.icon-spin:hover {
+  animation: spin 0.5s ease-in-out;
+}
+
+.icon-wiggle:hover {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+@keyframes bounceSoft {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes wiggle {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-5deg);
+  }
+
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+/* Staggered animations for lists */
+.stagger-item {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.stagger-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.stagger-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.stagger-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.stagger-item:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.stagger-item:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.stagger-item:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Shimmer loading effect */
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Pulse ring effect */
+.pulse-ring {
+  position: relative;
+}
+
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: pulseRing 2s ease-out infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* Gradient animation */
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradientMove 3s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Underline animation for links */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s ease;
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Ripple effect for buttons */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  transform: scale(0);
+  transition: transform 0.5s ease-out;
+}
+
+.ripple:active::after {
+  transform: scale(2);
+}
+
+/* Check mark animation */
+.check-animate {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: checkDraw 0.3s ease-out forwards;
+}
+
+@keyframes checkDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Typewriter effect */
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid currentColor;
+  white-space: nowrap;
+  animation: typing 2s steps(40) forwards, blink 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* Floating particles background */
+.particles::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(2px 2px at 10% 20%, rgba(45, 212, 191, 0.3), transparent),
+    radial-gradient(2px 2px at 30% 60%, rgba(45, 212, 191, 0.2), transparent),
+    radial-gradient(2px 2px at 70% 30%, rgba(45, 212, 191, 0.4), transparent),
+    radial-gradient(2px 2px at 85% 80%, rgba(45, 212, 191, 0.2), transparent);
+  animation: float 10s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+
+  25% {
+    transform: translateY(-10px) translateX(5px);
+  }
+
+  50% {
+    transform: translateY(-5px) translateX(-5px);
+  }
+
+  75% {
+    transform: translateY(-15px) translateX(3px);
+  }
 }
 
 /* Selection color */
@@ -255,4 +542,69 @@ input,
 .dark ::selection {
   background: rgba(45, 212, 191, 0.3);
   color: #ECFDF5;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid #0D9488;
+  outline-offset: 2px;
+}
+
+.dark :focus-visible {
+  outline-color: #2DD4BF;
+}
+
+/* Skeleton loading animation */
+.skeleton {
+  background: linear-gradient(90deg, #F0FDFA 25%, #E0F2F1 50%, #F0FDFA 75%);
+  background-size: 200% 100%;
+  animation: skeleton 1.5s ease-in-out infinite;
+}
+
+.dark .skeleton {
+  background: linear-gradient(90deg, #1A2329 25%, #232D36 50%, #1A2329 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Toast notification slide */
+.toast-enter {
+  animation: toastEnter 0.3s ease-out forwards;
+}
+
+.toast-exit {
+  animation: toastExit 0.3s ease-in forwards;
+}
+
+@keyframes toastEnter {
+  from {
+    transform: translateY(-20px) scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes toastExit {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-20px) scale(0.9);
+    opacity: 0;
+  }
 }

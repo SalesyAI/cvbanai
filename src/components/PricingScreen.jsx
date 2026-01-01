@@ -118,16 +118,16 @@ export default function PricingScreen({ onBack }) {
                             return (
                                 <div
                                     key={tier.id}
-                                    className={`relative rounded-2xl text-left transition-all duration-300 hover:scale-[1.02] flex flex-col ${tier.popular
-                                            ? 'gradient-border'
-                                            : 'glass'
+                                    className={`group relative rounded-2xl text-left transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2 flex flex-col stagger-item ${tier.popular
+                                        ? 'gradient-border hover:glow-teal'
+                                        : 'glass hover:glow-mint'
                                         }`}
                                     style={{ animationDelay: `${index * 0.1}s` }}
                                 >
                                     {/* Popular Badge */}
                                     {tier.popular && (
                                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                                            <span className="px-3 py-1 bg-gradient-to-r from-primary-500 to-accent-400 text-white text-xs font-bold rounded-full flex items-center gap-1 whitespace-nowrap">
+                                            <span className="px-3 py-1 bg-gradient-to-r from-primary-500 to-accent-400 text-white text-xs font-bold rounded-full flex items-center gap-1 whitespace-nowrap animate-pulse-slow">
                                                 <Check className="w-3 h-3" />
                                                 POPULAR
                                             </span>
@@ -137,13 +137,13 @@ export default function PricingScreen({ onBack }) {
                                     {/* Card Content */}
                                     <div className="p-5 flex flex-col flex-1">
                                         {/* Icon */}
-                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-4 ${tier.popular
-                                                ? 'bg-primary-500 dark:bg-primary-400'
-                                                : tier.isFree
-                                                    ? 'bg-accent-500 dark:bg-accent-400/20'
-                                                    : tier.id === 'linkedin'
-                                                        ? 'bg-[#0A66C2]'
-                                                        : 'bg-accent-600 dark:bg-accent-600/50'
+                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 ${tier.popular
+                                            ? 'bg-primary-500 dark:bg-primary-400'
+                                            : tier.isFree
+                                                ? 'bg-accent-500 dark:bg-accent-400/20'
+                                                : tier.id === 'linkedin'
+                                                    ? 'bg-[#0A66C2]'
+                                                    : 'bg-accent-600 dark:bg-accent-600/50'
                                             }`}>
                                             <Icon className="w-5 h-5 text-white" />
                                         </div>
@@ -182,9 +182,9 @@ export default function PricingScreen({ onBack }) {
                                         {/* CTA Button - Always at bottom */}
                                         <button
                                             onClick={() => handleSelectPlan(tier)}
-                                            className={`w-full py-2.5 rounded-xl font-semibold transition-all text-sm ${tier.popular
-                                                    ? 'bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 text-white'
-                                                    : 'bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 text-text-light-primary dark:text-white'
+                                            className={`w-full py-2.5 rounded-xl font-semibold transition-all text-sm hover:-translate-y-0.5 active:scale-95 ${tier.popular
+                                                ? 'bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 text-white'
+                                                : 'bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 text-text-light-primary dark:text-white'
                                                 }`}
                                         >
                                             {tier.buttonText}
