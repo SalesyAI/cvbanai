@@ -50,7 +50,7 @@ export default function InputHub({ onStartFromScratch, onUploadFile }) {
     }
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen animated-bg flex flex-col">
             {/* Header */}
             <header className="py-6 px-8">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -58,12 +58,12 @@ export default function InputHub({ onStartFromScratch, onUploadFile }) {
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
                             <FileText className="w-5 h-5 text-white" />
                         </div>
-                        <span className="text-xl font-bold">CVBanai</span>
+                        <span className="text-xl font-bold text-text-light-primary dark:text-white">CVBanai</span>
                     </div>
-                    <nav className="hidden md:flex items-center gap-8 text-gray-400">
-                        <a href="#" className="hover:text-white transition-colors">Features</a>
-                        <a href="#" className="hover:text-white transition-colors">Pricing</a>
-                        <a href="#" className="hover:text-white transition-colors">Templates</a>
+                    <nav className="hidden md:flex items-center gap-8 text-text-light-secondary dark:text-gray-400">
+                        <a href="#" className="hover:text-primary-600 dark:hover:text-white transition-colors">Features</a>
+                        <a href="#" className="hover:text-primary-600 dark:hover:text-white transition-colors">Pricing</a>
+                        <a href="#" className="hover:text-primary-600 dark:hover:text-white transition-colors">Templates</a>
                     </nav>
                 </div>
             </header>
@@ -72,18 +72,18 @@ export default function InputHub({ onStartFromScratch, onUploadFile }) {
             <main className="flex-1 flex items-center justify-center px-8 py-12">
                 <div className="max-w-5xl mx-auto text-center">
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 animate-fade-in">
-                        <Sparkles className="w-4 h-4 text-primary-400" />
-                        <span className="text-sm text-gray-300">AI-Powered Resume Enhancement</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 animate-fade-in bg-white/50 dark:bg-white/5 border border-light-200 dark:border-white/10">
+                        <Sparkles className="w-4 h-4 text-primary-500 dark:text-primary-400" />
+                        <span className="text-sm text-text-light-secondary dark:text-gray-300">AI-Powered Resume Enhancement</span>
                     </div>
 
                     {/* Main Heading */}
-                    <h1 className="text-5xl md:text-7xl font-extrabold mb-6 animate-slide-up">
+                    <h1 className="text-5xl md:text-7xl font-extrabold mb-6 animate-slide-up text-text-light-primary dark:text-white">
                         Build Resumes That
                         <span className="block gradient-text">Get You Hired</span>
                     </h1>
 
-                    <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                    <p className="text-xl text-text-light-secondary dark:text-gray-400 mb-12 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
                         Transform your career story into a powerful, ATS-optimized resume with our AI refinement engine. Stand out from the crowd.
                     </p>
 
@@ -92,26 +92,26 @@ export default function InputHub({ onStartFromScratch, onUploadFile }) {
                         {/* Start from Scratch Card */}
                         <button
                             onClick={onStartFromScratch}
-                            className="group glass rounded-2xl p-8 text-left hover:glow-violet transition-all duration-500 animate-slide-up"
+                            className="group glass rounded-2xl p-8 text-left hover:glow-violet transition-all duration-500 animate-slide-up bg-white/40 dark:bg-white/5 border border-light-200 dark:border-white/10"
                             style={{ animationDelay: '0.3s' }}
                         >
-                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-primary-500/20">
                                 <FileText className="w-7 h-7 text-white" />
                             </div>
-                            <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+                            <h3 className="text-xl font-bold mb-2 flex items-center gap-2 text-text-light-primary dark:text-white">
                                 Start from Scratch
-                                <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                                <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-primary-500 dark:text-primary-400" />
                             </h3>
-                            <p className="text-gray-400">
+                            <p className="text-text-light-secondary dark:text-gray-400">
                                 Build your resume step-by-step with our guided form. Perfect for creating a fresh, professional resume.
                             </p>
-                            <div className="mt-6 flex items-center gap-4 text-sm text-gray-500">
+                            <div className="mt-6 flex items-center gap-4 text-sm text-text-light-secondary dark:text-gray-500">
                                 <span className="flex items-center gap-1">
-                                    <CheckCircle className="w-4 h-4 text-green-400" />
+                                    <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400" />
                                     Guided process
                                 </span>
                                 <span className="flex items-center gap-1">
-                                    <CheckCircle className="w-4 h-4 text-green-400" />
+                                    <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400" />
                                     5 min setup
                                 </span>
                             </div>
@@ -119,7 +119,7 @@ export default function InputHub({ onStartFromScratch, onUploadFile }) {
 
                         {/* Upload Existing Card */}
                         <div
-                            className={`group glass rounded-2xl p-8 text-left transition-all duration-500 animate-slide-up cursor-pointer ${isDragging ? 'ring-2 ring-accent-500 glow-cyan' : 'hover:glow-cyan'
+                            className={`group glass rounded-2xl p-8 text-left transition-all duration-500 animate-slide-up cursor-pointer bg-white/40 dark:bg-white/5 border border-light-200 dark:border-white/10 ${isDragging ? 'ring-2 ring-accent-500 glow-cyan' : 'hover:glow-cyan'
                                 }`}
                             style={{ animationDelay: '0.4s' }}
                             onDragOver={handleDragOver}
@@ -135,36 +135,36 @@ export default function InputHub({ onStartFromScratch, onUploadFile }) {
                                 className="hidden"
                             />
 
-                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-accent-500 to-accent-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-accent-500 to-accent-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-accent-500/20">
                                 <Upload className="w-7 h-7 text-white" />
                             </div>
 
                             {isProcessing ? (
                                 <>
-                                    <h3 className="text-xl font-bold mb-2">Processing...</h3>
-                                    <p className="text-gray-400">Parsing {uploadedFile?.name}</p>
-                                    <div className="mt-4 h-2 bg-dark-700 rounded-full overflow-hidden">
+                                    <h3 className="text-xl font-bold mb-2 text-text-light-primary dark:text-white">Processing...</h3>
+                                    <p className="text-text-light-secondary dark:text-gray-400">Parsing {uploadedFile?.name}</p>
+                                    <div className="mt-4 h-2 bg-light-200 dark:bg-dark-700 rounded-full overflow-hidden">
                                         <div className="h-full bg-gradient-to-r from-accent-500 to-primary-500 rounded-full animate-pulse" style={{ width: '60%' }}></div>
                                     </div>
                                 </>
                             ) : (
                                 <>
-                                    <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+                                    <h3 className="text-xl font-bold mb-2 flex items-center gap-2 text-text-light-primary dark:text-white">
                                         Upload Existing
-                                        <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                                        <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-accent-500 dark:text-accent-400" />
                                     </h3>
-                                    <p className="text-gray-400">
+                                    <p className="text-text-light-secondary dark:text-gray-400">
                                         {isDragging
                                             ? 'Drop your file here...'
                                             : 'Drag & drop your resume or click to browse. We\'ll extract and enhance it.'}
                                     </p>
-                                    <div className="mt-6 flex items-center gap-4 text-sm text-gray-500">
+                                    <div className="mt-6 flex items-center gap-4 text-sm text-text-light-secondary dark:text-gray-500">
                                         <span className="flex items-center gap-1">
-                                            <CheckCircle className="w-4 h-4 text-green-400" />
+                                            <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400" />
                                             PDF / DOCX
                                         </span>
                                         <span className="flex items-center gap-1">
-                                            <CheckCircle className="w-4 h-4 text-green-400" />
+                                            <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400" />
                                             Auto-parse
                                         </span>
                                     </div>
@@ -175,8 +175,8 @@ export default function InputHub({ onStartFromScratch, onUploadFile }) {
 
                     {/* Trust indicators */}
                     <div className="mt-16 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-                        <p className="text-sm text-gray-500 mb-4">Trusted by professionals worldwide</p>
-                        <div className="flex items-center justify-center gap-8 opacity-40">
+                        <p className="text-sm text-text-light-secondary dark:text-gray-500 mb-4">Trusted by professionals worldwide</p>
+                        <div className="flex items-center justify-center gap-8 opacity-40 text-text-light-primary dark:text-white">
                             <span className="text-xl font-bold">Google</span>
                             <span className="text-xl font-bold">Microsoft</span>
                             <span className="text-xl font-bold">Amazon</span>
