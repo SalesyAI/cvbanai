@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FileText, Sparkles, Zap, Shield, ArrowRight, Check, Star } from 'lucide-react'
 import Logo from '../components/Logo'
