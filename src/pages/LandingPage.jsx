@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { FileText, Sparkles, Zap, Shield, ArrowRight, Check, Star } from 'lucide-react'
+import { FileText, Sparkles, Zap, Shield, ArrowRight, Check, Star, Linkedin, Globe } from 'lucide-react'
 import Logo from '../components/Logo'
 import ThemeToggle from '../components/ThemeToggle'
 
@@ -131,9 +131,9 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* Pricing Section */}
+            {/* Pricing Section - 4 Tiers */}
             <section className="py-16 md:py-20 px-6 md:px-8 border-t border-light-200 dark:border-dark-700/50">
-                <div className="max-w-4xl mx-auto text-center">
+                <div className="max-w-6xl mx-auto text-center">
                     <h2 className="text-2xl md:text-4xl font-bold mb-4">
                         Simple, Transparent Pricing
                     </h2>
@@ -141,52 +141,82 @@ export default function LandingPage() {
                         Start for free, upgrade when you need more features.
                     </p>
 
-                    <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                         {/* Free Tier */}
-                        <div className="p-5 md:p-6 glass rounded-2xl text-left">
-                            <h3 className="text-lg font-bold mb-2">Free</h3>
-                            <div className="text-2xl md:text-3xl font-extrabold mb-4">0 tk</div>
-                            <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-6">
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> AI Resume Enhancement</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Copy to Clipboard</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> 3 Resumes/month</li>
+                        <div className="p-5 glass rounded-2xl text-left">
+                            <div className="w-10 h-10 rounded-lg bg-accent-500 dark:bg-accent-400/20 flex items-center justify-center mb-4">
+                                <Sparkles className="w-5 h-5 text-white dark:text-accent-400" />
+                            </div>
+                            <h3 className="text-lg font-bold mb-1">AI Resume Copy</h3>
+                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">Generate professional text</p>
+                            <div className="text-2xl font-extrabold mb-4">Free</div>
+                            <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-5">
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Upload CV or input details</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> AI-powered generation</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Copy to clipboard</li>
                             </ul>
-                            <Link to="/auth?mode=signup" className="block w-full py-3 text-center bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 rounded-xl font-medium transition-all">
+                            <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 rounded-xl font-medium transition-all text-sm">
                                 Get Started
                             </Link>
                         </div>
 
-                        {/* Pro Tier */}
-                        <div className="p-5 md:p-6 gradient-border rounded-2xl text-left relative">
+                        {/* PDF Tier */}
+                        <div className="p-5 gradient-border rounded-2xl text-left relative">
                             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                                 <span className="px-3 py-1 bg-gradient-to-r from-primary-500 to-accent-400 text-white text-xs font-bold rounded-full flex items-center gap-1">
                                     <Star className="w-3 h-3" /> POPULAR
                                 </span>
                             </div>
-                            <h3 className="text-lg font-bold mb-2">Pro</h3>
-                            <div className="text-2xl md:text-3xl font-extrabold mb-4">200 tk</div>
-                            <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-6">
+                            <div className="w-10 h-10 rounded-lg bg-primary-500 dark:bg-primary-400 flex items-center justify-center mb-4">
+                                <FileText className="w-5 h-5 text-white" />
+                            </div>
+                            <h3 className="text-lg font-bold mb-1">Professional PDF</h3>
+                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">ATS-optimized format</p>
+                            <div className="text-2xl font-extrabold mb-4">200 <span className="text-base font-normal text-text-light-secondary dark:text-gray-400">tk</span></div>
+                            <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-5">
                                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Everything in Free</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> PDF Export</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Unlimited Resumes</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> High-design PDF export</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> ATS-optimized layout</li>
                             </ul>
-                            <Link to="/auth?mode=signup" className="block w-full py-3 text-center bg-primary-500 dark:bg-primary-400 hover:bg-primary-600 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all">
-                                Start Free Trial
+                            <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-primary-500 dark:bg-primary-400 hover:bg-primary-600 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all text-sm">
+                                Get PDF
                             </Link>
                         </div>
 
-                        {/* Enterprise Tier */}
-                        <div className="p-5 md:p-6 glass rounded-2xl text-left">
-                            <h3 className="text-lg font-bold mb-2">Enterprise</h3>
-                            <div className="text-2xl md:text-3xl font-extrabold mb-4">Custom</div>
-                            <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-6">
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Everything in Pro</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Team Management</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Priority Support</li>
+                        {/* LinkedIn Tier */}
+                        <div className="p-5 glass rounded-2xl text-left">
+                            <div className="w-10 h-10 rounded-lg bg-[#0A66C2] flex items-center justify-center mb-4">
+                                <Linkedin className="w-5 h-5 text-white" />
+                            </div>
+                            <h3 className="text-lg font-bold mb-1">LinkedIn Optimizer</h3>
+                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">Boost profile visibility</p>
+                            <div className="text-2xl font-extrabold mb-4">500 <span className="text-base font-normal text-text-light-secondary dark:text-gray-400">tk</span></div>
+                            <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-5">
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Full profile optimization</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Personalized strategy</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Networking tips</li>
                             </ul>
-                            <button className="block w-full py-3 text-center bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 rounded-xl font-medium transition-all">
-                                Contact Sales
-                            </button>
+                            <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 rounded-xl font-medium transition-all text-sm">
+                                Get LinkedIn
+                            </Link>
+                        </div>
+
+                        {/* Portfolio Tier */}
+                        <div className="p-5 glass rounded-2xl text-left">
+                            <div className="w-10 h-10 rounded-lg bg-accent-600 dark:bg-accent-600/50 flex items-center justify-center mb-4">
+                                <Globe className="w-5 h-5 text-white" />
+                            </div>
+                            <h3 className="text-lg font-bold mb-1">Ultimate Portfolio</h3>
+                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">Your own website</p>
+                            <div className="text-2xl font-extrabold mb-4">1000 <span className="text-base font-normal text-text-light-secondary dark:text-gray-400">tk</span></div>
+                            <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-5">
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> One-page portfolio site</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Showcase projects</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Hosted & shareable</li>
+                            </ul>
+                            <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 rounded-xl font-medium transition-all text-sm">
+                                Get Portfolio
+                            </Link>
                         </div>
                     </div>
                 </div>
