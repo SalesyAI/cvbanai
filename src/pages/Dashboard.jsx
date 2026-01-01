@@ -3,13 +3,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
     FileText, Plus, LogOut, User, Home, Linkedin, Globe, Lock, Check, ArrowRight,
-    Sparkles, ChevronRight, Copy, Download
+    Sparkles, ChevronRight, Copy, Download, Trash, Edit, Clock
 } from 'lucide-react'
 import Logo from '../components/Logo'
 import ThemeToggle from '../components/ThemeToggle'
 import MultiStepModal from '../components/MultiStepModal'
 import RefinementEngine from '../components/RefinementEngine'
 import PricingScreen from '../components/PricingScreen'
+import { resumeService } from '../services/resumeService'
 
 const VIEWS = {
     HOME: 'home',
@@ -29,20 +30,42 @@ export default function Dashboard() {
     const [activeTab, setActiveTab] = useState('home')
     const [resumeData, setResumeData] = useState(null)
     const [refinedData, setRefinedData] = useState(null)
+    const [currentResumeId, setCurrentResumeId] = useState(null)
+    const [recentResumes, setRecentResumes] = useState([])
     const [showToast, setShowToast] = useState(false)
     const [toastMessage, setToastMessage] = useState('')
     const [isVisible, setIsVisible] = useState(false)
+    const [isLoadingResumes, setIsLoadingResumes] = useState(true)
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
     const firstName = displayName.split(' ')[0]
 
     useEffect(() => {
         setIsVisible(true)
-    }, [])
+        if (user) {
+            loadResumes()
+        }
+    }, [user])
+
+    const loadResumes = async () => {
+        try {
+            setIsLoadingResumes(true)
+            const resumes = await resumeService.getUserResumes()
+            setRecentResumes(resumes || [])
+        } catch (error) {
+            console.error('Error loading resumes:', error)
+            showToastNotification('Failed to load recent resumes')
+        } finally {
+            setIsLoadingResumes(false)
+        }
+    }
 
     const handleTabClick = (tabId) => {
         setActiveTab(tabId)
-        if (tabId === 'home') setCurrentView(VIEWS.HOME)
+        if (tabId === 'home') {
+            setCurrentView(VIEWS.HOME)
+            loadResumes() // Refresh list when returning home
+        }
         else if (tabId === 'linkedin') setCurrentView(VIEWS.LINKEDIN)
         else if (tabId === 'portfolio') setCurrentView(VIEWS.PORTFOLIO)
     }
@@ -53,6 +76,9 @@ export default function Dashboard() {
     }
 
     const handleStartNewResume = () => {
+        setResumeData(null)
+        setRefinedData(null)
+        setCurrentResumeId(null)
         setCurrentView(VIEWS.MODAL)
     }
 
@@ -61,16 +87,42 @@ export default function Dashboard() {
         setCurrentView(VIEWS.REFINING)
 
         try {
+            // Save initial draft
+            let resumeId = currentResumeId
+            if (!resumeId) {
+                const newResume = await resumeService.createResume(user.id, formData)
+                resumeId = newResume.id
+                setCurrentResumeId(resumeId)
+            } else {
+                await resumeService.updateResume(resumeId, { content: formData })
+            }
+
+            // AI Refinement
             const response = await fetch('/api/refine', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ resumeData: formData }),
             })
 
-            if (!response.ok) throw new Error('Failed to refine resume')
+            let refined = null
+            if (!response.ok) {
+                console.warn('Backend API failed, using simulation')
+                refined = simulateRefinement(formData)
+            } else {
+                const { refinedData } = await response.json()
+                refined = refinedData
+            }
 
-            const { refinedData: refined } = await response.json()
             setRefinedData(refined)
+
+            // Save refined data to DB
+            if (resumeId) {
+                await resumeService.updateResume(resumeId, {
+                    content: refined,
+                    status: 'refined'
+                })
+            }
+
             setCurrentView(VIEWS.EDITOR)
         } catch (error) {
             console.error('Refinement error:', error)
@@ -90,6 +142,27 @@ export default function Dashboard() {
             improvements: [{ original: 'Worked on', improved: 'Spearheaded' }],
         })) || [],
     })
+
+    const handleResumeSelect = (resume) => {
+        setResumeData(resume.content)
+        setRefinedData(resume.content) // Assuming stored content is the latest version
+        setCurrentResumeId(resume.id)
+        setCurrentView(VIEWS.EDITOR)
+    }
+
+    const handleDeleteResume = async (e, id) => {
+        e.stopPropagation()
+        if (confirm('Are you sure you want to delete this resume?')) {
+            try {
+                await resumeService.deleteResume(id)
+                setRecentResumes(prev => prev.filter(r => r.id !== id))
+                showToastNotification('Resume deleted')
+            } catch (error) {
+                console.error('Error deleting resume:', error)
+                showToastNotification('Failed to delete resume')
+            }
+        }
+    }
 
     const handleCopyText = () => {
         const text = formatResumeAsText(refinedData)
@@ -123,11 +196,13 @@ export default function Dashboard() {
         setActiveTab('home')
         setResumeData(null)
         setRefinedData(null)
+        setCurrentResumeId(null)
+        loadResumes()
     }
 
     // === RENDER VIEWS ===
     if (currentView === VIEWS.MODAL) {
-        return <MultiStepModal onComplete={handleFormComplete} onClose={handleBackToHome} />
+        return <MultiStepModal onComplete={handleFormComplete} onClose={handleBackToHome} initialData={resumeData} />
     }
 
     if (currentView === VIEWS.REFINING) {
@@ -309,19 +384,83 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Recent */}
+            {/* Recent Resumes */}
             <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: '0.4s' }}>
-                <h2 className="font-semibold mb-3">Recent Resumes</h2>
-                <div className="glass rounded-xl p-8 text-center hover:glow-mint transition-all duration-300">
-                    <FileText className="w-10 h-10 text-text-light-secondary/20 dark:text-gray-700 mx-auto mb-3" />
-                    <p className="text-text-light-secondary dark:text-gray-500 text-sm mb-4">No resumes yet</p>
-                    <button
-                        onClick={handleStartNewResume}
-                        className="group inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white text-sm font-medium transition-all hover:-translate-y-0.5 active:scale-95"
-                    >
-                        <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" /> Create Your First
-                    </button>
+                <div className="flex items-center justify-between mb-3">
+                    <h2 className="font-semibold">Recent Resumes</h2>
+                    {recentResumes.length > 0 && (
+                        <span className="text-xs text-text-light-secondary dark:text-gray-500 bg-light-100 dark:bg-dark-800 px-2 py-0.5 rounded-full">
+                            {recentResumes.length} saved
+                        </span>
+                    )}
                 </div>
+
+                {/* Loading State */}
+                {isLoadingResumes && recentResumes.length === 0 && (
+                    <div className="glass rounded-xl p-8 text-center animate-pulse">
+                        <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg mx-auto mb-3"></div>
+                        <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 mx-auto rounded"></div>
+                    </div>
+                )}
+
+                {/* Empty State */}
+                {!isLoadingResumes && recentResumes.length === 0 && (
+                    <div className="glass rounded-xl p-8 text-center hover:glow-mint transition-all duration-300">
+                        <FileText className="w-10 h-10 text-text-light-secondary/20 dark:text-gray-700 mx-auto mb-3" />
+                        <p className="text-text-light-secondary dark:text-gray-500 text-sm mb-4">No resumes yet</p>
+                        <button
+                            onClick={handleStartNewResume}
+                            className="group inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white text-sm font-medium transition-all hover:-translate-y-0.5 active:scale-95"
+                        >
+                            <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" /> Create Your First
+                        </button>
+                    </div>
+                )}
+
+                {/* Resumes Grid */}
+                {recentResumes.length > 0 && (
+                    <div className="space-y-3">
+                        {recentResumes.map((resume, i) => (
+                            <div
+                                key={resume.id}
+                                onClick={() => handleResumeSelect(resume)}
+                                className="group glass p-4 rounded-xl flex items-center justify-between hover:bg-light-100 dark:hover:bg-dark-800 transition-all duration-200 cursor-pointer stagger-item border-l-4 border-transparent hover:border-primary-500"
+                                style={{ animationDelay: `${i * 0.05}s` }}
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-lg bg-text-light-secondary/10 dark:bg-gray-700 flex items-center justify-center text-text-light-secondary dark:text-gray-400 group-hover:bg-primary-500/20 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                        <FileText className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                            {resume.title}
+                                        </h3>
+                                        <div className="flex items-center gap-3 text-xs text-text-light-secondary dark:text-gray-500">
+                                            <span className="flex items-center gap-1">
+                                                <Clock className="w-3 h-3" />
+                                                {new Date(resume.updated_at).toLocaleDateString()}
+                                            </span>
+                                            {resume.status === 'refined' && (
+                                                <span className="text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                                                    <Sparkles className="w-3 h-3" />
+                                                    Enhanced
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={(e) => handleDeleteResume(e, resume.id)}
+                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                    title="Delete resume"
+                                >
+                                    <Trash className="w-4 h-4" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     )

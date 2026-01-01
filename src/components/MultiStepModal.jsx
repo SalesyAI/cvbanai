@@ -25,9 +25,9 @@ const STEPS = [
     },
 ]
 
-export default function MultiStepModal({ onComplete, onClose }) {
+export default function MultiStepModal({ onComplete, onClose, initialData }) {
     const [currentStep, setCurrentStep] = useState(0)
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState(initialData || {
         fullName: '',
         email: '',
         phone: '',
@@ -438,10 +438,10 @@ export default function MultiStepModal({ onComplete, onClose }) {
                         {STEPS.map((step, index) => (
                             <div key={step.id} className="flex items-center">
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${index < currentStep
-                                        ? 'bg-primary-500 text-white'
-                                        : index === currentStep
-                                            ? 'bg-primary-500/20 text-primary-500 dark:text-primary-400 ring-2 ring-primary-500'
-                                            : 'bg-light-100 dark:bg-dark-700 text-text-light-secondary dark:text-gray-500'
+                                    ? 'bg-primary-500 text-white'
+                                    : index === currentStep
+                                        ? 'bg-primary-500/20 text-primary-500 dark:text-primary-400 ring-2 ring-primary-500'
+                                        : 'bg-light-100 dark:bg-dark-700 text-text-light-secondary dark:text-gray-500'
                                     }`}>
                                     {index < currentStep ? <CheckCircle className="w-4 h-4" /> : index + 1}
                                 </div>
@@ -476,8 +476,8 @@ export default function MultiStepModal({ onComplete, onClose }) {
                         onClick={prevStep}
                         disabled={currentStep === 0}
                         className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${currentStep === 0
-                                ? 'text-text-light-secondary/50 dark:text-gray-600 cursor-not-allowed'
-                                : 'text-text-light-secondary dark:text-gray-400 hover:text-text-light-primary dark:hover:text-white hover:bg-light-100 dark:hover:bg-dark-700'
+                            ? 'text-text-light-secondary/50 dark:text-gray-600 cursor-not-allowed'
+                            : 'text-text-light-secondary dark:text-gray-400 hover:text-text-light-primary dark:hover:text-white hover:bg-light-100 dark:hover:bg-dark-700'
                             }`}
                     >
                         <ArrowLeft className="w-4 h-4" />
@@ -488,8 +488,8 @@ export default function MultiStepModal({ onComplete, onClose }) {
                         onClick={nextStep}
                         disabled={!canProceed()}
                         className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium transition-all ${canProceed()
-                                ? 'bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 text-white'
-                                : 'bg-light-200 dark:bg-dark-700 text-text-light-secondary dark:text-gray-500 cursor-not-allowed'
+                            ? 'bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 text-white'
+                            : 'bg-light-200 dark:bg-dark-700 text-text-light-secondary dark:text-gray-500 cursor-not-allowed'
                             }`}
                     >
                         {currentStep === STEPS.length - 1 ? (
