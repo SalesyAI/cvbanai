@@ -30,21 +30,16 @@ export default function RefinementEngine({ originalData, refinedData, onCopyText
                             <Copy className="w-4 h-4" />
                             <span className="hidden sm:inline">Copy</span>
                         </button>
-                        <PDFDownloadLink
-                            document={<ResumePDF data={refinedData || originalData} />}
-                            fileName="resume.pdf"
+                        <button
+                            onClick={onDownloadPDF}
                             className="flex items-center gap-2 px-4 py-2 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all"
                         >
-                            {({ blob, url, loading, error }) => (
-                                <>
-                                    <Download className="w-4 h-4" />
-                                    <span className="hidden sm:inline">{loading ? 'Loading...' : 'PDF'}</span>
-                                    <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-300 dark:text-amber-400 text-xs rounded font-bold flex items-center gap-0.5">
-                                        <Crown className="w-2.5 h-2.5" />
-                                    </span>
-                                </>
-                            )}
-                        </PDFDownloadLink>
+                            <Download className="w-4 h-4" />
+                            <span className="hidden sm:inline">PDF</span>
+                            <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-300 dark:text-amber-400 text-xs rounded font-bold flex items-center gap-0.5">
+                                <Crown className="w-2.5 h-2.5" />
+                            </span>
+                        </button>
                     </div>
                 </div>
             </header>
@@ -200,19 +195,15 @@ export default function RefinementEngine({ originalData, refinedData, onCopyText
                         <Copy className="w-5 h-5" />
                         Copy Text
                     </button>
-                    <PDFDownloadLink
-                        document={<ResumePDF data={refinedData || originalData} />}
-                        fileName="resume.pdf"
+                    {/* Restored Paywall Button */}
+                    <button
+                        onClick={onDownloadPDF}
                         className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary-500 dark:bg-primary-400 rounded-xl text-white font-medium"
                     >
-                        {({ loading }) => (
-                            <>
-                                <Download className="w-5 h-5" />
-                                {loading ? 'Loading...' : 'PDF'}
-                                <Crown className="w-4 h-4 text-amber-300" />
-                            </>
-                        )}
-                    </PDFDownloadLink>
+                        <Download className="w-5 h-5" />
+                        PDF
+                        <Crown className="w-4 h-4 text-amber-300" />
+                    </button>
                 </div>
             </div>
         </div>
