@@ -5,6 +5,7 @@ import {
     FileText, Plus, LogOut, User, Settings, Home,
     ChevronRight, Sparkles, Clock, MoreVertical
 } from 'lucide-react'
+import Logo from '../components/Logo'
 
 // Import the resume builder components
 import MultiStepModal from '../components/MultiStepModal'
@@ -173,10 +174,7 @@ export default function Dashboard() {
                 {/* Logo */}
                 <div className="p-6 border-b border-dark-700">
                     <Link to="/" className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center flex-shrink-0">
-                            <FileText className="w-5 h-5 text-white" />
-                        </div>
-                        {sidebarOpen && <span className="text-xl font-bold">CVBanai</span>}
+                        <Logo className="h-8" showText={sidebarOpen} />
                     </Link>
                 </div>
 

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { FileText, Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react'
+import Logo from '../components/Logo'
 
 export default function AuthPage() {
     const [searchParams] = useSearchParams()
@@ -76,11 +76,8 @@ export default function AuthPage() {
         <div className="min-h-screen animated-bg flex items-center justify-center px-4 py-12">
             <div className="w-full max-w-md">
                 {/* Logo */}
-                <Link to="/" className="flex items-center justify-center gap-3 mb-8">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
-                        <FileText className="w-6 h-6 text-white" />
-                    </div>
-                    <span className="text-2xl font-bold">CVBanai</span>
+                <Link to="/" className="flex items-center justify-center mb-12">
+                    <Logo className="h-16" />
                 </Link>
 
                 {/* Auth Card */}

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FileText, Sparkles, Zap, Shield, ArrowRight, Check, Star } from 'lucide-react'
+import Logo from '../components/Logo'
 
 export default function LandingPage() {
     return (
@@ -7,12 +8,9 @@ export default function LandingPage() {
             {/* Navigation */}
             <nav className="py-6 px-8 border-b border-dark-700/50">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
-                            <FileText className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="text-xl font-bold">CVBanai</span>
-                    </div>
+                    <Link to="/" className="flex items-center gap-2">
+                        <Logo className="h-10" />
+                    </Link>
                     <div className="flex items-center gap-4">
                         <Link to="/auth" className="text-gray-400 hover:text-white transition-colors">
                             Login
@@ -211,10 +209,7 @@ export default function LandingPage() {
             <footer className="py-8 px-8 border-t border-dark-700/50">
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
-                            <FileText className="w-4 h-4 text-white" />
-                        </div>
-                        <span className="font-bold">CVBanai</span>
+                        <Logo className="h-6" />
                     </div>
                     <p className="text-sm text-gray-500">
                         © 2026 CVBanai. All rights reserved.
