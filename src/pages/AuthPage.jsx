@@ -31,6 +31,17 @@ export default function AuthPage() {
         setError('')
         setMessage('')
 
+        // Helper to make errors user-friendly
+        const getFriendlyError = (err) => {
+            const msg = err.message || err
+            if (msg.includes('Invalid login credentials')) return 'Invalid email or password. Please try again.'
+            if (msg.includes('Email not confirmed')) return 'Please confirm your email address first. Check your inbox.'
+            if (msg.includes('User already registered')) return 'An account with this email already exists. Try logging in.'
+            if (msg.includes('Password should be')) return 'Password must be at least 6 characters.'
+            if (msg.includes('Anonymous sign-ins')) return 'Please fill in all fields correctly.'
+            return msg
+        }
+
         try {
             if (isSignUp) {
                 const { error } = await signUp(email, password, fullName)
@@ -42,11 +53,12 @@ export default function AuthPage() {
                 navigate('/dashboard')
             }
         } catch (err) {
-            setError(err.message)
+            setError(getFriendlyError(err))
         } finally {
             setLoading(false)
         }
     }
+
 
     const handleGoogleSignIn = async () => {
         setLoading(true)
