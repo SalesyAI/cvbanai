@@ -1,5 +1,6 @@
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
+import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
     // CORS headers
@@ -15,113 +16,128 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
         return res.status(200).json({
             status: 'Webhook endpoint is live!',
-            hasEmail: !!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-            hasKey: !!process.env.GOOGLE_PRIVATE_KEY,
-            hasSheetId: !!process.env.GOOGLE_SHEET_ID
+            hasSheetEmail: !!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+            hasGmailUser: !!process.env.GMAIL_USER,
+            hasDiscord: !!process.env.DISCORD_WEBHOOK_URL
         });
     }
 
-    // Only allow POST requests for actual webhooks
+    // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // Log the full incoming payload
-    console.log('=== WEBHOOK RECEIVED ===');
-    console.log('Body:', JSON.stringify(req.body, null, 2));
+    // Parse payload
+    const { record, type } = req.body;
 
-    // Supabase webhook payload structure
-    const { record, type, table, schema } = req.body;
-
-    console.log('Type:', type, 'Table:', table, 'Schema:', schema);
-
-    // Only process INSERT events
-    if (type !== 'INSERT') {
-        console.log('Skipping non-INSERT event:', type);
-        return res.status(200).json({ message: 'Skipped: Not an INSERT event', type });
+    if (type !== 'INSERT' || !record) {
+        return res.status(200).json({ message: 'Skipped: Not a valid INSERT event' });
     }
 
-    // Check if record exists
-    if (!record) {
-        console.error('No record in payload');
-        return res.status(400).json({ error: 'No record provided' });
-    }
+    console.log('Processing signup for:', record.email);
 
-    console.log('Record:', JSON.stringify(record, null, 2));
+    // Prepare data
+    const bangladeshTime = new Date().toLocaleString('en-GB', {
+        timeZone: 'Asia/Dhaka',
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: true
+    });
+
+    const userData = {
+        'Signup Date': bangladeshTime,
+        'Name': record.full_name || record.raw_user_meta_data?.full_name || 'N/A',
+        'Email': record.email || 'N/A'
+    };
+
+    const results = {
+        sheets: 'Skipped',
+        email: 'Skipped',
+        discord: 'Skipped'
+    };
 
     try {
-        // Initialize auth
-        const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-        const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-        const sheetId = process.env.GOOGLE_SHEET_ID;
+        // 1. Google Sheets Sync
+        if (process.env.GOOGLE_SHEET_ID) {
+            try {
+                const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+                const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
-        console.log('Config check:', {
-            hasEmail: !!serviceAccountEmail,
-            hasKey: !!privateKey,
-            hasSheetId: !!sheetId,
-            sheetId: sheetId
-        });
+                const auth = new JWT({
+                    email: serviceAccountEmail,
+                    key: privateKey,
+                    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+                });
 
-        if (!serviceAccountEmail || !privateKey || !sheetId) {
-            console.error('Missing Google Sheets credentials');
-            return res.status(500).json({
-                error: 'Configuration error',
-                hasEmail: !!serviceAccountEmail,
-                hasKey: !!privateKey,
-                hasSheetId: !!sheetId
-            });
+                const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, auth);
+                await doc.loadInfo();
+                const sheet = doc.sheetsByIndex[0];
+                await sheet.addRow(userData);
+                results.sheets = 'Success';
+            } catch (err) {
+                console.error('Sheets Error:', err.message);
+                results.sheets = 'Failed';
+            }
         }
 
-        const auth = new JWT({
-            email: serviceAccountEmail,
-            key: privateKey,
-            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-        });
+        // 2. Discord Notification
+        if (process.env.DISCORD_WEBHOOK_URL) {
+            try {
+                await fetch(process.env.DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        embeds: [{
+                            title: "🚀 New User Signup!",
+                            color: 0x00ff00, // Green
+                            fields: [
+                                { name: "Name", value: userData.Name, inline: true },
+                                { name: "Email", value: userData.Email, inline: true },
+                                { name: "Time", value: userData['Signup Date'], inline: false }
+                            ],
+                            footer: { text: "CVBanai System Alert" }
+                        }]
+                    })
+                });
+                results.discord = 'Success';
+            } catch (err) {
+                console.error('Discord Error:', err.message);
+                results.discord = 'Failed';
+            }
+        }
 
-        console.log('JWT auth created, connecting to sheet...');
+        // 3. Gmail Notification
+        if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+            try {
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.GMAIL_USER,
+                        pass: process.env.GMAIL_APP_PASSWORD
+                    }
+                });
 
-        const doc = new GoogleSpreadsheet(sheetId, auth);
+                await transporter.sendMail({
+                    from: process.env.GMAIL_USER,
+                    to: process.env.GMAIL_USER, // Send to self
+                    subject: `New Signup: ${userData.Name}`,
+                    html: `
+                        <h2>🚀 New User Signup</h2>
+                        <p><strong>Name:</strong> ${userData.Name}</p>
+                        <p><strong>Email:</strong> ${userData.Email}</p>
+                        <p><strong>Time:</strong> ${userData['Signup Date']}</p>
+                    `
+                });
+                results.email = 'Success';
+            } catch (err) {
+                console.error('Email Error:', err.message);
+                results.email = 'Failed';
+            }
+        }
 
-        // Load doc info
-        await doc.loadInfo();
-        console.log('Loaded Google Sheet:', doc.title);
+        return res.status(200).json({ message: 'Processed', results });
 
-        // Get the first sheet
-        const sheet = doc.sheetsByIndex[0];
-        console.log('Using sheet:', sheet.title);
-
-        // Prepare row data - handles profiles table structure
-        const bangladeshTime = new Date().toLocaleString('en-GB', {
-            timeZone: 'Asia/Dhaka',
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-
-        const rowData = {
-            'Signup Date': bangladeshTime,
-            'Name': record.full_name || record.raw_user_meta_data?.full_name || 'N/A',
-            'Email': record.email || 'N/A'
-        };
-
-
-        console.log('Adding row:', JSON.stringify(rowData));
-
-        // Append the row
-        await sheet.addRow(rowData);
-
-        console.log('=== SUCCESS: Row added to Google Sheets ===');
-        return res.status(200).json({ message: 'Success', rowData });
     } catch (error) {
-        console.error('=== ERROR ===');
-        console.error('Message:', error.message);
-        console.error('Stack:', error.stack);
-        return res.status(500).json({
-            error: 'Internal server error',
-            details: error.message
-        });
+        console.error('Handler critical error:', error);
+        return res.status(500).json({ error: 'Internal server error' });
     }
 }
