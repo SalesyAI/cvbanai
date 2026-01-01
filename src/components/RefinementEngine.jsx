@@ -1,9 +1,18 @@
-import { ArrowLeft, Copy, Download, Sparkles, Crown, CheckCircle } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowLeft, Copy, Download, Sparkles, Crown, CheckCircle, Check } from 'lucide-react'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import ResumePDF from './ResumePDF'
 import Logo from './Logo'
 
 export default function RefinementEngine({ originalData, refinedData, onCopyText, onDownloadPDF, onBack }) {
+    const [isCopied, setIsCopied] = useState(false)
+
+    const handleCopy = () => {
+        onCopyText()
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), 2000)
+    }
+
     return (
         <div className="min-h-screen animated-bg flex flex-col">
             {/* Header */}
@@ -24,11 +33,14 @@ export default function RefinementEngine({ originalData, refinedData, onCopyText
 
                     <div className="flex items-center gap-2">
                         <button
-                            onClick={onCopyText}
-                            className="flex items-center gap-2 px-4 py-2 bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 rounded-xl text-text-light-primary dark:text-white font-medium transition-all"
+                            onClick={handleCopy}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${isCopied
+                                ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                                : 'bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 text-text-light-primary dark:text-white'
+                                }`}
                         >
-                            <Copy className="w-4 h-4" />
-                            <span className="hidden sm:inline">Copy</span>
+                            {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                            <span className="hidden sm:inline">{isCopied ? 'Copied!' : 'Copy'}</span>
                         </button>
                         <button
                             onClick={onDownloadPDF}
@@ -189,11 +201,14 @@ export default function RefinementEngine({ originalData, refinedData, onCopyText
             <div className="sticky bottom-0 p-3 bg-white/80 dark:bg-dark-950/80 backdrop-blur-lg border-t border-light-200 dark:border-dark-700 lg:hidden">
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={onCopyText}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 bg-light-100 dark:bg-dark-700 rounded-xl text-text-light-primary dark:text-white font-medium"
+                        onClick={handleCopy}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all ${isCopied
+                            ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                            : 'bg-light-100 dark:bg-dark-700 text-text-light-primary dark:text-white'
+                            }`}
                     >
-                        <Copy className="w-5 h-5" />
-                        Copy Text
+                        {isCopied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                        {isCopied ? 'Copied!' : 'Copy Text'}
                     </button>
                     {/* Restored Paywall Button */}
                     <button
