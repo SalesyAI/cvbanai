@@ -46,7 +46,7 @@ export default function LandingPage() {
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
                         <Link
                             to="/auth?mode=signup"
-                            className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 rounded-xl text-white font-semibold text-lg transition-all glow-violet"
+                            className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 rounded-xl text-white font-semibold text-lg transition-all glow-teal"
                         >
                             Start Building Free
                             <ArrowRight className="w-5 h-5" />
@@ -62,15 +62,15 @@ export default function LandingPage() {
                     {/* Trust indicators */}
                     <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500">
                         <div className="flex items-center gap-2">
-                            <Check className="w-4 h-4 text-green-400" />
+                            <Check className="w-4 h-4 text-accent-400" />
                             <span>No credit card required</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Check className="w-4 h-4 text-green-400" />
+                            <Check className="w-4 h-4 text-accent-400" />
                             <span>ATS-optimized templates</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Check className="w-4 h-4 text-green-400" />
+                            <Check className="w-4 h-4 text-accent-400" />
                             <span>Powered by Gemini AI</span>
                         </div>
                     </div>
@@ -91,7 +91,7 @@ export default function LandingPage() {
 
                     <div className="grid md:grid-cols-3 gap-8">
                         {/* Feature 1 */}
-                        <div className="p-8 glass rounded-2xl hover:glow-violet transition-all duration-500">
+                        <div className="p-8 glass rounded-2xl hover:glow-teal transition-all duration-500">
                             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center mb-6">
                                 <Sparkles className="w-7 h-7 text-white" />
                             </div>
@@ -113,7 +113,7 @@ export default function LandingPage() {
                         </div>
 
                         {/* Feature 3 */}
-                        <div className="p-8 glass rounded-2xl hover:glow-violet transition-all duration-500">
+                        <div className="p-8 glass rounded-2xl hover:glow-teal transition-all duration-500">
                             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-6">
                                 <Shield className="w-7 h-7 text-white" />
                             </div>
@@ -142,9 +142,9 @@ export default function LandingPage() {
                             <h3 className="text-lg font-bold mb-2">Free</h3>
                             <div className="text-3xl font-extrabold mb-4">0 tk</div>
                             <ul className="space-y-2 text-sm text-gray-400 mb-6">
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-400" /> AI Resume Enhancement</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-400" /> Copy to Clipboard</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-400" /> 3 Resumes/month</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-400" /> AI Resume Enhancement</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-400" /> Copy to Clipboard</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-400" /> 3 Resumes/month</li>
                             </ul>
                             <Link to="/auth?mode=signup" className="block w-full py-3 text-center bg-dark-700 hover:bg-dark-600 rounded-xl font-medium transition-all">
                                 Get Started
@@ -161,9 +161,9 @@ export default function LandingPage() {
                             <h3 className="text-lg font-bold mb-2">Pro</h3>
                             <div className="text-3xl font-extrabold mb-4">200 tk</div>
                             <ul className="space-y-2 text-sm text-gray-400 mb-6">
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-400" /> Everything in Free</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-400" /> PDF Export</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-400" /> Unlimited Resumes</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-400" /> Everything in Free</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-400" /> PDF Export</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-400" /> Unlimited Resumes</li>
                             </ul>
                             <Link to="/auth?mode=signup" className="block w-full py-3 text-center bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl font-medium transition-all">
                                 Start Free Trial
@@ -175,9 +175,9 @@ export default function LandingPage() {
                             <h3 className="text-lg font-bold mb-2">Enterprise</h3>
                             <div className="text-3xl font-extrabold mb-4">Custom</div>
                             <ul className="space-y-2 text-sm text-gray-400 mb-6">
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-400" /> Everything in Pro</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-400" /> Team Management</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-400" /> Priority Support</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-400" /> Everything in Pro</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-400" /> Team Management</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-400" /> Priority Support</li>
                             </ul>
                             <button className="block w-full py-3 text-center bg-dark-700 hover:bg-dark-600 rounded-xl font-medium transition-all">
                                 Contact Sales
@@ -198,7 +198,7 @@ export default function LandingPage() {
                     </p>
                     <Link
                         to="/auth?mode=signup"
-                        className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 rounded-xl text-white font-semibold text-lg transition-all glow-violet"
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 rounded-xl text-white font-semibold text-lg transition-all glow-teal"
                     >
                         Get Started Free
                         <ArrowRight className="w-5 h-5" />

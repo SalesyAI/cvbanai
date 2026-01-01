@@ -1,21 +1,21 @@
 <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path 
         d="M30 20H60L80 40V80C80 82.2091 78.2091 84 76 84H30C27.7909 84 26 82.2091 26 80V24C26 21.7909 27.7909 20 30 20Z" 
-        stroke="#88D8F1" 
+        stroke="#2DD4BF" 
         stroke-width="5" 
         stroke-linecap="round" 
         stroke-linejoin="round"
     />
     <path 
         d="M60 20V40H80" 
-        stroke="#88D8F1" 
+        stroke="#2DD4BF" 
         stroke-width="5" 
         stroke-linecap="round" 
         stroke-linejoin="round"
     />
     <path 
         d="M10 60L40 90L95 15" 
-        stroke="#88D8F1" 
+        stroke="#2DD4BF" 
         stroke-width="12" 
         stroke-linecap="round" 
         stroke-linejoin="round"

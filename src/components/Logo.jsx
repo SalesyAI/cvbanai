@@ -13,7 +13,7 @@ export default function Logo({ className = "h-8", showText = true, textColor = "
                 {/* Document Background Shape */}
                 <path
                     d="M30 20H60L80 40V80C80 82.2091 78.2091 84 76 84H30C27.7909 84 26 82.2091 26 80V24C26 21.7909 27.7909 20 30 20Z"
-                    stroke="#88D8F1"
+                    stroke="#2DD4BF"
                     strokeWidth="5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -22,7 +22,7 @@ export default function Logo({ className = "h-8", showText = true, textColor = "
                 {/* Folded Corner */}
                 <path
                     d="M60 20V40H80"
-                    stroke="#88D8F1"
+                    stroke="#2DD4BF"
                     strokeWidth="5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -31,11 +31,11 @@ export default function Logo({ className = "h-8", showText = true, textColor = "
                 {/* The Large Checkmark */}
                 <path
                     d="M10 60L40 90L95 15"
-                    stroke="#88D8F1"
+                    stroke="#2DD4BF"
                     strokeWidth="10"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    style={{ filter: 'drop-shadow(0px 0px 8px rgba(136, 216, 241, 0.4))' }}
+                    style={{ filter: 'drop-shadow(0px 0px 8px rgba(45, 212, 191, 0.4))' }}
                 />
             </svg>
 
