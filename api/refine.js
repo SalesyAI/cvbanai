@@ -1,39 +1,33 @@
-import { GoogleGenAI } from '@google/genai';
+import { createClient } from '@supabase/supabase-js';
+import { refineResume } from '../lib/ai/refineResume.js';
 
-const RESUME_REFINEMENT_PROMPT = `You are an expert resume writer and career coach. Your task is to enhance a resume to be more professional, impactful, and ATS-optimized.
+// Simple in-memory rate limiting (resets on cold start)
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX = 10; // 10 requests per minute per user
 
-RULES:
-1. Transform weak verbs into powerful action verbs (e.g., "worked on" → "spearheaded", "helped" → "collaborated with cross-functional teams")
-2. Add quantifiable metrics where possible (e.g., percentages, numbers, dollar amounts)
-3. Make descriptions more concise and impactful
-4. Ensure professional tone throughout
-5. Preserve all factual information - only enhance the language
+function checkRateLimit(userId) {
+    const now = Date.now();
+    const userLimit = rateLimitMap.get(userId);
 
-RESPOND WITH VALID JSON ONLY. No markdown, no code blocks, just raw JSON.
-
-The response must follow this exact structure:
-{
-  "summary": "enhanced professional summary",
-  "summaryImprovements": ["list of improvements made to summary"],
-  "workHistory": [
-    {
-      "company": "original company name",
-      "position": "original position",
-      "startDate": "original start date",
-      "endDate": "original end date",
-      "description": "enhanced description",
-      "improvements": [
-        { "original": "weak phrase that was changed", "improved": "the improved version" }
-      ]
+    if (!userLimit || now - userLimit.windowStart > RATE_LIMIT_WINDOW) {
+        rateLimitMap.set(userId, { windowStart: now, count: 1 });
+        return true;
     }
-  ]
-}`;
+
+    if (userLimit.count >= RATE_LIMIT_MAX) {
+        return false;
+    }
+
+    userLimit.count++;
+    return true;
+}
 
 export default async function handler(req, res) {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     // Handle preflight
     if (req.method === 'OPTIONS') {
@@ -45,6 +39,35 @@ export default async function handler(req, res) {
     }
 
     try {
+        // ========== AUTHENTICATION ==========
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ error: 'Missing or invalid authorization header' });
+        }
+
+        const token = authHeader.replace('Bearer ', '');
+
+        // Verify token with Supabase
+        const supabase = createClient(
+            process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
+        );
+
+        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !user) {
+            return res.status(401).json({ error: 'Invalid or expired session' });
+        }
+
+        // ========== RATE LIMITING ==========
+        if (!checkRateLimit(user.id)) {
+            return res.status(429).json({
+                error: 'Rate limit exceeded. Please wait a minute before trying again.',
+                retryAfter: 60
+            });
+        }
+
+        // ========== VALIDATION ==========
         const { resumeData } = req.body;
 
         if (!resumeData) {
@@ -52,79 +75,20 @@ export default async function handler(req, res) {
         }
 
         if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ error: 'GEMINI_API_KEY not configured' });
+            return res.status(500).json({ error: 'AI service not configured' });
         }
 
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        // ========== AI PROCESSING ==========
+        console.log(`[Refine] Processing for user ${user.id}: ${resumeData.fullName}`);
 
-        const userPrompt = `Here is the resume data to enhance:
+        const refinedData = await refineResume(resumeData, process.env.GEMINI_API_KEY);
 
-FULL NAME: ${resumeData.fullName}
-EMAIL: ${resumeData.email}
-PHONE: ${resumeData.phone}
-LOCATION: ${resumeData.location}
-
-SUMMARY:
-${resumeData.summary || 'No summary provided'}
-
-WORK HISTORY:
-${resumeData.workHistory?.map((job, i) => `
-Job ${i + 1}:
-- Company: ${job.company}
-- Position: ${job.position}
-- Duration: ${job.startDate} to ${job.endDate}
-- Description: ${job.description}
-`).join('\n') || 'No work history provided'}
-
-EDUCATION:
-${resumeData.education?.map((edu, i) => `
-Education ${i + 1}:
-- Institution: ${edu.institution}
-- Degree: ${edu.degree}
-- Field: ${edu.field}
-- Year: ${edu.graduationYear}
-`).join('\n') || 'No education provided'}
-
-SKILLS: ${resumeData.skills?.join(', ') || 'No skills provided'}
-
-Enhance this resume following the rules. Return ONLY valid JSON.`;
-
-        const response = await ai.models.generateContent({
-            model: 'gemini-3-flash-preview',
-            contents: [
-                { role: 'user', parts: [{ text: RESUME_REFINEMENT_PROMPT + '\n\n' + userPrompt }] }
-            ],
-            config: {
-                temperature: 0.7,
-                maxOutputTokens: 2048,
-            }
-        });
-
-        const text = response.text.trim();
-
-        // Clean up any markdown code blocks if present
-        let cleanJson = text;
-        if (text.startsWith('```')) {
-            cleanJson = text.replace(/```json?\n?/g, '').replace(/```\n?/g, '').trim();
-        }
-
-        const refinedContent = JSON.parse(cleanJson);
-
-        // Merge refined content with original data
-        const refinedData = {
-            ...resumeData,
-            summary: refinedContent.summary || resumeData.summary,
-            summaryImprovements: refinedContent.summaryImprovements || [],
-            workHistory: resumeData.workHistory?.map((job, index) => ({
-                ...job,
-                description: refinedContent.workHistory?.[index]?.description || job.description,
-                improvements: refinedContent.workHistory?.[index]?.improvements || [],
-            })) || [],
-        };
+        console.log(`[Refine] Success for user ${user.id}`);
 
         return res.status(200).json({ refinedData });
+
     } catch (error) {
-        console.error('Gemini API Error:', error);
+        console.error('[Refine] Error:', error.message);
         return res.status(500).json({ error: `AI refinement failed: ${error.message}` });
     }
 }

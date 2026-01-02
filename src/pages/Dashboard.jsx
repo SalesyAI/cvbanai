@@ -100,7 +100,10 @@ export default function Dashboard() {
             // AI Refinement
             const response = await fetch('/api/refine', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session?.access_token}`
+                },
                 body: JSON.stringify({ resumeData: formData }),
             })
 
@@ -522,8 +525,8 @@ export default function Dashboard() {
                                     key={tab.id}
                                     onClick={() => handleTabClick(tab.id)}
                                     className={`group flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 hover:scale-[1.02] active:scale-95 ${isActive
-                                            ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
-                                            : 'text-text-light-secondary dark:text-gray-400 hover:bg-light-100 dark:hover:bg-dark-800'
+                                        ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                                        : 'text-text-light-secondary dark:text-gray-400 hover:bg-light-100 dark:hover:bg-dark-800'
                                         }`}
                                 >
                                     <Icon className={`w-4 h-4 transition-transform duration-200 ${isActive ? '' : 'group-hover:scale-110'}`} />

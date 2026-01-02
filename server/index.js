@@ -37,7 +37,7 @@ app.post('/api/refine', async (req, res) => {
 
         console.log('Refining resume for:', resumeData.fullName);
 
-        const refinedData = await refineResume(resumeData);
+        const refinedData = await refineResume(resumeData, process.env.GEMINI_API_KEY);
 
         console.log('Refinement complete!');
         res.json({ refinedData });
