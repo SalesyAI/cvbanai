@@ -25,16 +25,16 @@ export default {
                     700: '#2D3A45',
                 },
                 light: {
-                    50: '#FFFFFF',
-                    100: '#F0FDFA',
-                    200: '#CCFBF1',
-                    300: '#99F6E4',
+                    50: '#F8FAFA',  // Soft off-white (was pure white)
+                    100: '#EDF2F2', // Warm light gray
+                    200: '#DFE7E7', // Softer teal-gray
+                    300: '#C5D4D4', // Muted accent
                 },
                 text: {
                     'dark-primary': '#ECFDF5',
                     'dark-secondary': '#A1A1AA',
-                    'light-primary': '#134E4A',
-                    'light-secondary': '#64748B',
+                    'light-primary': '#1E3A3A',   // Softer than #134E4A
+                    'light-secondary': '#5A6B6B', // Warmer gray
                 },
             },
             animation: {
