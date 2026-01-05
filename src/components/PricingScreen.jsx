@@ -1,4 +1,6 @@
-import { ArrowLeft, Check, Crown, FileText, Linkedin, Globe, Sparkles } from 'lucide-react'
+import { ArrowLeft, Check, Crown, FileText, Linkedin, Globe, Sparkles, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 const PRICING_TIERS = [
     {
@@ -31,7 +33,7 @@ const PRICING_TIERS = [
         ],
         icon: FileText,
         popular: true,
-        buttonText: 'Get Professional',
+        buttonText: 'Pay with bKash',
     },
     {
         id: 'linkedin',
@@ -47,7 +49,7 @@ const PRICING_TIERS = [
         ],
         icon: Linkedin,
         popular: false,
-        buttonText: 'Get LinkedIn',
+        buttonText: 'Pay with bKash',
     },
     {
         id: 'portfolio',
@@ -63,16 +65,52 @@ const PRICING_TIERS = [
         ],
         icon: Globe,
         popular: false,
-        buttonText: 'Get Ultimate',
+        buttonText: 'Pay with bKash',
     },
 ]
 
 export default function PricingScreen({ onBack }) {
-    const handleSelectPlan = (tier) => {
+    const { user } = useAuth()
+    const [loading, setLoading] = useState(null) // Track which tier is loading
+    const [error, setError] = useState(null)
+
+    const handleSelectPlan = async (tier) => {
         if (tier.isFree) {
             onBack()
-        } else {
-            alert(`Selected: ${tier.name} - ${tier.price} ${tier.currency || ''}\n\nPayment integration would go here!`)
+            return
+        }
+
+        if (!user) {
+            setError('Please log in to make a purchase')
+            return
+        }
+
+        setLoading(tier.id)
+        setError(null)
+
+        try {
+            const response = await fetch('/api/payment/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    productId: tier.id,
+                    userId: user.id
+                })
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Payment creation failed')
+            }
+
+            // Redirect to bKash payment page
+            window.location.href = data.bkashURL
+
+        } catch (err) {
+            console.error('Payment error:', err)
+            setError(err.message || 'Payment failed. Please try again.')
+            setLoading(null)
         }
     }
 
@@ -182,12 +220,20 @@ export default function PricingScreen({ onBack }) {
                                         {/* CTA Button - Always at bottom */}
                                         <button
                                             onClick={() => handleSelectPlan(tier)}
-                                            className={`w-full py-2.5 rounded-xl font-semibold transition-all text-sm hover:-translate-y-0.5 active:scale-95 ${tier.popular
+                                            disabled={loading === tier.id}
+                                            className={`w-full py-2.5 rounded-xl font-semibold transition-all text-sm hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2 ${tier.popular
                                                 ? 'bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 text-white'
                                                 : 'bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 text-text-light-primary dark:text-white'
                                                 }`}
                                         >
-                                            {tier.buttonText}
+                                            {loading === tier.id ? (
+                                                <>
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                    Processing...
+                                                </>
+                                            ) : (
+                                                tier.buttonText
+                                            )}
                                         </button>
                                     </div>
                                 </div>
@@ -195,11 +241,18 @@ export default function PricingScreen({ onBack }) {
                         })}
                     </div>
 
+                    {/* Error Banner */}
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-500 dark:text-red-400 text-sm">
+                            {error}
+                        </div>
+                    )}
+
                     {/* Trust Badges */}
                     <div className="flex flex-wrap items-center justify-center gap-6 text-text-light-secondary dark:text-gray-500 text-xs">
                         <div className="flex items-center gap-1.5">
                             <Check className="w-3.5 h-3.5 text-primary-500 dark:text-accent-400" />
-                            <span>Secure Payment</span>
+                            <span>bKash Secure Payment</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <Check className="w-3.5 h-3.5 text-primary-500 dark:text-accent-400" />
