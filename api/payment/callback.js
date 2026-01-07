@@ -17,8 +17,9 @@ export default async function handler(req, res) {
     const { paymentID, status, resumeId, productId } = req.query;
 
     // Frontend redirect URL
-    const baseURL = process.env.NEXT_PUBLIC_BASE_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5173');
+    const host = req.headers.host;
+    const protocol = host.includes('localhost') ? 'http' : 'https';
+    const baseURL = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
 
     // Build base redirect URL
     const getRedirectURL = (params) => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Mail, Lock, User, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, AlertCircle, Eye, EyeOff, Sparkles } from 'lucide-react'
 import Logo from '../components/Logo'
 import ThemeToggle from '../components/ThemeToggle'
 
@@ -23,9 +23,11 @@ export default function AuthPage() {
     // Redirect if already logged in
     useEffect(() => {
         if (user) {
-            navigate('/dashboard')
+            const from = location.state?.from
+            const destination = from ? (from.pathname + from.search) : '/dashboard'
+            navigate(destination, { replace: true })
         }
-    }, [user, navigate])
+    }, [user, navigate, location])
 
     // Update mode based on URL
     useEffect(() => {
@@ -59,7 +61,9 @@ export default function AuthPage() {
             } else {
                 const { error } = await signIn(email, password)
                 if (error) throw error
-                navigate('/dashboard')
+                const from = location.state?.from
+                const destination = from ? (from.pathname + from.search) : '/dashboard'
+                navigate(destination, { replace: true })
             }
         } catch (err) {
             setError(getErrorMessage(err.message))
@@ -103,10 +107,23 @@ export default function AuthPage() {
                             <p className="text-text-light-secondary dark:text-gray-400">
                                 {isSignUp
                                     ? 'Start building professional resumes today'
-                                    : 'Log in to continue building your resume'
+                                    : location.state?.from?.search?.includes('payment=success')
+                                        ? 'Sign in to see your purchase results.'
+                                        : 'Log in to continue building your resume'
                                 }
                             </p>
                         </div>
+
+                        {/* Payment Return Hint */}
+                        {location.state?.from?.search?.includes('payment=success') && (
+                            <div className="mb-6 p-4 bg-primary-500/10 border border-primary-500/30 rounded-xl flex items-center gap-3 animate-pulse-slow">
+                                <Sparkles className="w-5 h-5 text-primary-500" />
+                                <div className="text-sm text-left">
+                                    <p className="font-bold text-primary-600 dark:text-primary-400">Payment Detected!</p>
+                                    <p className="text-text-light-secondary dark:text-gray-400">Just sign in to unlock your premium features.</p>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Google Sign In */}
                         <button

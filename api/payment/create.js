@@ -46,8 +46,9 @@ export default async function handler(req, res) {
         const invoiceNumber = `CVB-${Date.now()}-${uuidv4().slice(0, 8)}`;
 
         // Get callback URL
-        const baseURL = process.env.NEXT_PUBLIC_BASE_URL ||
-            (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5173');
+        const host = req.headers.host;
+        const protocol = host.includes('localhost') ? 'http' : 'https';
+        const baseURL = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
 
         // Append productId and resumeId to callbackURL
         let callbackURL = `${baseURL}/api/payment/callback?productId=${productId}`;
