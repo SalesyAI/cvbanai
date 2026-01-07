@@ -123,9 +123,8 @@ app.post('/api/payment/create', async (req, res) => {
         if (!productId || !userId) return res.status(400).json({ error: 'Missing details' });
 
         const products = {
-            'pdf': { name: 'PDF Export', amount: 200 },
-            'linkedin': { name: 'LinkedIn Optimization', amount: 500 },
-            'portfolio': { name: 'Portfolio Builder', amount: 1000 }
+            'linkedin': { name: 'LinkedIn Optimizer', amount: 500 },
+            'portfolio': { name: 'Portfolio Website', amount: 1000 }
         };
 
         const product = products[productId];

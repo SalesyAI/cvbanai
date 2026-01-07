@@ -1,23 +1,10 @@
 import { useState, useEffect } from 'react'
-import { ArrowLeft, Copy, Download, Sparkles, Crown, CheckCircle, Check, Loader2 } from 'lucide-react'
+import { ArrowLeft, Copy, Download, Sparkles, CheckCircle, Check, Loader2 } from 'lucide-react'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import ResumePDF from './ResumePDF'
-import PaymentModal from './PaymentModal'
 
-export default function RefinementEngine({ originalData, refinedData, onCopyText, onDownloadPDF, onBack, hasPurchased = false, resumeId, autoDownload, onDownloadStarted }) {
+export default function RefinementEngine({ originalData, refinedData, onCopyText, onBack }) {
     const [isCopied, setIsCopied] = useState(false)
-    const [showPaymentModal, setShowPaymentModal] = useState(false)
-
-    useEffect(() => {
-        if (autoDownload && hasPurchased) {
-            // Find the hidden PDF link and trigger it
-            const downloadLink = document.querySelector('.pdf-download-link');
-            if (downloadLink) {
-                downloadLink.click();
-                onDownloadStarted?.();
-            }
-        }
-    }, [autoDownload, hasPurchased])
 
     const handleCopy = () => {
         onCopyText()
@@ -25,26 +12,8 @@ export default function RefinementEngine({ originalData, refinedData, onCopyText
         setTimeout(() => setIsCopied(false), 2000)
     }
 
-    const handlePDFClick = () => {
-        if (hasPurchased) {
-            // Direct download - user already paid
-            onDownloadPDF()
-        } else {
-            // Show payment modal
-            setShowPaymentModal(true)
-        }
-    }
-
     return (
         <div className="min-h-screen animated-bg flex flex-col">
-            {/* Payment Modal */}
-            <PaymentModal
-                isOpen={showPaymentModal}
-                onClose={() => setShowPaymentModal(false)}
-                productId="pdf"
-                resumeId={resumeId}
-            />
-
             {/* Header */}
             <header className="sticky top-0 z-10 bg-white/80 dark:bg-dark-950/80 backdrop-blur-lg border-b border-light-200 dark:border-dark-700">
                 <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -73,32 +42,18 @@ export default function RefinementEngine({ originalData, refinedData, onCopyText
                             <span className="hidden sm:inline">{isCopied ? 'Copied!' : 'Copy'}</span>
                         </button>
 
-                        {hasPurchased ? (
-                            /* Direct download for paid users */
-                            <PDFDownloadLink
-                                document={<ResumePDF data={refinedData} />}
-                                fileName={`${refinedData?.fullName || 'Resume'}_CVBanai.pdf`}
-                                className="pdf-download-link flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 rounded-xl text-white font-medium transition-all"
-                            >
-                                {({ loading }) => loading ? (
-                                    <><Loader2 className="w-4 h-4 animate-spin" /> Preparing...</>
-                                ) : (
-                                    <><Download className="w-4 h-4" /><span className="hidden sm:inline">Download PDF</span><CheckCircle className="w-4 h-4" /></>
-                                )}
-                            </PDFDownloadLink>
-                        ) : (
-                            /* Show price for unpaid users */
-                            <button
-                                onClick={handlePDFClick}
-                                className="flex items-center gap-2 px-4 py-2 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all"
-                            >
-                                <Download className="w-4 h-4" />
-                                <span className="hidden sm:inline">PDF</span>
-                                <span className="px-1.5 py-0.5 bg-white/20 text-white text-xs rounded font-bold">
-                                    ৳200
-                                </span>
-                            </button>
-                        )}
+                        {/* Free PDF Download */}
+                        <PDFDownloadLink
+                            document={<ResumePDF data={refinedData} />}
+                            fileName={`${refinedData?.fullName || 'Resume'}_CVBanai.pdf`}
+                            className="pdf-download-link flex items-center gap-2 px-4 py-2 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all"
+                        >
+                            {({ loading }) => loading ? (
+                                <><Loader2 className="w-4 h-4 animate-spin" /> Preparing...</>
+                            ) : (
+                                <><Download className="w-4 h-4" /><span className="hidden sm:inline">Download PDF</span></>
+                            )}
+                        </PDFDownloadLink>
                     </div>
                 </div>
             </header>
@@ -257,30 +212,17 @@ export default function RefinementEngine({ originalData, refinedData, onCopyText
                         {isCopied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                         {isCopied ? 'Copied!' : 'Copy Text'}
                     </button>
-                    {hasPurchased ? (
-                        <PDFDownloadLink
-                            document={<ResumePDF data={refinedData} />}
-                            fileName={`${refinedData?.fullName || 'Resume'}_CVBanai.pdf`}
-                            className="pdf-download-link flex-1 flex items-center justify-center gap-2 py-3 bg-green-500 rounded-xl text-white font-medium"
-                        >
-                            {({ loading }) => loading ? (
-                                <><Loader2 className="w-5 h-5 animate-spin" /> Preparing...</>
-                            ) : (
-                                <><Download className="w-5 h-5" /> Download PDF</>
-                            )}
-                        </PDFDownloadLink>
-                    ) : (
-                        <button
-                            onClick={handlePDFClick}
-                            className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary-500 dark:bg-primary-400 rounded-xl text-white font-medium"
-                        >
-                            <Download className="w-5 h-5" />
-                            PDF
-                            <span className="px-1.5 py-0.5 bg-white/20 text-white text-[10px] rounded font-bold uppercase">
-                                ৳200
-                            </span>
-                        </button>
-                    )}
+                    <PDFDownloadLink
+                        document={<ResumePDF data={refinedData} />}
+                        fileName={`${refinedData?.fullName || 'Resume'}_CVBanai.pdf`}
+                        className="pdf-download-link flex-1 flex items-center justify-center gap-2 py-3 bg-primary-500 dark:bg-primary-400 rounded-xl text-white font-medium"
+                    >
+                        {({ loading }) => loading ? (
+                            <><Loader2 className="w-5 h-5 animate-spin" /> Preparing...</>
+                        ) : (
+                            <><Download className="w-5 h-5" /> Download PDF</>
+                        )}
+                    </PDFDownloadLink>
                 </div>
             </div>
         </div>

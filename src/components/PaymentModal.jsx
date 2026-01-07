@@ -11,35 +11,25 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, productId = '
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
-    // Product details
+    // Product details (only LinkedIn and Portfolio are premium)
     const products = {
-        pdf: {
-            name: 'Professional PDF Resume',
-            price: 200,
-            icon: FileText,
-            benefits: [
-                'ATS-optimized format',
-                'Professional design',
-                'Instant download'
-            ]
-        },
         linkedin: {
-            name: 'LinkedIn Optimization',
+            name: 'LinkedIn Optimizer',
             price: 500,
             icon: Linkedin,
             benefits: [
-                'Complete profile rewrite',
-                'Networking strategy',
-                'Recruiter visibility boost'
+                'AI-generated headline & summary',
+                'Experience section optimization',
+                'Networking strategy guide'
             ]
         },
         portfolio: {
-            name: 'Ultimate Portfolio Builder',
+            name: 'Portfolio Website',
             price: 1000,
             icon: Globe,
             benefits: [
-                'Custom website URL',
-                'Modern responsive design',
+                'Custom one-page website',
+                'Professional design',
                 'Free hosting included'
             ]
         }

@@ -30,11 +30,10 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Missing productId or userId' });
         }
 
-        // Product pricing
+        // Product pricing (only premium services)
         const products = {
-            'pdf': { name: 'PDF Export', amount: 200 },
-            'linkedin': { name: 'LinkedIn Optimization', amount: 500 },
-            'portfolio': { name: 'Portfolio Builder', amount: 1000 }
+            'linkedin': { name: 'LinkedIn Optimizer', amount: 500 },
+            'portfolio': { name: 'Portfolio Website', amount: 1000 }
         };
 
         const product = products[productId];

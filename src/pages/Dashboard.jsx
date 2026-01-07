@@ -12,6 +12,8 @@ import RefinementEngine from '../components/RefinementEngine'
 import PricingScreen from '../components/PricingScreen'
 import PaymentSuccessModal from '../components/PaymentSuccessModal'
 import PaymentModal from '../components/PaymentModal'
+import LinkedInOptimizerWorkflow from '../components/LinkedInOptimizerWorkflow'
+import PortfolioWhatsAppModal from '../components/PortfolioWhatsAppModal'
 import { resumeService } from '../services/resumeService'
 
 const VIEWS = {
@@ -22,6 +24,7 @@ const VIEWS = {
     PRICING: 'pricing',
     LINKEDIN: 'linkedin',
     PORTFOLIO: 'portfolio',
+    LINKEDIN_WORKFLOW: 'linkedin_workflow',
 }
 
 export default function Dashboard() {
@@ -41,14 +44,15 @@ export default function Dashboard() {
     const [isLoadingResumes, setIsLoadingResumes] = useState(true)
 
     // Payment state
-    const [hasPurchased, setHasPurchased] = useState(false)
     const [showPaymentSuccess, setShowPaymentSuccess] = useState(false)
     const [showContextualPayment, setShowContextualPayment] = useState(false)
-    const [paymentProductId, setPaymentProductId] = useState('pdf')
-    const [autoDownload, setAutoDownload] = useState(false)
+    const [showPortfolioWhatsApp, setShowPortfolioWhatsApp] = useState(false)
+    const [paymentProductId, setPaymentProductId] = useState('linkedin')
     const [paymentStatus, setPaymentStatus] = useState(null) // 'success' | 'failed' | 'cancelled'
     const [paymentTrxID, setPaymentTrxID] = useState(null)
     const [isProcessingPayment, setIsProcessingPayment] = useState(false)
+    const [hasLinkedInAccess, setHasLinkedInAccess] = useState(false)
+    const [hasPortfolioAccess, setHasPortfolioAccess] = useState(false)
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
     const firstName = displayName.split(' ')[0]
@@ -62,16 +66,26 @@ export default function Dashboard() {
         }
     }, [user])
 
-    // Check if user has purchased PDF
+    // Check if user has purchased premium services
     const checkPurchaseStatus = async () => {
         try {
-            const response = await fetch('/api/payment/verify', {
+            // Check LinkedIn purchase
+            const linkedinRes = await fetch('/api/payment/verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: user.id, productId: 'pdf' })
+                body: JSON.stringify({ userId: user.id, productId: 'linkedin' })
             })
-            const data = await response.json()
-            setHasPurchased(data.hasPurchased || false)
+            const linkedinData = await linkedinRes.json()
+            setHasLinkedInAccess(linkedinData.hasPurchased || false)
+
+            // Check Portfolio purchase
+            const portfolioRes = await fetch('/api/payment/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id, productId: 'portfolio' })
+            })
+            const portfolioData = await portfolioRes.json()
+            setHasPortfolioAccess(portfolioData.hasPurchased || false)
         } catch (error) {
             console.error('Error checking purchase status:', error)
         }
@@ -81,9 +95,7 @@ export default function Dashboard() {
     const handlePaymentCallback = async () => {
         const payment = searchParams.get('payment')
         const trxID = searchParams.get('trxID')
-        const resumeIdFromUrl = searchParams.get('resumeId')
         const productIdFromUrl = searchParams.get('productId')
-        const errorMessage = searchParams.get('message')
 
         if (payment) {
             setIsProcessingPayment(true)
@@ -94,29 +106,19 @@ export default function Dashboard() {
             setTimeout(() => {
                 setShowPaymentSuccess(true)
                 setIsProcessingPayment(false)
-            }, 1500)
 
-            // Smart Routing
-            if (payment === 'success') {
-                if (productIdFromUrl === 'pdf') {
-                    setHasPurchased(true)
-                    if (resumeIdFromUrl) {
-                        try {
-                            const allResumes = await resumeService.getUserResumes()
-                            const targetResume = allResumes.find(r => r.id === resumeIdFromUrl)
-                            if (targetResume) handleResumeSelect(targetResume)
-                        } catch (err) {
-                            console.error('Error auto-loading resume:', err)
-                        }
+                // Smart Routing after success modal
+                if (payment === 'success') {
+                    if (productIdFromUrl === 'linkedin') {
+                        setHasLinkedInAccess(true)
+                        setActiveTab('linkedin')
+                        setCurrentView(VIEWS.LINKEDIN_WORKFLOW)
+                    } else if (productIdFromUrl === 'portfolio') {
+                        setHasPortfolioAccess(true)
+                        setShowPortfolioWhatsApp(true)
                     }
-                } else if (productIdFromUrl === 'linkedin') {
-                    setActiveTab('linkedin')
-                    setCurrentView(VIEWS.LINKEDIN)
-                } else if (productIdFromUrl === 'portfolio') {
-                    setActiveTab('portfolio')
-                    setCurrentView(VIEWS.PORTFOLIO)
                 }
-            }
+            }, 1500)
 
             // Clear URL params
             setSearchParams({})
@@ -307,18 +309,17 @@ export default function Dashboard() {
                 originalData={resumeData}
                 refinedData={refinedData}
                 onCopyText={handleCopyText}
-                onDownloadPDF={handleDownloadPDF}
                 onBack={handleBackToHome}
-                hasPurchased={hasPurchased}
-                resumeId={currentResumeId}
-                autoDownload={autoDownload}
-                onDownloadStarted={() => setAutoDownload(false)}
             />
         )
     }
 
     if (currentView === VIEWS.PRICING) {
-        return <PricingScreen onBack={() => setCurrentView(VIEWS.EDITOR)} resumeId={currentResumeId} />
+        return <PricingScreen onBack={() => setCurrentView(VIEWS.EDITOR)} />
+    }
+
+    if (currentView === VIEWS.LINKEDIN_WORKFLOW) {
+        return <LinkedInOptimizerWorkflow onBack={handleBackToHome} />
     }
 
     // === PREMIUM VIEWS ===
@@ -328,26 +329,35 @@ export default function Dashboard() {
                 <div className="w-16 h-16 rounded-2xl bg-[#0A66C2] flex items-center justify-center mx-auto mb-4 animate-bounce-soft">
                     <Linkedin className="w-8 h-8 text-white" />
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full mb-3 animate-pulse-slow">
-                    <Lock className="w-3 h-3" /> Premium Service
-                </div>
+                {hasLinkedInAccess ? (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-semibold rounded-full mb-3">
+                        <Check className="w-3 h-3" /> Purchased
+                    </div>
+                ) : (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full mb-3 animate-pulse-slow">
+                        <Lock className="w-3 h-3" /> Premium Service
+                    </div>
+                )}
                 <h1 className="text-2xl font-bold mb-2">LinkedIn Optimizer</h1>
-                <p className="text-text-light-secondary dark:text-gray-400">Boost your profile visibility and attract recruiters</p>
+                <p className="text-text-light-secondary dark:text-gray-400">
+                    {hasLinkedInAccess ? 'Generate your optimized LinkedIn profile' : 'AI-powered profile enhancement'}
+                </p>
             </div>
 
             <div className="glass rounded-2xl p-6 mb-6 hover:glow-teal transition-all duration-300">
-                <div className="text-center mb-6">
-                    <span className="text-4xl font-bold">500</span>
-                    <span className="text-text-light-secondary dark:text-gray-400 ml-1">TK</span>
-                </div>
+                {!hasLinkedInAccess && (
+                    <div className="text-center mb-6">
+                        <span className="text-4xl font-bold">500</span>
+                        <span className="text-text-light-secondary dark:text-gray-400 ml-1">TK</span>
+                    </div>
+                )}
 
                 <ul className="space-y-3 mb-6">
                     {[
-                        'Complete profile headline & summary rewrite',
+                        'AI-generated headline & summary',
                         'Experience section optimization',
                         'Personalized networking strategy',
                         'Connection request templates',
-                        'Visibility improvement tactics'
                     ].map((item, i) => (
                         <li key={i} className="flex items-start gap-3 text-sm stagger-item" style={{ animationDelay: `${i * 0.1}s` }}>
                             <Check className="w-4 h-4 text-primary-500 dark:text-accent-400 flex-shrink-0 mt-0.5" />
@@ -356,19 +366,28 @@ export default function Dashboard() {
                     ))}
                 </ul>
 
-                <button
-                    onClick={() => {
-                        setPaymentProductId('linkedin')
-                        setShowContextualPayment(true)
-                    }}
-                    className="group w-full py-3 bg-[#0A66C2] hover:bg-[#0958a8] rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:scale-95"
-                >
-                    Unlock Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                {hasLinkedInAccess ? (
+                    <button
+                        onClick={() => setCurrentView(VIEWS.LINKEDIN_WORKFLOW)}
+                        className="group w-full py-3 bg-green-500 hover:bg-green-600 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:scale-95"
+                    >
+                        Open Optimizer <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => {
+                            setPaymentProductId('linkedin')
+                            setShowContextualPayment(true)
+                        }}
+                        className="group w-full py-3 bg-[#0A66C2] hover:bg-[#0958a8] rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:scale-95"
+                    >
+                        Unlock Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                )}
             </div>
 
             <p className="text-center text-xs text-text-light-secondary dark:text-gray-500">
-                Secure payment • Delivery within 48 hours
+                {hasLinkedInAccess ? 'You have unlimited access' : 'Secure payment • Instant access'}
             </p>
         </div>
     )
@@ -379,11 +398,19 @@ export default function Dashboard() {
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-400 flex items-center justify-center mx-auto mb-4 animate-bounce-soft animate-glow-pulse">
                     <Globe className="w-8 h-8 text-white" />
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full mb-3 animate-pulse-slow">
-                    <Lock className="w-3 h-3" /> Premium Service
-                </div>
-                <h1 className="text-2xl font-bold mb-2">Ultimate Portfolio</h1>
-                <p className="text-text-light-secondary dark:text-gray-400">Your own professional portfolio website</p>
+                {hasPortfolioAccess ? (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-semibold rounded-full mb-3">
+                        <Check className="w-3 h-3" /> Purchased
+                    </div>
+                ) : (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-full mb-3 animate-pulse-slow">
+                        <Lock className="w-3 h-3" /> Premium Service
+                    </div>
+                )}
+                <h1 className="text-2xl font-bold mb-2">Portfolio Website</h1>
+                <p className="text-text-light-secondary dark:text-gray-400">
+                    {hasPortfolioAccess ? 'Your portfolio is being crafted!' : 'Your own professional website'}
+                </p>
             </div>
 
             <div className="gradient-border rounded-2xl p-6 mb-6 hover:glow-teal transition-all duration-300">
@@ -408,19 +435,28 @@ export default function Dashboard() {
                     ))}
                 </ul>
 
-                <button
-                    onClick={() => {
-                        setPaymentProductId('portfolio')
-                        setShowContextualPayment(true)
-                    }}
-                    className="group w-full py-3 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 glow-teal hover:-translate-y-0.5 active:scale-95"
-                >
-                    Unlock Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                {hasPortfolioAccess ? (
+                    <button
+                        onClick={() => setShowPortfolioWhatsApp(true)}
+                        className="group w-full py-3 bg-green-500 hover:bg-green-600 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:scale-95"
+                    >
+                        Update Contact Info <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => {
+                            setPaymentProductId('portfolio')
+                            setShowContextualPayment(true)
+                        }}
+                        className="group w-full py-3 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 glow-teal hover:-translate-y-0.5 active:scale-95"
+                    >
+                        Unlock Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                )}
             </div>
 
             <p className="text-center text-xs text-text-light-secondary dark:text-gray-500">
-                Our team will contact you within 24 hours
+                {hasPortfolioAccess ? "We'll contact you via WhatsApp within 24 hours" : 'Secure payment • Delivery within 48 hours'}
             </p>
         </div>
     )
@@ -673,6 +709,12 @@ export default function Dashboard() {
                 {currentView === VIEWS.PORTFOLIO && <PortfolioView />}
                 {currentView === VIEWS.HOME && <HomeView />}
             </main>
+
+            {/* Portfolio WhatsApp Modal */}
+            <PortfolioWhatsAppModal
+                isOpen={showPortfolioWhatsApp}
+                onClose={() => setShowPortfolioWhatsApp(false)}
+            />
         </div>
     )
 }
