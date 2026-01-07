@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import { refineResume } from './gemini.js';
+import { generateCoverLetter } from '../lib/ai/generateCoverLetter.js';
+import { calculateAtsScore } from '../lib/ai/calculateAtsScore.js';
 import { createPayment, executePayment } from '../lib/payment/bkash.js';
 
 // Load environment variables
@@ -59,6 +61,54 @@ app.post('/api/refine', async (req, res) => {
     } catch (error) {
         console.error('Refinement error:', error);
         res.status(500).json({ error: error.message || 'Failed to refine resume' });
+    }
+});
+
+// Cover Letter endpoint
+app.post('/api/cover-letter', async (req, res) => {
+    try {
+        const { resumeData, jobDescription } = req.body;
+
+        if (!resumeData) {
+            return res.status(400).json({ error: 'Missing resumeData' });
+        }
+
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ error: 'GEMINI_API_KEY not configured.' });
+        }
+
+        console.log('[API] Generating cover letter...');
+        const result = await generateCoverLetter(resumeData, jobDescription, process.env.GEMINI_API_KEY);
+
+        console.log('[API] Cover letter complete!');
+        res.json(result);
+    } catch (error) {
+        console.error('Cover letter error:', error);
+        res.status(500).json({ error: error.message || 'Cover letter generation failed' });
+    }
+});
+
+// ATS Score endpoint
+app.post('/api/ats-score', async (req, res) => {
+    try {
+        const { resumeData, jobDescription } = req.body;
+
+        if (!resumeData) {
+            return res.status(400).json({ error: 'Missing resumeData' });
+        }
+
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ error: 'GEMINI_API_KEY not configured.' });
+        }
+
+        console.log('[API] Calculating ATS score...');
+        const result = await calculateAtsScore(resumeData, jobDescription, process.env.GEMINI_API_KEY);
+
+        console.log('[API] ATS score complete!');
+        res.json(result);
+    } catch (error) {
+        console.error('ATS Score error:', error);
+        res.status(500).json({ error: error.message || 'ATS score calculation failed' });
     }
 });
 
