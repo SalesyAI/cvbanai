@@ -48,6 +48,7 @@ export default function Dashboard() {
     const [autoDownload, setAutoDownload] = useState(false)
     const [paymentStatus, setPaymentStatus] = useState(null) // 'success' | 'failed' | 'cancelled'
     const [paymentTrxID, setPaymentTrxID] = useState(null)
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false)
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
     const firstName = displayName.split(' ')[0]
@@ -81,30 +82,43 @@ export default function Dashboard() {
         const payment = searchParams.get('payment')
         const trxID = searchParams.get('trxID')
         const resumeIdFromUrl = searchParams.get('resumeId')
+        const productIdFromUrl = searchParams.get('productId')
         const errorMessage = searchParams.get('message')
 
         if (payment) {
+            setIsProcessingPayment(true)
             setPaymentStatus(payment)
             setPaymentTrxID(trxID)
-            setShowPaymentSuccess(true)
 
-            // If payment was success and we have a resumeId, open the editor
+            // Artificial delay for smooth transition
+            setTimeout(() => {
+                setShowPaymentSuccess(true)
+                setIsProcessingPayment(false)
+            }, 1500)
+
+            // Smart Routing
             if (payment === 'success') {
-                setHasPurchased(true)
-                if (resumeIdFromUrl) {
-                    try {
-                        const allResumes = await resumeService.getUserResumes()
-                        const targetResume = allResumes.find(r => r.id === resumeIdFromUrl)
-                        if (targetResume) {
-                            handleResumeSelect(targetResume)
+                if (productIdFromUrl === 'pdf') {
+                    setHasPurchased(true)
+                    if (resumeIdFromUrl) {
+                        try {
+                            const allResumes = await resumeService.getUserResumes()
+                            const targetResume = allResumes.find(r => r.id === resumeIdFromUrl)
+                            if (targetResume) handleResumeSelect(targetResume)
+                        } catch (err) {
+                            console.error('Error auto-loading resume:', err)
                         }
-                    } catch (err) {
-                        console.error('Error auto-loading resume after payment:', err)
                     }
+                } else if (productIdFromUrl === 'linkedin') {
+                    setActiveTab('linkedin')
+                    setCurrentView(VIEWS.LINKEDIN)
+                } else if (productIdFromUrl === 'portfolio') {
+                    setActiveTab('portfolio')
+                    setCurrentView(VIEWS.PORTFOLIO)
                 }
             }
 
-            // Clear URL params but keep resumeId if we just opened it
+            // Clear URL params
             setSearchParams({})
         }
     }
@@ -304,7 +318,7 @@ export default function Dashboard() {
     }
 
     if (currentView === VIEWS.PRICING) {
-        return <PricingScreen onBack={() => setCurrentView(VIEWS.EDITOR)} />
+        return <PricingScreen onBack={() => setCurrentView(VIEWS.EDITOR)} resumeId={currentResumeId} />
     }
 
     // === PREMIUM VIEWS ===
@@ -549,6 +563,19 @@ export default function Dashboard() {
     // === MAIN LAYOUT ===
     return (
         <div className="min-h-screen animated-bg">
+            {/* Processing Overlay */}
+            {isProcessingPayment && (
+                <div className="fixed inset-0 z-[100] bg-white/90 dark:bg-dark-950/90 backdrop-blur-md flex flex-col items-center justify-center animate-fade-in">
+                    <div className="relative w-20 h-20 mb-6">
+                        <div className="absolute inset-0 rounded-full border-4 border-light-200 dark:border-dark-700"></div>
+                        <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary-500 animate-spin"></div>
+                        <Sparkles className="absolute inset-0 m-auto w-8 h-8 text-primary-500 animate-pulse" />
+                    </div>
+                    <h2 className="text-xl font-bold mb-2">Finalizing your purchase</h2>
+                    <p className="text-text-light-secondary dark:text-gray-400">Verifying payment with bKash...</p>
+                </div>
+            )}
+
             {/* Contextual Payment Modal (for LinkedIn/Portfolio) */}
             <PaymentModal
                 isOpen={showContextualPayment}

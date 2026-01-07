@@ -69,7 +69,7 @@ const PRICING_TIERS = [
     },
 ]
 
-export default function PricingScreen({ onBack }) {
+export default function PricingScreen({ onBack, resumeId }) {
     const { user } = useAuth()
     const [loading, setLoading] = useState(null) // Track which tier is loading
     const [error, setError] = useState(null)
@@ -94,7 +94,8 @@ export default function PricingScreen({ onBack }) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     productId: tier.id,
-                    userId: user.id
+                    userId: user.id,
+                    resumeId
                 })
             })
 

@@ -83,8 +83,8 @@ app.post('/api/payment/create', async (req, res) => {
 
         // Use local or Vercel URL
         const baseURL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5173';
-        let callbackURL = `http://localhost:3001/api/payment/callback`; // Direct to this server
-        if (resumeId) callbackURL += `?resumeId=${resumeId}`;
+        let callbackURL = `http://localhost:3001/api/payment/callback?productId=${productId}`;
+        if (resumeId) callbackURL += `&resumeId=${resumeId}`;
 
         const { paymentID, bkashURL } = await createPayment({
             amount: product.amount,
@@ -112,7 +112,7 @@ app.post('/api/payment/create', async (req, res) => {
 
 // 2. bKash Callback
 app.get('/api/payment/callback', async (req, res) => {
-    const { paymentID, status, resumeId } = req.query;
+    const { paymentID, status, resumeId, productId } = req.query;
     const baseURL = 'http://localhost:5173'; // Always redirect back to Vite dev server
 
     const getRedirectURL = (params) => {
@@ -121,6 +121,7 @@ app.get('/api/payment/callback', async (req, res) => {
             if (val) url.searchParams.append(key, val);
         });
         if (resumeId) url.searchParams.append('resumeId', resumeId);
+        if (productId) url.searchParams.append('productId', productId);
         return url.toString();
     };
 

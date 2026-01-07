@@ -49,10 +49,10 @@ export default async function handler(req, res) {
         const baseURL = process.env.NEXT_PUBLIC_BASE_URL ||
             (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5173');
 
-        // Append resumeId if available to callbackURL
-        let callbackURL = `${baseURL}/api/payment/callback`;
+        // Append productId and resumeId to callbackURL
+        let callbackURL = `${baseURL}/api/payment/callback?productId=${productId}`;
         if (resumeId) {
-            callbackURL += `?resumeId=${resumeId}`;
+            callbackURL += `&resumeId=${resumeId}`;
         }
 
         // Create bKash payment

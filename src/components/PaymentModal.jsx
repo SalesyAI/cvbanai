@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, FileText, Loader2, Shield, Clock, Sparkles } from 'lucide-react'
+import { X, FileText, Loader2, Shield, Clock, Sparkles, Linkedin, Globe } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 /**
@@ -21,6 +21,26 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, productId = '
                 'ATS-optimized format',
                 'Professional design',
                 'Instant download'
+            ]
+        },
+        linkedin: {
+            name: 'LinkedIn Optimization',
+            price: 500,
+            icon: Linkedin,
+            benefits: [
+                'Complete profile rewrite',
+                'Networking strategy',
+                'Recruiter visibility boost'
+            ]
+        },
+        portfolio: {
+            name: 'Ultimate Portfolio Builder',
+            price: 1000,
+            icon: Globe,
+            benefits: [
+                'Custom website URL',
+                'Modern responsive design',
+                'Free hosting included'
             ]
         }
     }
