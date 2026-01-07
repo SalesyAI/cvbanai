@@ -80,7 +80,7 @@ export default function LandingPage() {
 
                     {/* Trust indicators with stagger */}
                     <div className={`mt-12 flex flex-wrap items-center justify-center gap-6 md:gap-8 text-sm text-text-light-secondary dark:text-gray-500 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-                        {['No credit card required', 'ATS-optimized', 'Powered by Gemini AI'].map((text, i) => (
+                        {['No credit card required', 'ATS-optimized'].map((text, i) => (
                             <div key={i} className="flex items-center gap-2 stagger-item" style={{ animationDelay: `${0.6 + i * 0.1}s` }}>
                                 <Check className="w-4 h-4 text-primary-500 dark:text-accent-400" />
                                 <span>{text}</span>
