@@ -101,21 +101,19 @@ export default function Dashboard() {
             setIsProcessingPayment(true)
             setPaymentStatus(payment)
             setPaymentTrxID(trxID)
+            setPaymentProductId(productIdFromUrl || 'linkedin')
 
             // Artificial delay for smooth transition
             setTimeout(() => {
                 setShowPaymentSuccess(true)
                 setIsProcessingPayment(false)
 
-                // Smart Routing after success modal
+                // Update access state after success (but don't auto-navigate)
                 if (payment === 'success') {
                     if (productIdFromUrl === 'linkedin') {
                         setHasLinkedInAccess(true)
-                        setActiveTab('linkedin')
-                        setCurrentView(VIEWS.LINKEDIN_WORKFLOW)
                     } else if (productIdFromUrl === 'portfolio') {
                         setHasPortfolioAccess(true)
-                        setShowPortfolioWhatsApp(true)
                     }
                 }
             }, 1500)
@@ -633,14 +631,22 @@ export default function Dashboard() {
                 isOpen={showPaymentSuccess}
                 status={paymentStatus}
                 trxID={paymentTrxID}
+                productId={paymentProductId}
                 onClose={() => setShowPaymentSuccess(false)}
-                onDownload={() => {
-                    setAutoDownload(true)
+                onContinue={() => {
                     setShowPaymentSuccess(false)
-                }}
-                onRetry={() => {
-                    setShowPaymentSuccess(false)
-                    setCurrentView(VIEWS.PRICING)
+                    // Route to appropriate view based on product
+                    if (paymentStatus === 'success') {
+                        if (paymentProductId === 'linkedin') {
+                            setActiveTab('linkedin')
+                            setCurrentView(VIEWS.LINKEDIN_WORKFLOW)
+                        } else if (paymentProductId === 'portfolio') {
+                            setShowPortfolioWhatsApp(true)
+                        }
+                    } else {
+                        // Failed/cancelled - go to pricing
+                        setCurrentView(VIEWS.PRICING)
+                    }
                 }}
             />
 

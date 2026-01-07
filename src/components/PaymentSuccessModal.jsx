@@ -1,9 +1,9 @@
-import { CheckCircle, XCircle, Download, RefreshCw, Sparkles } from 'lucide-react'
+import { CheckCircle, XCircle, RefreshCw, Sparkles, Linkedin, Globe, ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 /**
  * PaymentSuccessModal - Shows after bKash payment redirect
- * Displays success/failure state and triggers PDF download on success
+ * Displays success/failure state with product-specific messaging
  */
 export default function PaymentSuccessModal({
     isOpen,
@@ -11,19 +11,14 @@ export default function PaymentSuccessModal({
     trxID,
     errorMessage,
     onClose,
-    onDownload,
-    onRetry
+    onContinue,
+    productId // 'linkedin' | 'portfolio'
 }) {
     const [showConfetti, setShowConfetti] = useState(false)
 
     useEffect(() => {
         if (isOpen && status === 'success') {
             setShowConfetti(true)
-            // Auto-trigger download after 2 seconds
-            const timer = setTimeout(() => {
-                onDownload?.()
-            }, 2000)
-            return () => clearTimeout(timer)
         }
     }, [isOpen, status])
 
@@ -31,6 +26,28 @@ export default function PaymentSuccessModal({
 
     const isSuccess = status === 'success'
     const isCancelled = status === 'cancelled'
+
+    // Product-specific content
+    const productContent = {
+        linkedin: {
+            icon: Linkedin,
+            iconColor: 'text-[#0A66C2]',
+            title: 'LinkedIn Optimizer Unlocked!',
+            description: 'You can now generate your optimized LinkedIn profile.',
+            buttonText: 'Start Optimization',
+            buttonColor: 'bg-[#0A66C2] hover:bg-[#0958a8]'
+        },
+        portfolio: {
+            icon: Globe,
+            iconColor: 'text-primary-500',
+            title: 'Portfolio Website Purchased!',
+            description: 'Please provide your WhatsApp number so we can contact you.',
+            buttonText: 'Continue',
+            buttonColor: 'bg-primary-500 hover:bg-primary-600'
+        }
+    }
+
+    const content = productContent[productId] || productContent.linkedin
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -71,7 +88,7 @@ export default function PaymentSuccessModal({
                 {/* Content */}
                 <div className="p-6 text-center">
                     <h2 className={`text-2xl font-bold mb-2 ${isSuccess ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                        {isSuccess ? 'Payment Successful!' : isCancelled ? 'Payment Cancelled' : 'Payment Failed'}
+                        {isSuccess ? content.title : isCancelled ? 'Payment Cancelled' : 'Payment Failed'}
                     </h2>
 
                     {isSuccess && trxID && (
@@ -90,20 +107,19 @@ export default function PaymentSuccessModal({
                         <div className="space-y-3">
                             <p className="text-text-light-secondary dark:text-gray-400 text-sm flex items-center justify-center gap-2">
                                 <Sparkles className="w-4 h-4 text-primary-500" />
-                                Preparing your PDF...
+                                {content.description}
                             </p>
                             <button
-                                onClick={onDownload}
-                                className="w-full py-3 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2"
+                                onClick={onContinue}
+                                className={`w-full py-3 ${content.buttonColor} text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2`}
                             >
-                                <Download className="w-5 h-5" />
-                                Download Now
+                                {content.buttonText} <ArrowRight className="w-5 h-5" />
                             </button>
                         </div>
                     ) : (
                         <div className="space-y-3">
                             <button
-                                onClick={onRetry}
+                                onClick={onContinue}
                                 className="w-full py-3 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2"
                             >
                                 <RefreshCw className="w-5 h-5" />
@@ -122,3 +138,4 @@ export default function PaymentSuccessModal({
         </div>
     )
 }
+
