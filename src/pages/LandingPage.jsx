@@ -50,7 +50,7 @@ export default function LandingPage() {
                 <div className="max-w-4xl mx-auto text-center relative">
                     <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                         <Sparkles className="w-4 h-4 text-primary-500 dark:text-primary-400 animate-pulse" />
-                        <span className="text-sm text-text-light-secondary dark:text-gray-300">AI-Powered Resume Enhancement</span>
+                        <span className="text-sm text-text-light-secondary dark:text-gray-300">100% Free Resume Builder + PDF Export</span>
                     </div>
 
                     <h1 className={`text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -59,7 +59,7 @@ export default function LandingPage() {
                     </h1>
 
                     <p className={`text-lg md:text-xl text-text-light-secondary dark:text-gray-400 mb-10 max-w-2xl mx-auto transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                        Transform your career story into a powerful, ATS-optimized resume with our AI refinement engine.
+                        Create AI-enhanced, ATS-optimized resumes and download professional PDFs — completely free. Upgrade to LinkedIn Optimization or a custom Portfolio Website when you're ready.
                     </p>
 
                     <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -80,7 +80,7 @@ export default function LandingPage() {
 
                     {/* Trust indicators with stagger */}
                     <div className={`mt-12 flex flex-wrap items-center justify-center gap-6 md:gap-8 text-sm text-text-light-secondary dark:text-gray-500 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-                        {['No credit card required', 'ATS-optimized', 'Powered by Gemini AI'].map((text, i) => (
+                        {['Free PDF export', 'ATS-optimized', 'Powered by Gemini AI'].map((text, i) => (
                             <div key={i} className="flex items-center gap-2 stagger-item" style={{ animationDelay: `${0.6 + i * 0.1}s` }}>
                                 <Check className="w-4 h-4 text-primary-500 dark:text-accent-400" />
                                 <span>{text}</span>
@@ -131,87 +131,72 @@ export default function LandingPage() {
             <section className="py-16 md:py-20 px-6 md:px-8 border-t border-light-200 dark:border-dark-700/50">
                 <div className="max-w-6xl mx-auto text-center">
                     <h2 className="text-2xl md:text-4xl font-bold mb-4">
-                        Simple, Transparent Pricing
+                        Free Resume Builder. Premium Career Tools.
                     </h2>
                     <p className="text-text-light-secondary dark:text-gray-400 mb-10 md:mb-12">
-                        Start for free, upgrade when you need more features.
+                        Build unlimited resumes with PDF export for free. Upgrade for LinkedIn optimization and custom portfolio websites.
                     </p>
 
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                         {/* Free Tier */}
-                        <div className="group p-5 glass rounded-2xl text-left hover:-translate-y-2 transition-all duration-300 stagger-item">
+                        <div className="group p-6 glass rounded-2xl text-left hover:-translate-y-2 transition-all duration-300 stagger-item">
                             <div className="w-10 h-10 rounded-lg bg-accent-500 dark:bg-accent-400/20 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                                 <Sparkles className="w-5 h-5 text-white dark:text-accent-400" />
                             </div>
-                            <h3 className="text-lg font-bold mb-1">AI Resume Copy</h3>
-                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">Generate professional text</p>
+                            <h3 className="text-lg font-bold mb-1">AI Resume Builder</h3>
+                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">Complete resume + PDF export</p>
                             <div className="text-2xl font-extrabold mb-4">Free</div>
                             <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-5">
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Upload CV or input details</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> AI-powered generation</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Copy to clipboard</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> AI-powered text refinement</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Professional PDF export</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> ATS-optimized format</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Unlimited resumes</li>
                             </ul>
-                            <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 rounded-xl font-medium transition-all text-sm hover:scale-[1.02] active:scale-95">
-                                Get Started
+                            <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-primary-500 dark:bg-primary-400 hover:bg-primary-600 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all text-sm hover:scale-[1.02] active:scale-95">
+                                Start Building Free
                             </Link>
                         </div>
 
-                        {/* PDF Tier */}
-                        <div className="group p-5 gradient-border rounded-2xl text-left relative hover:-translate-y-2 transition-all duration-300 stagger-item" style={{ animationDelay: '0.1s' }}>
+                        {/* LinkedIn Tier - POPULAR */}
+                        <div className="group p-6 gradient-border rounded-2xl text-left relative hover:-translate-y-2 transition-all duration-300 stagger-item" style={{ animationDelay: '0.1s' }}>
                             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                                <span className="px-3 py-1 bg-gradient-to-r from-primary-500 to-accent-400 text-white text-xs font-bold rounded-full flex items-center gap-1 animate-pulse-slow">
+                                <span className="px-3 py-1 bg-gradient-to-r from-[#0A66C2] to-primary-500 text-white text-xs font-bold rounded-full flex items-center gap-1 animate-pulse-slow">
                                     <Star className="w-3 h-3" /> POPULAR
                                 </span>
                             </div>
-                            <div className="w-10 h-10 rounded-lg bg-primary-500 dark:bg-primary-400 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                                <FileText className="w-5 h-5 text-white" />
-                            </div>
-                            <h3 className="text-lg font-bold mb-1">Professional PDF</h3>
-                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">ATS-optimized format</p>
-                            <div className="text-2xl font-extrabold mb-4">200 <span className="text-base font-normal text-text-light-secondary dark:text-gray-400">tk</span></div>
-                            <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-5">
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Everything in Free</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> High-design PDF export</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> ATS-optimized layout</li>
-                            </ul>
-                            <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-primary-500 dark:bg-primary-400 hover:bg-primary-600 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all text-sm hover:scale-[1.02] active:scale-95">
-                                Get PDF
-                            </Link>
-                        </div>
-
-                        {/* LinkedIn Tier */}
-                        <div className="group p-5 glass rounded-2xl text-left hover:-translate-y-2 transition-all duration-300 stagger-item" style={{ animationDelay: '0.2s' }}>
                             <div className="w-10 h-10 rounded-lg bg-[#0A66C2] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                                 <Linkedin className="w-5 h-5 text-white" />
                             </div>
                             <h3 className="text-lg font-bold mb-1">LinkedIn Optimizer</h3>
-                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">Boost profile visibility</p>
+                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">AI-powered profile enhancement</p>
                             <div className="text-2xl font-extrabold mb-4">500 <span className="text-base font-normal text-text-light-secondary dark:text-gray-400">tk</span></div>
                             <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-5">
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Full profile optimization</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Personalized strategy</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Networking tips</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> AI-generated headline & summary</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Experience optimization</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Networking strategy guide</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Instant AI delivery</li>
                             </ul>
-                            <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 rounded-xl font-medium transition-all text-sm hover:scale-[1.02] active:scale-95">
-                                Get LinkedIn
+                            <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-[#0A66C2] hover:bg-[#0958a8] rounded-xl text-white font-medium transition-all text-sm hover:scale-[1.02] active:scale-95">
+                                Get LinkedIn Optimizer
                             </Link>
                         </div>
 
                         {/* Portfolio Tier */}
-                        <div className="group p-5 glass rounded-2xl text-left hover:-translate-y-2 transition-all duration-300 stagger-item" style={{ animationDelay: '0.3s' }}>
-                            <div className="w-10 h-10 rounded-lg bg-accent-600 dark:bg-accent-600/50 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                        <div className="group p-6 glass rounded-2xl text-left hover:-translate-y-2 transition-all duration-300 stagger-item" style={{ animationDelay: '0.2s' }}>
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 to-accent-400 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                                 <Globe className="w-5 h-5 text-white" />
                             </div>
-                            <h3 className="text-lg font-bold mb-1">Ultimate Portfolio</h3>
-                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">Your own website</p>
+                            <h3 className="text-lg font-bold mb-1">Portfolio Website</h3>
+                            <p className="text-xs text-text-light-secondary dark:text-gray-500 mb-3">Your own professional site</p>
                             <div className="text-2xl font-extrabold mb-4">1000 <span className="text-base font-normal text-text-light-secondary dark:text-gray-400">tk</span></div>
                             <ul className="space-y-2 text-sm text-text-light-secondary dark:text-gray-400 mb-5">
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> One-page portfolio site</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Showcase projects</li>
-                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Hosted & shareable</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Custom one-page design</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Mobile responsive</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> Free hosting included</li>
+                                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary-500 dark:text-accent-400" /> 24hr delivery</li>
                             </ul>
                             <Link to="/auth?mode=signup" className="block w-full py-2.5 text-center bg-light-100 dark:bg-dark-700 hover:bg-light-200 dark:hover:bg-dark-600 border border-light-200 dark:border-dark-600 rounded-xl font-medium transition-all text-sm hover:scale-[1.02] active:scale-95">
-                                Get Portfolio
+                                Get Portfolio Website
                             </Link>
                         </div>
                     </div>
