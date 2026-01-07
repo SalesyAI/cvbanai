@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { executePayment } from '../../lib/payment/bkash.js';
+import { notifyAdmin } from '../../lib/utils/adminNotify.js';
 
 /**
  * GET /api/payment/callback
@@ -77,6 +78,21 @@ export default async function handler(req, res) {
                 }
             })
             .eq('payment_ref', paymentID);
+
+        // Notify Admin of successful purchase
+        try {
+            const productName = productId === 'linkedin' ? 'LinkedIn Optimizer' :
+                productId === 'portfolio' ? 'Portfolio Website' : 'Premium Package';
+            const price = productId === 'linkedin' ? '500 TK' :
+                productId === 'portfolio' ? '1000 TK' : 'Unknown';
+
+            await notifyAdmin(
+                `**Product:** ${productName}\n**Amount:** ${price}\n**TrxID:** ${result.trxID}\n**Customer:** ${result.customerMsisdn || 'Unknown'}`,
+                'success'
+            );
+        } catch (err) {
+            console.error('[AdminNotify Error]', err.message);
+        }
 
         // Redirect to success
         return res.redirect(getRedirectURL({ payment: 'success', trxID: result.trxID }));

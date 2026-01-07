@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { notifyAdmin } from '../lib/utils/adminNotify.js';
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -73,6 +74,16 @@ export default async function handler(req, res) {
         }
 
         console.log(`[Portfolio] WhatsApp ${whatsapp} saved for user ${user.id}`);
+
+        // Notify Admin of new lead
+        try {
+            await notifyAdmin(
+                `**New Portfolio Lead!**\n**WhatsApp:** ${whatsapp}\n**User ID:** ${user.id}\n**Email:** ${user.email}`,
+                'info'
+            );
+        } catch (err) {
+            console.error('[AdminNotify Error]', err.message);
+        }
 
         return res.status(200).json({ success: true });
 
