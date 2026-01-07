@@ -319,7 +319,16 @@ export default function Dashboard() {
     }
 
     if (currentView === VIEWS.LINKEDIN_WORKFLOW) {
-        return <LinkedInOptimizerWorkflow onBack={handleBackToHome} />
+        return (
+            <LinkedInOptimizerWorkflow
+                onBack={handleBackToHome}
+                hasPurchased={hasLinkedInAccess}
+                onRequestPayment={() => {
+                    setPaymentProductId('linkedin')
+                    setShowContextualPayment(true)
+                }}
+            />
+        )
     }
 
     // === PREMIUM VIEWS ===
@@ -714,6 +723,12 @@ export default function Dashboard() {
             <PortfolioWhatsAppModal
                 isOpen={showPortfolioWhatsApp}
                 onClose={() => setShowPortfolioWhatsApp(false)}
+                hasPurchased={hasPortfolioAccess}
+                onRequestPayment={() => {
+                    setShowPortfolioWhatsApp(false)
+                    setPaymentProductId('portfolio')
+                    setShowContextualPayment(true)
+                }}
             />
         </div>
     )

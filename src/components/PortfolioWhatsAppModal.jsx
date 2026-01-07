@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Globe, X, MessageCircle, Check, Loader2 } from 'lucide-react'
+import { Globe, X, MessageCircle, Check, Loader2, Lock, ArrowRight } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
-export default function PortfolioWhatsAppModal({ isOpen, onClose }) {
+export default function PortfolioWhatsAppModal({ isOpen, onClose, hasPurchased = false, onRequestPayment }) {
     const { session, user } = useAuth()
     const [whatsapp, setWhatsapp] = useState('')
     const [loading, setLoading] = useState(false)
@@ -10,6 +10,35 @@ export default function PortfolioWhatsAppModal({ isOpen, onClose }) {
     const [error, setError] = useState(null)
 
     if (!isOpen) return null
+
+    // If user hasn't purchased, show payment required
+    if (!hasPurchased) {
+        return (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+                <div className="glass rounded-2xl max-w-md w-full p-8 text-center animate-scale-in">
+                    <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center mx-auto mb-4">
+                        <Lock className="w-8 h-8 text-amber-500" />
+                    </div>
+                    <h2 className="text-2xl font-bold mb-3">Payment Required</h2>
+                    <p className="text-text-light-secondary dark:text-gray-400 mb-6">
+                        Please purchase Portfolio Website to proceed.
+                    </p>
+                    <button
+                        onClick={onRequestPayment}
+                        className="w-full py-3 bg-primary-500 hover:bg-primary-600 rounded-xl text-white font-semibold flex items-center justify-center gap-2 transition-all mb-3"
+                    >
+                        Purchase Now (1000 TK) <ArrowRight className="w-4 h-4" />
+                    </button>
+                    <button
+                        onClick={onClose}
+                        className="w-full py-2 text-text-light-secondary dark:text-gray-500 hover:text-text-light-primary dark:hover:text-white text-sm transition-colors"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        )
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()

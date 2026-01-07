@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Linkedin, ArrowRight, ArrowLeft, Check, Copy, Loader2, Sparkles, CheckCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Linkedin, ArrowRight, ArrowLeft, Check, Copy, Loader2, Sparkles, CheckCircle, Lock } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const QUESTIONS = [
@@ -10,7 +10,7 @@ const QUESTIONS = [
     { id: 'idealRole', label: 'Describe your ideal role', placeholder: 'e.g., Remote Product Manager at a growth-stage startup' },
 ]
 
-export default function LinkedInOptimizerWorkflow({ onBack }) {
+export default function LinkedInOptimizerWorkflow({ onBack, hasPurchased = false, onRequestPayment }) {
     const { session } = useAuth()
     const [step, setStep] = useState(0) // 0 = questions, 1 = loading, 2 = results
     const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -18,6 +18,35 @@ export default function LinkedInOptimizerWorkflow({ onBack }) {
     const [result, setResult] = useState(null)
     const [error, setError] = useState(null)
     const [copied, setCopied] = useState({ headline: false, about: false })
+
+    // If user hasn't purchased, show payment required screen
+    if (!hasPurchased) {
+        return (
+            <div className="max-w-lg mx-auto py-8 px-4 animate-fade-in-up">
+                <div className="text-center mb-8">
+                    <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center mx-auto mb-4">
+                        <Lock className="w-8 h-8 text-amber-500" />
+                    </div>
+                    <h1 className="text-2xl font-bold mb-2">Payment Required</h1>
+                    <p className="text-text-light-secondary dark:text-gray-400">
+                        Please purchase LinkedIn Optimizer to access this feature.
+                    </p>
+                </div>
+                <button
+                    onClick={onRequestPayment}
+                    className="w-full py-3 bg-[#0A66C2] hover:bg-[#0958a8] rounded-xl text-white font-semibold flex items-center justify-center gap-2 transition-all mb-4"
+                >
+                    Purchase Now (500 TK) <ArrowRight className="w-4 h-4" />
+                </button>
+                <button
+                    onClick={onBack}
+                    className="w-full py-2 text-text-light-secondary dark:text-gray-500 hover:text-text-light-primary dark:hover:text-white text-sm transition-colors"
+                >
+                    ← Back to Dashboard
+                </button>
+            </div>
+        )
+    }
 
     const handleAnswer = (value) => {
         setAnswers(prev => ({ ...prev, [QUESTIONS[currentQuestion].id]: value }))
