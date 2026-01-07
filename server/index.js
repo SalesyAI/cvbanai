@@ -81,9 +81,12 @@ app.post('/api/payment/create', async (req, res) => {
         const product = products[productId];
         const invoiceNumber = `CVB-${Date.now()}-${uuidv4().slice(0, 8)}`;
 
-        // Use local or Vercel URL
-        const baseURL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5173';
-        let callbackURL = `http://localhost:3001/api/payment/callback?productId=${productId}`;
+        // Get dynamic host for callback
+        const host = req.headers.host;
+        const protocol = host.includes('localhost') ? 'http' : 'https';
+        const baseURL = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
+
+        let callbackURL = `${protocol}://${host}/api/payment/callback?productId=${productId}`;
         if (resumeId) callbackURL += `&resumeId=${resumeId}`;
 
         const { paymentID, bkashURL } = await createPayment({
@@ -113,7 +116,13 @@ app.post('/api/payment/create', async (req, res) => {
 // 2. bKash Callback
 app.get('/api/payment/callback', async (req, res) => {
     const { paymentID, status, resumeId, productId } = req.query;
-    const baseURL = 'http://localhost:5173'; // Always redirect back to Vite dev server
+    const host = req.headers.host;
+    const protocol = host.includes('localhost') ? 'http' : 'https';
+
+    // Redirect back to the frontend (usually port 5173 in local dev)
+    const baseURL = host.includes(':3001')
+        ? `${protocol}://${host.replace(':3001', ':5173')}`
+        : `${protocol}://${host}`;
 
     const getRedirectURL = (params) => {
         const url = new URL(`${baseURL}/dashboard`);
