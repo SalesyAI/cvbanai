@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { productId, userId } = req.body;
+        const { productId, userId, resumeId } = req.body;
 
         if (!productId || !userId) {
             return res.status(400).json({ error: 'Missing productId or userId' });
@@ -45,12 +45,15 @@ export default async function handler(req, res) {
         // Generate unique invoice number
         const invoiceNumber = `CVB-${Date.now()}-${uuidv4().slice(0, 8)}`;
 
-        // Get callback URL (your Vercel domain)
+        // Get callback URL
         const baseURL = process.env.NEXT_PUBLIC_BASE_URL ||
-            process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` :
-            'http://localhost:3000';
+            (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5173');
 
-        const callbackURL = `${baseURL}/api/payment/callback`;
+        // Append resumeId if available to callbackURL
+        let callbackURL = `${baseURL}/api/payment/callback`;
+        if (resumeId) {
+            callbackURL += `?resumeId=${resumeId}`;
+        }
 
         // Create bKash payment
         const { paymentID, bkashURL } = await createPayment({

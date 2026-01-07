@@ -14,15 +14,24 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { paymentID, status } = req.query;
+    const { paymentID, status, resumeId } = req.query;
 
     // Frontend redirect URL
     const baseURL = process.env.NEXT_PUBLIC_BASE_URL ||
-        process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` :
-        'http://localhost:5173';
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5173');
+
+    // Build base redirect URL
+    const getRedirectURL = (params) => {
+        const url = new URL(`${baseURL}/dashboard`);
+        Object.entries(params).forEach(([key, val]) => {
+            if (val) url.searchParams.append(key, val);
+        });
+        if (resumeId) url.searchParams.append('resumeId', resumeId);
+        return url.toString();
+    };
 
     if (!paymentID) {
-        return res.redirect(`${baseURL}/dashboard?payment=error&message=Missing+paymentID`);
+        return res.redirect(getRedirectURL({ payment: 'error', message: 'Missing paymentID' }));
     }
 
     // Handle cancelled/failed payments
@@ -40,7 +49,7 @@ export default async function handler(req, res) {
             .update({ status: 'failed' })
             .eq('payment_ref', paymentID);
 
-        return res.redirect(`${baseURL}/dashboard?payment=cancelled`);
+        return res.redirect(getRedirectURL({ payment: 'cancelled' }));
     }
 
     try {
@@ -68,7 +77,7 @@ export default async function handler(req, res) {
             .eq('payment_ref', paymentID);
 
         // Redirect to success
-        return res.redirect(`${baseURL}/dashboard?payment=success&trxID=${result.trxID}`);
+        return res.redirect(getRedirectURL({ payment: 'success', trxID: result.trxID }));
 
     } catch (error) {
         console.error('[Payment Callback Error]', error.message);
@@ -87,6 +96,6 @@ export default async function handler(req, res) {
             })
             .eq('payment_ref', paymentID);
 
-        return res.redirect(`${baseURL}/dashboard?payment=failed&message=${encodeURIComponent(error.message)}`);
+        return res.redirect(getRedirectURL({ payment: 'failed', message: error.message }));
     }
 }

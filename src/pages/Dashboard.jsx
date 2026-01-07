@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
     FileText, Plus, LogOut, User, Home, Linkedin, Globe, Lock, Check, ArrowRight,
@@ -10,6 +10,8 @@ import ThemeToggle from '../components/ThemeToggle'
 import MultiStepModal from '../components/MultiStepModal'
 import RefinementEngine from '../components/RefinementEngine'
 import PricingScreen from '../components/PricingScreen'
+import PaymentSuccessModal from '../components/PaymentSuccessModal'
+import PaymentModal from '../components/PaymentModal'
 import { resumeService } from '../services/resumeService'
 
 const VIEWS = {
@@ -23,8 +25,9 @@ const VIEWS = {
 }
 
 export default function Dashboard() {
-    const { user, signOut } = useAuth()
+    const { user, signOut, session } = useAuth()
     const navigate = useNavigate()
+    const [searchParams, setSearchParams] = useSearchParams()
 
     const [currentView, setCurrentView] = useState(VIEWS.HOME)
     const [activeTab, setActiveTab] = useState('home')
@@ -37,6 +40,15 @@ export default function Dashboard() {
     const [isVisible, setIsVisible] = useState(false)
     const [isLoadingResumes, setIsLoadingResumes] = useState(true)
 
+    // Payment state
+    const [hasPurchased, setHasPurchased] = useState(false)
+    const [showPaymentSuccess, setShowPaymentSuccess] = useState(false)
+    const [showContextualPayment, setShowContextualPayment] = useState(false)
+    const [paymentProductId, setPaymentProductId] = useState('pdf')
+    const [autoDownload, setAutoDownload] = useState(false)
+    const [paymentStatus, setPaymentStatus] = useState(null) // 'success' | 'failed' | 'cancelled'
+    const [paymentTrxID, setPaymentTrxID] = useState(null)
+
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
     const firstName = displayName.split(' ')[0]
 
@@ -44,8 +56,58 @@ export default function Dashboard() {
         setIsVisible(true)
         if (user) {
             loadResumes()
+            checkPurchaseStatus()
+            handlePaymentCallback()
         }
     }, [user])
+
+    // Check if user has purchased PDF
+    const checkPurchaseStatus = async () => {
+        try {
+            const response = await fetch('/api/payment/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id, productId: 'pdf' })
+            })
+            const data = await response.json()
+            setHasPurchased(data.hasPurchased || false)
+        } catch (error) {
+            console.error('Error checking purchase status:', error)
+        }
+    }
+
+    // Handle payment callback from bKash
+    const handlePaymentCallback = async () => {
+        const payment = searchParams.get('payment')
+        const trxID = searchParams.get('trxID')
+        const resumeIdFromUrl = searchParams.get('resumeId')
+        const errorMessage = searchParams.get('message')
+
+        if (payment) {
+            setPaymentStatus(payment)
+            setPaymentTrxID(trxID)
+            setShowPaymentSuccess(true)
+
+            // If payment was success and we have a resumeId, open the editor
+            if (payment === 'success') {
+                setHasPurchased(true)
+                if (resumeIdFromUrl) {
+                    try {
+                        const allResumes = await resumeService.getUserResumes()
+                        const targetResume = allResumes.find(r => r.id === resumeIdFromUrl)
+                        if (targetResume) {
+                            handleResumeSelect(targetResume)
+                        }
+                    } catch (err) {
+                        console.error('Error auto-loading resume after payment:', err)
+                    }
+                }
+            }
+
+            // Clear URL params but keep resumeId if we just opened it
+            setSearchParams({})
+        }
+    }
 
     const loadResumes = async () => {
         try {
@@ -233,6 +295,10 @@ export default function Dashboard() {
                 onCopyText={handleCopyText}
                 onDownloadPDF={handleDownloadPDF}
                 onBack={handleBackToHome}
+                hasPurchased={hasPurchased}
+                resumeId={currentResumeId}
+                autoDownload={autoDownload}
+                onDownloadStarted={() => setAutoDownload(false)}
             />
         )
     }
@@ -276,7 +342,13 @@ export default function Dashboard() {
                     ))}
                 </ul>
 
-                <button className="group w-full py-3 bg-[#0A66C2] hover:bg-[#0958a8] rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:scale-95">
+                <button
+                    onClick={() => {
+                        setPaymentProductId('linkedin')
+                        setShowContextualPayment(true)
+                    }}
+                    className="group w-full py-3 bg-[#0A66C2] hover:bg-[#0958a8] rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:scale-95"
+                >
                     Unlock Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
@@ -322,7 +394,13 @@ export default function Dashboard() {
                     ))}
                 </ul>
 
-                <button className="group w-full py-3 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 glow-teal hover:-translate-y-0.5 active:scale-95">
+                <button
+                    onClick={() => {
+                        setPaymentProductId('portfolio')
+                        setShowContextualPayment(true)
+                    }}
+                    className="group w-full py-3 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2 glow-teal hover:-translate-y-0.5 active:scale-95"
+                >
                     Unlock Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
@@ -471,6 +549,29 @@ export default function Dashboard() {
     // === MAIN LAYOUT ===
     return (
         <div className="min-h-screen animated-bg">
+            {/* Contextual Payment Modal (for LinkedIn/Portfolio) */}
+            <PaymentModal
+                isOpen={showContextualPayment}
+                onClose={() => setShowContextualPayment(false)}
+                productId={paymentProductId}
+            />
+
+            {/* Payment Success/Feedback Modal */}
+            <PaymentSuccessModal
+                isOpen={showPaymentSuccess}
+                status={paymentStatus}
+                trxID={paymentTrxID}
+                onClose={() => setShowPaymentSuccess(false)}
+                onDownload={() => {
+                    setAutoDownload(true)
+                    setShowPaymentSuccess(false)
+                }}
+                onRetry={() => {
+                    setShowPaymentSuccess(false)
+                    setCurrentView(VIEWS.PRICING)
+                }}
+            />
+
             {/* Toast */}
             {showToast && (
                 <div className="fixed top-4 right-4 z-50 toast-enter">
