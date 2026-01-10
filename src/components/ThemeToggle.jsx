@@ -1,47 +1,71 @@
 import { useTheme } from '../context/ThemeContext'
-import { Sun, Moon } from 'lucide-react'
+import './ThemeToggle.css'
 
 export default function ThemeToggle({ className = "" }) {
     const { theme, toggleTheme } = useTheme()
 
     return (
-        <button
-            onClick={toggleTheme}
-            className={`
-                relative p-2.5 rounded-xl 
-                bg-light-100 dark:bg-dark-800 
-                border border-light-200 dark:border-dark-700
-                hover:bg-light-200 dark:hover:bg-dark-700
-                transition-all duration-300
-                group
-                ${className}
-            `}
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-        >
-            <div className="relative w-5 h-5">
-                {/* Sun Icon */}
-                <Sun
-                    className={`
-                        absolute inset-0 w-5 h-5 text-amber-500
-                        transition-all duration-300
-                        ${theme === 'dark'
-                            ? 'opacity-0 rotate-90 scale-0'
-                            : 'opacity-100 rotate-0 scale-100'
-                        }
-                    `}
-                />
-                {/* Moon Icon */}
-                <Moon
-                    className={`
-                        absolute inset-0 w-5 h-5 text-primary-400
-                        transition-all duration-300
-                        ${theme === 'dark'
-                            ? 'opacity-100 rotate-0 scale-100'
-                            : 'opacity-0 -rotate-90 scale-0'
-                        }
-                    `}
-                />
+        <label className={`switch ${className}`}>
+            <input
+                type="checkbox"
+                checked={theme === 'dark'}
+                onChange={toggleTheme}
+            />
+            <div className="slider round">
+                <div className="sun-moon">
+                    <svg id="moon-dot-1" className="moon-dot" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="moon-dot-2" className="moon-dot" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="moon-dot-3" className="moon-dot" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="light-ray-1" className="light-ray" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="light-ray-2" className="light-ray" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="light-ray-3" className="light-ray" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+
+                    <svg id="cloud-1" className="cloud-dark" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="cloud-2" className="cloud-dark" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="cloud-3" className="cloud-dark" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="cloud-4" className="cloud-light" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="cloud-5" className="cloud-light" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                    <svg id="cloud-6" className="cloud-light" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="50"></circle>
+                    </svg>
+                </div>
+                <div className="stars">
+                    <svg id="star-1" className="star" viewBox="0 0 20 20">
+                        <path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path>
+                    </svg>
+                    <svg id="star-2" className="star" viewBox="0 0 20 20">
+                        <path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path>
+                    </svg>
+                    <svg id="star-3" className="star" viewBox="0 0 20 20">
+                        <path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path>
+                    </svg>
+                    <svg id="star-4" className="star" viewBox="0 0 20 20">
+                        <path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path>
+                    </svg>
+                </div>
             </div>
-        </button>
+        </label>
     )
 }
