@@ -182,7 +182,7 @@ export default function LinkedInOptimizerWorkflow({ onBack, hasPurchased = false
     // Step 1: Loading
     if (step === 1) {
         return (
-            <div className="max-w-lg mx-auto py-16 px-4 text-center animate-fade-in-up">
+            <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center animate-fade-in">
                 <div className="mb-8">
                     <p className="loader"><span>Optimizing</span></p>
                 </div>
