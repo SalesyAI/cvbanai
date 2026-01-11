@@ -288,11 +288,8 @@ export default function Dashboard() {
         return (
             <div className="min-h-screen animated-bg flex items-center justify-center p-4">
                 <div className="text-center max-w-sm animate-fade-in">
-                    <div className="relative w-20 h-20 mx-auto mb-6">
-                        <div className="absolute inset-0 rounded-full border-4 border-light-200 dark:border-dark-700"></div>
-                        <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary-500 animate-spin"></div>
-                        <div className="absolute inset-2 rounded-full border-4 border-transparent border-b-accent-400 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-                        <Sparkles className="absolute inset-0 m-auto w-8 h-8 text-primary-500 dark:text-primary-400 animate-pulse" />
+                    <div className="mb-8">
+                        <p className="loader"><span>Scan</span></p>
                     </div>
                     <h2 className="text-xl font-bold mb-2">AI is enhancing your resume<span className="loading-dots"></span></h2>
                     <p className="text-text-light-secondary dark:text-gray-400 text-sm">Making your experience shine with professional language</p>
