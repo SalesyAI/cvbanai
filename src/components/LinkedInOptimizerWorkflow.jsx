@@ -184,7 +184,7 @@ export default function LinkedInOptimizerWorkflow({ onBack, hasPurchased = false
         return (
             <div className="max-w-lg mx-auto py-16 px-4 text-center animate-fade-in-up">
                 <div className="mb-8">
-                    <p className="loader"><span>Scan</span></p>
+                    <p className="loader"><span>Optimizing</span></p>
                 </div>
                 <h2 className="text-xl font-bold mb-2">Crafting Your Profile...</h2>
                 <p className="text-text-light-secondary dark:text-gray-400">

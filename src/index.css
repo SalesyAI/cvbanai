@@ -316,6 +316,8 @@ button:active:not(:disabled),
   font-style: italic;
   font-weight: 700;
   margin: 0 auto;
+  padding: 0 4px;
+  /* Added padding for better fit */
 }
 
 .dark .loader {

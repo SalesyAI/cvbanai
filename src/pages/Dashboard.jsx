@@ -289,7 +289,7 @@ export default function Dashboard() {
             <div className="min-h-screen animated-bg flex items-center justify-center p-4">
                 <div className="text-center max-w-sm animate-fade-in">
                     <div className="mb-8">
-                        <p className="loader"><span>Scan</span></p>
+                        <p className="loader"><span>Enhancing</span></p>
                     </div>
                     <h2 className="text-xl font-bold mb-2">AI is enhancing your resume<span className="loading-dots"></span></h2>
                     <p className="text-text-light-secondary dark:text-gray-400 text-sm">Making your experience shine with professional language</p>
