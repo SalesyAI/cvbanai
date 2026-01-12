@@ -244,12 +244,26 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
     }
 
     // Handle generate
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         setGenerateState('generating')
-        // Simulate generation time
-        setTimeout(() => {
-            setGenerateState('preview')
-        }, 2500)
+
+        // Auto-enhance before generating
+        try {
+            const response = await fetch('http://localhost:3001/api/refine', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ resumeData: formData })
+            })
+            const data = await response.json()
+            if (data.refinedData) {
+                setFormData(data.refinedData)
+            }
+        } catch (error) {
+            console.error('Auto-enhancement failed:', error)
+            // Proceed anyway if enhancement fails
+        }
+
+        setGenerateState('preview')
     }
 
     // Handle Enhance
@@ -1074,7 +1088,7 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
                                 disabled
                                 className="flex items-center gap-2 px-6 py-2.5 bg-light-200 dark:bg-dark-700 text-text-light-secondary dark:text-gray-500 rounded-xl font-medium cursor-not-allowed"
                             >
-                                Generating...
+                                Enhancing & Generating...
                             </button>
                         ) : (
                             <button
