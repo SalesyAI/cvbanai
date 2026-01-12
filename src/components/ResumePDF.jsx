@@ -1,223 +1,176 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image, Link } from '@react-pdf/renderer';
 
-// Professional resume styles - clean, minimal, ATS-friendly
+// Professional resume styles - matching reference design
 const styles = StyleSheet.create({
     page: {
         flexDirection: 'column',
         backgroundColor: '#FFFFFF',
-        paddingHorizontal: 30,
-        paddingVertical: 25,
-        fontSize: 10,
-        lineHeight: 1.4,
+        paddingHorizontal: 25,
+        paddingVertical: 20,
+        fontSize: 9,
+        lineHeight: 1.35,
         color: '#000000',
         fontFamily: 'Helvetica',
     },
-    // Header section
+    // Header
     header: {
         flexDirection: 'row',
-        marginBottom: 15,
-        paddingBottom: 12,
-        borderBottom: '1.5pt solid #000000',
+        marginBottom: 12,
+    },
+    headerLeft: {
+        flex: 1,
+    },
+    name: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#0066B2',
+        marginBottom: 3,
+    },
+    contactLine: {
+        fontSize: 8,
+        color: '#333333',
+        marginBottom: 1,
     },
     photoContainer: {
-        width: 65,
-        height: 75,
-        marginRight: 15,
-        border: '0.5pt solid #333333',
+        width: 70,
+        height: 85,
+        marginLeft: 15,
     },
     photo: {
         width: '100%',
         height: '100%',
         objectFit: 'cover',
     },
-    headerContent: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    name: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#000000',
-        marginBottom: 6,
-        letterSpacing: 0.5,
-    },
-    contactGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 8,
-    },
-    contactItem: {
-        fontSize: 9,
-        color: '#333333',
-    },
-    // Section styles
+    // Section
     section: {
-        marginBottom: 10,
+        marginBottom: 8,
     },
-    sectionHeader: {
-        fontSize: 11,
-        fontWeight: 'bold',
-        color: '#000000',
-        backgroundColor: '#f5f5f5',
-        paddingVertical: 3,
-        paddingHorizontal: 6,
-        marginBottom: 6,
-        textTransform: 'uppercase',
-        letterSpacing: 0.8,
-    },
-    // Career objective
-    objectiveText: {
-        fontSize: 9,
-        textAlign: 'justify',
-        lineHeight: 1.5,
-        color: '#222222',
-    },
-    // Education table
-    eduTable: {
-        marginBottom: 4,
-    },
-    eduHeader: {
-        flexDirection: 'row',
-        backgroundColor: '#eeeeee',
-        paddingVertical: 3,
-        paddingHorizontal: 4,
-        marginBottom: 2,
-    },
-    eduHeaderText: {
-        fontSize: 8,
-        fontWeight: 'bold',
-    },
-    eduRow: {
-        flexDirection: 'row',
-        paddingVertical: 2,
-        paddingHorizontal: 4,
-        borderBottom: '0.5pt solid #eeeeee',
-    },
-    eduLevel: {
-        width: '18%',
-        fontSize: 8,
-        fontWeight: 'bold',
-    },
-    eduInst: {
-        width: '40%',
-        fontSize: 8,
-    },
-    eduSubject: {
-        width: '20%',
-        fontSize: 8,
-    },
-    eduYear: {
-        width: '10%',
-        fontSize: 8,
-        textAlign: 'center',
-    },
-    eduResult: {
-        width: '12%',
-        fontSize: 8,
-        textAlign: 'right',
-    },
-    // Experience
-    expItem: {
-        marginBottom: 6,
-    },
-    expHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    expTitle: {
+    sectionTitle: {
         fontSize: 10,
         fontWeight: 'bold',
         color: '#000000',
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+        borderBottom: '1.5pt solid #B87333',
+        paddingBottom: 2,
+        marginBottom: 5,
     },
-    expDates: {
-        fontSize: 8,
-        color: '#444444',
-    },
-    expCompany: {
+    // Summary/Objective
+    summaryText: {
         fontSize: 9,
-        color: '#333333',
-        marginTop: 1,
+        textAlign: 'justify',
+        lineHeight: 1.4,
     },
-    // Skills section
-    skillsContainer: {
-        marginBottom: 4,
-    },
+    // Skills
     skillRow: {
         flexDirection: 'row',
-        marginBottom: 3,
+        marginBottom: 2,
     },
     skillLabel: {
-        width: 80,
-        fontSize: 9,
         fontWeight: 'bold',
+        fontSize: 9,
+        width: 90,
     },
     skillValue: {
         flex: 1,
         fontSize: 9,
     },
-    // Two-column layout
-    twoColumn: {
-        flexDirection: 'row',
-        gap: 20,
+    // Experience/Education item
+    itemContainer: {
+        marginBottom: 6,
     },
-    column: {
+    itemHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+    },
+    itemTitle: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: '#000000',
         flex: 1,
     },
-    // List items
-    listItem: {
+    itemLocation: {
         fontSize: 9,
-        marginBottom: 2,
+        color: '#333333',
+        textAlign: 'right',
+    },
+    itemSubtitle: {
+        fontSize: 9,
+        color: '#333333',
+        marginTop: 1,
+    },
+    itemDates: {
+        fontSize: 9,
+        color: '#333333',
+        textAlign: 'right',
+    },
+    // Bullet points
+    bulletItem: {
+        flexDirection: 'row',
+        marginTop: 2,
         paddingLeft: 8,
     },
     bullet: {
-        position: 'absolute',
-        left: 0,
+        fontSize: 9,
+        marginRight: 5,
     },
-    // Reference card
-    refCard: {
-        marginBottom: 6,
-        paddingBottom: 4,
-        borderBottom: '0.5pt solid #eeeeee',
+    bulletText: {
+        flex: 1,
+        fontSize: 8,
+        lineHeight: 1.3,
+    },
+    // Education
+    eduItem: {
+        marginBottom: 4,
+    },
+    eduDegree: {
+        fontSize: 10,
+        fontWeight: 'bold',
+    },
+    eduInstitution: {
+        fontSize: 9,
+        color: '#333333',
+    },
+    eduRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    // References
+    refItem: {
+        marginBottom: 5,
     },
     refName: {
         fontSize: 9,
         fontWeight: 'bold',
     },
-    refDetail: {
+    refDetails: {
         fontSize: 8,
-        color: '#444444',
-    },
-    // Declaration
-    declarationText: {
-        fontSize: 8,
-        fontStyle: 'italic',
-        textAlign: 'justify',
         color: '#333333',
-        lineHeight: 1.4,
     },
-    signatureRow: {
+    // Languages inline
+    langRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 12,
+        flexWrap: 'wrap',
+        gap: 15,
     },
-    signatureBlock: {
+    langItem: {
         fontSize: 9,
     },
 });
 
 const EDUCATION_LABELS = {
-    ssc: 'S.S.C',
-    hsc: 'H.S.C',
-    honors: 'Bachelor\'s',
-    masters: 'Master\'s',
+    ssc: 'Secondary School Certificate (S.S.C)',
+    hsc: 'Higher Secondary Certificate (H.S.C)',
+    honors: 'Bachelor\'s Degree',
+    masters: 'Master\'s Degree',
 };
 
 const ResumePDF = ({ data }) => {
     if (!data) return null;
 
-    // Check what sections have content
+    // Check sections
     const hasEducation = Object.values(data.education || {}).some(e => e.institution);
     const hasExperience = data.experience?.some(e => e.position);
     const hasSkills = data.technicalSkills?.length > 0 || data.tools?.length > 0;
@@ -230,161 +183,152 @@ const ResumePDF = ({ data }) => {
             <Page size="A4" style={styles.page}>
                 {/* ===== HEADER ===== */}
                 <View style={styles.header}>
+                    <View style={styles.headerLeft}>
+                        <Text style={styles.name}>{data.fullName || 'Your Name'}</Text>
+                        {data.email && <Text style={styles.contactLine}>{data.email}</Text>}
+                        {data.phone && <Text style={styles.contactLine}>{data.phone}</Text>}
+                        {data.location && <Text style={styles.contactLine}>{data.location}</Text>}
+                        {data.linkedinUrl && <Text style={styles.contactLine}>{data.linkedinUrl}</Text>}
+                    </View>
                     {data.profilePhoto && (
                         <View style={styles.photoContainer}>
                             <Image style={styles.photo} src={data.profilePhoto} />
                         </View>
                     )}
-                    <View style={styles.headerContent}>
-                        <Text style={styles.name}>{data.fullName || 'YOUR NAME'}</Text>
-                        <View style={styles.contactGrid}>
-                            {data.email && <Text style={styles.contactItem}>✉ {data.email}</Text>}
-                            {data.phone && <Text style={styles.contactItem}>☎ {data.phone}</Text>}
-                            {data.location && <Text style={styles.contactItem}>📍 {data.location}</Text>}
-                            {data.linkedinUrl && <Text style={styles.contactItem}>🔗 {data.linkedinUrl}</Text>}
-                        </View>
-                    </View>
                 </View>
 
-                {/* ===== CAREER OBJECTIVE ===== */}
+                {/* ===== SUMMARY ===== */}
                 {data.careerObjective && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionHeader}>Career Objective</Text>
-                        <Text style={styles.objectiveText}>{data.careerObjective}</Text>
+                        <Text style={styles.sectionTitle}>Summary</Text>
+                        <Text style={styles.summaryText}>{data.careerObjective}</Text>
                     </View>
                 )}
 
-                {/* ===== EDUCATION ===== */}
-                {hasEducation && (
+                {/* ===== TECHNICAL SKILLS ===== */}
+                {hasSkills && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionHeader}>Educational Qualifications</Text>
-                        <View style={styles.eduTable}>
-                            {/* Table Header */}
-                            <View style={styles.eduHeader}>
-                                <Text style={[styles.eduHeaderText, { width: '15%' }]}>Level</Text>
-                                <Text style={[styles.eduHeaderText, { width: '35%' }]}>Institution</Text>
-                                <Text style={[styles.eduHeaderText, { width: '25%' }]}>Degree/Subject</Text>
-                                <Text style={[styles.eduHeaderText, { width: '12%', textAlign: 'center' }]}>Year</Text>
-                                <Text style={[styles.eduHeaderText, { width: '13%', textAlign: 'right' }]}>Result</Text>
+                        <Text style={styles.sectionTitle}>Technical Skills</Text>
+                        {data.technicalSkills?.length > 0 && (
+                            <View style={styles.skillRow}>
+                                <Text style={styles.skillLabel}>Skills:</Text>
+                                <Text style={styles.skillValue}>{data.technicalSkills.join(', ')}</Text>
                             </View>
-                            {/* Table Rows */}
-                            {['ssc', 'hsc', 'honors', 'masters'].map(key => {
-                                const edu = data.education[key];
-                                if (!edu?.institution) return null;
-                                // For SSC/HSC use subject, for Bachelor's/Master's use degree + major
-                                const degreeOrSubject = (key === 'ssc' || key === 'hsc')
-                                    ? (edu.subject || '-')
-                                    : (edu.degree && edu.major ? `${edu.degree} in ${edu.major}` : edu.degree || edu.major || '-');
-                                return (
-                                    <View key={key} style={styles.eduRow}>
-                                        <Text style={styles.eduLevel}>{EDUCATION_LABELS[key]}</Text>
-                                        <Text style={styles.eduInst}>{edu.institution}</Text>
-                                        <Text style={styles.eduSubject}>{degreeOrSubject}</Text>
-                                        <Text style={styles.eduYear}>{edu.passingYear}</Text>
-                                        <Text style={styles.eduResult}>{edu.result}</Text>
-                                    </View>
-                                );
-                            })}
-                        </View>
+                        )}
+                        {data.tools?.length > 0 && (
+                            <View style={styles.skillRow}>
+                                <Text style={styles.skillLabel}>Tools:</Text>
+                                <Text style={styles.skillValue}>{data.tools.join(', ')}</Text>
+                            </View>
+                        )}
                     </View>
                 )}
 
                 {/* ===== EXPERIENCE ===== */}
                 {hasExperience && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionHeader}>Professional Experience</Text>
+                        <Text style={styles.sectionTitle}>Professional Experience</Text>
                         {data.experience.map((exp, i) => exp.position && (
-                            <View key={i} style={styles.expItem}>
-                                <View style={styles.expHeader}>
-                                    <Text style={styles.expTitle}>{exp.position}</Text>
-                                    <Text style={styles.expDates}>{exp.startDate} – {exp.endDate}</Text>
+                            <View key={i} style={styles.itemContainer}>
+                                <View style={styles.itemHeader}>
+                                    <Text style={styles.itemTitle}>{exp.position}</Text>
+                                    <Text style={styles.itemDates}>{exp.startDate} – {exp.endDate}</Text>
                                 </View>
-                                <Text style={styles.expCompany}>{exp.company}</Text>
+                                <Text style={styles.itemSubtitle}>{exp.company}</Text>
                             </View>
                         ))}
                     </View>
                 )}
 
-                {/* ===== SKILLS & TOOLS ===== */}
-                {hasSkills && (
+                {/* ===== EDUCATION ===== */}
+                {hasEducation && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionHeader}>Skills & Proficiencies</Text>
-                        <View style={styles.skillsContainer}>
-                            {data.technicalSkills?.length > 0 && (
-                                <View style={styles.skillRow}>
-                                    <Text style={styles.skillLabel}>Technical:</Text>
-                                    <Text style={styles.skillValue}>{data.technicalSkills.join(', ')}</Text>
+                        <Text style={styles.sectionTitle}>Education</Text>
+                        {['masters', 'honors', 'hsc', 'ssc'].map(key => {
+                            const edu = data.education[key];
+                            if (!edu?.institution) return null;
+
+                            // Format degree display
+                            let degreeDisplay = '';
+                            if (key === 'ssc' || key === 'hsc') {
+                                degreeDisplay = edu.subject ? `${EDUCATION_LABELS[key]} in ${edu.subject}` : EDUCATION_LABELS[key];
+                            } else {
+                                degreeDisplay = edu.degree && edu.major
+                                    ? `${edu.degree} in ${edu.major}`
+                                    : (edu.degree || edu.major || EDUCATION_LABELS[key]);
+                            }
+
+                            return (
+                                <View key={key} style={styles.eduItem}>
+                                    <View style={styles.eduRow}>
+                                        <Text style={styles.eduDegree}>{degreeDisplay}</Text>
+                                        <Text style={styles.itemDates}>{edu.passingYear}</Text>
+                                    </View>
+                                    <View style={styles.eduRow}>
+                                        <Text style={styles.eduInstitution}>{edu.institution}</Text>
+                                        <Text style={styles.itemLocation}>{edu.result}</Text>
+                                    </View>
                                 </View>
-                            )}
-                            {data.tools?.length > 0 && (
-                                <View style={styles.skillRow}>
-                                    <Text style={styles.skillLabel}>Tools:</Text>
-                                    <Text style={styles.skillValue}>{data.tools.join(', ')}</Text>
-                                </View>
-                            )}
-                        </View>
+                            );
+                        })}
                     </View>
                 )}
 
                 {/* ===== EXTRA-CURRICULAR ===== */}
                 {hasExtra && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionHeader}>Extra-Curricular Activities</Text>
+                        <Text style={styles.sectionTitle}>Extra-Curricular Activities</Text>
                         {data.extraCurricular.map((item, i) => item.activity && (
-                            <Text key={i} style={styles.listItem}>
-                                • {item.activity}{item.role ? ` (${item.role})` : ''}{item.duration ? ` – ${item.duration}` : ''}
-                                {item.impact ? `: ${item.impact}` : ''}
-                            </Text>
+                            <View key={i} style={styles.bulletItem}>
+                                <Text style={styles.bullet}>•</Text>
+                                <Text style={styles.bulletText}>
+                                    <Text style={{ fontWeight: 'bold' }}>{item.activity}</Text>
+                                    {item.role && `, ${item.role}`}
+                                    {item.duration && ` (${item.duration})`}
+                                    {item.impact && ` - ${item.impact}`}
+                                </Text>
+                            </View>
                         ))}
                     </View>
                 )}
 
-                {/* ===== LANGUAGES & REFERENCES (Two Column) ===== */}
-                {(hasLanguages || hasReferences) && (
-                    <View style={styles.twoColumn}>
-                        {/* Languages */}
-                        {hasLanguages && (
-                            <View style={styles.column}>
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionHeader}>Languages</Text>
-                                    {data.languages.map((lang, i) => lang.name && (
-                                        <Text key={i} style={styles.listItem}>• {lang.name} – {lang.proficiency}</Text>
-                                    ))}
-                                </View>
+                {/* ===== LANGUAGES ===== */}
+                {hasLanguages && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Languages</Text>
+                        <View style={styles.langRow}>
+                            {data.languages.map((lang, i) => lang.name && (
+                                <Text key={i} style={styles.langItem}>
+                                    <Text style={{ fontWeight: 'bold' }}>{lang.name}</Text> ({lang.proficiency})
+                                </Text>
+                            ))}
+                        </View>
+                    </View>
+                )}
+
+                {/* ===== REFERENCES ===== */}
+                {hasReferences && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>References</Text>
+                        {data.references.map((ref, i) => ref.fullName && (
+                            <View key={i} style={styles.refItem}>
+                                <Text style={styles.refName}>{ref.fullName}</Text>
+                                {ref.companyPosition && <Text style={styles.refDetails}>{ref.companyPosition}</Text>}
+                                {(ref.phone || ref.email) && (
+                                    <Text style={styles.refDetails}>
+                                        {ref.phone}{ref.phone && ref.email && ' | '}{ref.email}
+                                    </Text>
+                                )}
                             </View>
-                        )}
-                        {/* References */}
-                        {hasReferences && (
-                            <View style={styles.column}>
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionHeader}>References</Text>
-                                    {data.references.map((ref, i) => ref.fullName && (
-                                        <View key={i} style={styles.refCard}>
-                                            <Text style={styles.refName}>{ref.fullName}</Text>
-                                            {ref.companyPosition && <Text style={styles.refDetail}>{ref.companyPosition}</Text>}
-                                            {ref.phone && <Text style={styles.refDetail}>Phone: {ref.phone}</Text>}
-                                            {ref.email && <Text style={styles.refDetail}>Email: {ref.email}</Text>}
-                                        </View>
-                                    ))}
-                                </View>
-                            </View>
-                        )}
+                        ))}
                     </View>
                 )}
 
                 {/* ===== DECLARATION ===== */}
                 {data.declaration && (
                     <View style={styles.section}>
-                        <Text style={styles.sectionHeader}>Declaration</Text>
-                        <Text style={styles.declarationText}>{data.declaration}</Text>
-                        <View style={styles.signatureRow}>
-                            <View>
-                                <Text style={styles.signatureBlock}>Date: _______________</Text>
-                            </View>
-                            <View>
-                                <Text style={styles.signatureBlock}>Signature: _______________</Text>
-                            </View>
-                        </View>
+                        <Text style={styles.sectionTitle}>Declaration</Text>
+                        <Text style={styles.summaryText}>{data.declaration}</Text>
                     </View>
                 )}
             </Page>
