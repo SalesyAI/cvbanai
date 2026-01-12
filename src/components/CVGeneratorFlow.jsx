@@ -252,6 +252,28 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
         }, 2500)
     }
 
+    // Handle Enhance
+    const [isEnhancing, setIsEnhancing] = useState(false)
+
+    const handleEnhance = async () => {
+        setIsEnhancing(true)
+        try {
+            const response = await fetch('http://localhost:3001/api/refine', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ resumeData: formData })
+            })
+            const data = await response.json()
+            if (data.refinedData) {
+                setFormData(data.refinedData)
+            }
+        } catch (error) {
+            console.error('Enhancement failed:', error)
+        } finally {
+            setIsEnhancing(false)
+        }
+    }
+
     // Copy text
     const handleCopyText = () => {
         const text = formatCVAsText()
@@ -703,6 +725,32 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
     // Render Step 4: Finalize
     const renderFinalize = () => (
         <div className="space-y-6">
+            {/* Enhance Button */}
+            <div className="p-6 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 rounded-xl border border-purple-500/20 text-center">
+                <Sparkles className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+                <h3 className="font-semibold text-text-light-primary dark:text-white mb-1">Enhance with AI</h3>
+                <p className="text-sm text-text-light-secondary dark:text-gray-400 mb-4">
+                    Automatically expand your bullet points, improve grammar, and fill the page with professional content.
+                </p>
+                <button
+                    onClick={handleEnhance}
+                    disabled={isEnhancing}
+                    className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 mx-auto"
+                >
+                    {isEnhancing ? (
+                        <>
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            Enhancing...
+                        </>
+                    ) : (
+                        <>
+                            <Sparkles className="w-4 h-4" />
+                            Enhance My Resume
+                        </>
+                    )}
+                </button>
+            </div>
+
             {/* ATS Score Card */}
             <div className="p-4 bg-gradient-to-r from-green-500/10 to-primary-500/10 dark:from-green-500/20 dark:to-primary-500/20 rounded-xl border border-green-500/20">
                 <div className="flex items-center justify-between">

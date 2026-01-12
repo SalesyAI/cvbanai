@@ -28,12 +28,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000000',
         fontFamily: 'Times-Bold',
-        marginBottom: 2,
+        marginBottom: 5, // Increased from 2 to prevent overlap
+        lineHeight: 1.2, // Ensure prompt line height
     },
     contactLine: {
-        fontSize: 9,
+        fontSize: 10,
         color: '#000000',
-        marginBottom: 1,
+        marginBottom: 2, // Increased spacing between contact lines
+        lineHeight: 1.3,
     },
     photoContainer: {
         width: 80,
