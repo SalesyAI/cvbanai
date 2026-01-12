@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import {
     ArrowLeft, ArrowRight, Plus, Trash2, X, Check, Copy, Download,
     User, Mail, Phone, MapPin, Camera, Linkedin, ChevronDown, ChevronUp,
-    Briefcase, GraduationCap, Award, Languages, Users, FileCheck
+    Briefcase, GraduationCap, Award, Languages, Users, FileCheck, Sparkles
 } from 'lucide-react'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import ResumePDF from './ResumePDF'
@@ -34,6 +34,7 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
     const [currentStep, setCurrentStep] = useState(0)
     const [direction, setDirection] = useState('next')
     const [copied, setCopied] = useState(false)
+    const [generateState, setGenerateState] = useState('idle') // idle, generating, preview
     const contentRef = useRef(null)
 
     const [formData, setFormData] = useState({
@@ -240,6 +241,15 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
             setCurrentStep(prev => prev - 1)
             contentRef.current?.scrollTo(0, 0)
         }
+    }
+
+    // Handle generate
+    const handleGenerate = () => {
+        setGenerateState('generating')
+        // Simulate generation time
+        setTimeout(() => {
+            setGenerateState('preview')
+        }, 2500)
     }
 
     // Copy text
@@ -771,7 +781,118 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
         </div>
     )
 
+    // Render generating state
+    const renderGenerating = () => (
+        <div className="min-h-[50vh] flex flex-col items-center justify-center text-center animate-fade-in">
+            <div className="mb-8">
+                <p className="loader"><span>Generating</span></p>
+            </div>
+            <h2 className="text-xl font-bold mb-2 text-text-light-primary dark:text-white">Creating Your CV<span className="loading-dots"></span></h2>
+            <p className="text-text-light-secondary dark:text-gray-400 text-sm">Our AI is formatting your information into a professional resume</p>
+        </div>
+    )
+
+    // Render preview state
+    const renderPreview = () => (
+        <div className="space-y-6 animate-slide-up">
+            {/* Success Header */}
+            <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Check className="w-8 h-8 text-green-500" />
+                </div>
+                <h2 className="text-xl font-bold text-text-light-primary dark:text-white">Your CV is Ready!</h2>
+                <p className="text-sm text-text-light-secondary dark:text-gray-400">Preview your resume below</p>
+            </div>
+
+            {/* Resume Preview Card */}
+            <div className="bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-700 rounded-xl p-6 shadow-lg">
+                {/* Header */}
+                <div className="border-b border-light-200 dark:border-dark-700 pb-4 mb-4">
+                    <h3 className="text-2xl font-bold text-text-light-primary dark:text-white">{formData.fullName || 'Your Name'}</h3>
+                    <p className="text-sm text-text-light-secondary dark:text-gray-400 mt-1">
+                        {[formData.email, formData.phone, formData.location].filter(Boolean).join(' • ')}
+                    </p>
+                </div>
+
+                {/* Career Objective */}
+                {formData.careerObjective && (
+                    <div className="mb-4">
+                        <h4 className="text-xs font-semibold text-primary-500 dark:text-primary-400 uppercase tracking-wide mb-2">Career Objective</h4>
+                        <p className="text-sm text-text-light-primary dark:text-gray-300">{formData.careerObjective}</p>
+                    </div>
+                )}
+
+                {/* Education */}
+                <div className="mb-4">
+                    <h4 className="text-xs font-semibold text-primary-500 dark:text-primary-400 uppercase tracking-wide mb-2">Education</h4>
+                    {EDUCATION_CATEGORIES.map(cat => {
+                        const edu = formData.education[cat.id]
+                        if (!edu.institution) return null
+                        return (
+                            <div key={cat.id} className="text-sm mb-1">
+                                <span className="font-medium text-text-light-primary dark:text-white">{edu.institution}</span>
+                                <span className="text-text-light-secondary dark:text-gray-400"> — {cat.label} ({edu.passingYear}) - {edu.result}</span>
+                            </div>
+                        )
+                    })}
+                </div>
+
+                {/* Experience */}
+                {formData.experience[0]?.position && (
+                    <div className="mb-4">
+                        <h4 className="text-xs font-semibold text-primary-500 dark:text-primary-400 uppercase tracking-wide mb-2">Experience</h4>
+                        {formData.experience.map((exp, i) => (
+                            exp.position && (
+                                <div key={i} className="text-sm mb-1">
+                                    <span className="font-medium text-text-light-primary dark:text-white">{exp.position}</span>
+                                    <span className="text-text-light-secondary dark:text-gray-400"> at {exp.company} ({exp.startDate} - {exp.endDate})</span>
+                                </div>
+                            )
+                        ))}
+                    </div>
+                )}
+
+                {/* Skills */}
+                {formData.technicalSkills.length > 0 && (
+                    <div className="mb-4">
+                        <h4 className="text-xs font-semibold text-primary-500 dark:text-primary-400 uppercase tracking-wide mb-2">Skills</h4>
+                        <div className="flex flex-wrap gap-1.5">
+                            {formData.technicalSkills.map((skill, i) => (
+                                <span key={i} className="px-2 py-0.5 bg-light-100 dark:bg-dark-700 text-text-light-primary dark:text-gray-300 rounded text-xs">{skill}</span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Tools */}
+                {formData.tools.length > 0 && (
+                    <div>
+                        <h4 className="text-xs font-semibold text-primary-500 dark:text-primary-400 uppercase tracking-wide mb-2">Tools</h4>
+                        <p className="text-sm text-text-light-secondary dark:text-gray-400">{formData.tools.join(', ')}</p>
+                    </div>
+                )}
+            </div>
+
+            {/* ATS Score */}
+            <div className="p-4 bg-gradient-to-r from-green-500/10 to-primary-500/10 dark:from-green-500/20 dark:to-primary-500/20 rounded-xl border border-green-500/20">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <FileCheck className="w-6 h-6 text-green-500" />
+                        <span className="font-medium text-text-light-primary dark:text-white">ATS Compatibility</span>
+                    </div>
+                    <span className="text-lg font-bold text-green-500">{calculateATSScore()}% Optimized</span>
+                </div>
+            </div>
+        </div>
+    )
+
     const renderStepContent = () => {
+        // Handle special states for Step 4
+        if (currentStep === STEPS.length - 1) {
+            if (generateState === 'generating') return renderGenerating()
+            if (generateState === 'preview') return renderPreview()
+        }
+
         switch (STEPS[currentStep].id) {
             case 'personal': return renderPersonalDetails()
             case 'academic': return renderAcademicBackground()
@@ -836,25 +957,41 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
                     </button>
 
                     {currentStep === STEPS.length - 1 ? (
-                        <div className="flex items-center gap-2">
+                        generateState === 'preview' ? (
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={handleCopyText}
+                                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${copied
+                                        ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                                        : 'bg-light-100 dark:bg-dark-700 text-text-light-primary dark:text-white hover:bg-light-200 dark:hover:bg-dark-600'
+                                        }`}
+                                >
+                                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                    {copied ? 'Copied!' : 'Copy Text'}
+                                </button>
+                                <PDFDownloadLink
+                                    document={<ResumePDF data={formData} />}
+                                    fileName={`${formData.fullName || 'Resume'}_CV.pdf`}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all"
+                                >
+                                    <Download className="w-4 h-4" /> Download PDF
+                                </PDFDownloadLink>
+                            </div>
+                        ) : generateState === 'generating' ? (
                             <button
-                                onClick={handleCopyText}
-                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${copied
-                                    ? 'bg-green-500/10 text-green-600 dark:text-green-400'
-                                    : 'bg-light-100 dark:bg-dark-700 text-text-light-primary dark:text-white hover:bg-light-200 dark:hover:bg-dark-600'
-                                    }`}
+                                disabled
+                                className="flex items-center gap-2 px-6 py-2.5 bg-light-200 dark:bg-dark-700 text-text-light-secondary dark:text-gray-500 rounded-xl font-medium cursor-not-allowed"
                             >
-                                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                                {copied ? 'Copied!' : 'Copy Text'}
+                                Generating...
                             </button>
-                            <PDFDownloadLink
-                                document={<ResumePDF data={formData} />}
-                                fileName={`${formData.fullName || 'Resume'}_CV.pdf`}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all"
+                        ) : (
+                            <button
+                                onClick={handleGenerate}
+                                className="flex items-center gap-2 px-6 py-2.5 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all"
                             >
-                                <Download className="w-4 h-4" /> Generate PDF
-                            </PDFDownloadLink>
-                        </div>
+                                <Sparkles className="w-4 h-4" /> Generate
+                            </button>
+                        )
                     ) : (
                         <button
                             onClick={nextStep}
