@@ -50,8 +50,8 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
         education: {
             ssc: { passingYear: '', result: '', institution: '', subject: '' },
             hsc: { passingYear: '', result: '', institution: '', subject: '' },
-            honors: { passingYear: '', result: '', institution: '', subject: '' },
-            masters: { passingYear: '', result: '', institution: '', subject: '' },
+            honors: { passingYear: '', result: '', institution: '', degree: '', major: '' },
+            masters: { passingYear: '', result: '', institution: '', degree: '', major: '' },
         },
         expandedEducation: ['ssc'],
 
@@ -471,16 +471,42 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
                                         placeholder="School / College / University"
                                     />
                                 </div>
-                                <div>
-                                    <label className="text-xs text-text-light-secondary dark:text-gray-400 mb-1 block">Group / Subject</label>
-                                    <input
-                                        type="text"
-                                        value={edu.subject}
-                                        onChange={(e) => updateEducation(cat.id, 'subject', e.target.value)}
-                                        className={inputClass}
-                                        placeholder="e.g., Science, CSE, MBA"
-                                    />
-                                </div>
+                                {/* Different fields for SSC/HSC vs Bachelor's/Master's */}
+                                {(cat.id === 'ssc' || cat.id === 'hsc') ? (
+                                    <div>
+                                        <label className="text-xs text-text-light-secondary dark:text-gray-400 mb-1 block">Group / Subject</label>
+                                        <input
+                                            type="text"
+                                            value={edu.subject}
+                                            onChange={(e) => updateEducation(cat.id, 'subject', e.target.value)}
+                                            className={inputClass}
+                                            placeholder="e.g., Science, Commerce, Arts"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label className="text-xs text-text-light-secondary dark:text-gray-400 mb-1 block">Degree Name</label>
+                                            <input
+                                                type="text"
+                                                value={edu.degree}
+                                                onChange={(e) => updateEducation(cat.id, 'degree', e.target.value)}
+                                                className={inputClass}
+                                                placeholder="e.g., B.Sc, BBA, MBA"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs text-text-light-secondary dark:text-gray-400 mb-1 block">Major</label>
+                                            <input
+                                                type="text"
+                                                value={edu.major}
+                                                onChange={(e) => updateEducation(cat.id, 'major', e.target.value)}
+                                                className={inputClass}
+                                                placeholder="e.g., Computer Science"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

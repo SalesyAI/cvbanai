@@ -261,21 +261,25 @@ const ResumePDF = ({ data }) => {
                         <View style={styles.eduTable}>
                             {/* Table Header */}
                             <View style={styles.eduHeader}>
-                                <Text style={[styles.eduHeaderText, { width: '18%' }]}>Level</Text>
-                                <Text style={[styles.eduHeaderText, { width: '40%' }]}>Institution</Text>
-                                <Text style={[styles.eduHeaderText, { width: '20%' }]}>Subject</Text>
-                                <Text style={[styles.eduHeaderText, { width: '10%', textAlign: 'center' }]}>Year</Text>
-                                <Text style={[styles.eduHeaderText, { width: '12%', textAlign: 'right' }]}>Result</Text>
+                                <Text style={[styles.eduHeaderText, { width: '15%' }]}>Level</Text>
+                                <Text style={[styles.eduHeaderText, { width: '35%' }]}>Institution</Text>
+                                <Text style={[styles.eduHeaderText, { width: '25%' }]}>Degree/Subject</Text>
+                                <Text style={[styles.eduHeaderText, { width: '12%', textAlign: 'center' }]}>Year</Text>
+                                <Text style={[styles.eduHeaderText, { width: '13%', textAlign: 'right' }]}>Result</Text>
                             </View>
                             {/* Table Rows */}
                             {['ssc', 'hsc', 'honors', 'masters'].map(key => {
                                 const edu = data.education[key];
                                 if (!edu?.institution) return null;
+                                // For SSC/HSC use subject, for Bachelor's/Master's use degree + major
+                                const degreeOrSubject = (key === 'ssc' || key === 'hsc')
+                                    ? (edu.subject || '-')
+                                    : (edu.degree && edu.major ? `${edu.degree} in ${edu.major}` : edu.degree || edu.major || '-');
                                 return (
                                     <View key={key} style={styles.eduRow}>
                                         <Text style={styles.eduLevel}>{EDUCATION_LABELS[key]}</Text>
                                         <Text style={styles.eduInst}>{edu.institution}</Text>
-                                        <Text style={styles.eduSubject}>{edu.subject || '-'}</Text>
+                                        <Text style={styles.eduSubject}>{degreeOrSubject}</Text>
                                         <Text style={styles.eduYear}>{edu.passingYear}</Text>
                                         <Text style={styles.eduResult}>{edu.result}</Text>
                                     </View>
