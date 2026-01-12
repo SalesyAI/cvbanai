@@ -14,6 +14,7 @@ import PaymentSuccessModal from '../components/PaymentSuccessModal'
 import PaymentModal from '../components/PaymentModal'
 import LinkedInOptimizerWorkflow from '../components/LinkedInOptimizerWorkflow'
 import PortfolioWhatsAppModal from '../components/PortfolioWhatsAppModal'
+import CVGeneratorFlow from '../components/CVGeneratorFlow'
 import { resumeService } from '../services/resumeService'
 
 const VIEWS = {
@@ -25,6 +26,7 @@ const VIEWS = {
     LINKEDIN: 'linkedin',
     PORTFOLIO: 'portfolio',
     LINKEDIN_WORKFLOW: 'linkedin_workflow',
+    CV_GENERATOR: 'cv_generator',
 }
 
 export default function Dashboard() {
@@ -155,7 +157,7 @@ export default function Dashboard() {
         setResumeData(null)
         setRefinedData(null)
         setCurrentResumeId(null)
-        setCurrentView(VIEWS.MODAL)
+        setCurrentView(VIEWS.CV_GENERATOR)
     }
 
     const handleFormComplete = async (formData) => {
@@ -280,6 +282,10 @@ export default function Dashboard() {
     }
 
     // === RENDER VIEWS ===
+    if (currentView === VIEWS.CV_GENERATOR) {
+        return <CVGeneratorFlow onComplete={handleFormComplete} onBack={handleBackToHome} />
+    }
+
     if (currentView === VIEWS.MODAL) {
         return <MultiStepModal onComplete={handleFormComplete} onClose={handleBackToHome} initialData={resumeData} />
     }
