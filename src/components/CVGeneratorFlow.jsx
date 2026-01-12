@@ -297,6 +297,18 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
         return Math.min(score, 98)
     }
 
+    // Handle photo upload
+    const handlePhotoUpload = (e) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                updateField('profilePhoto', reader.result)
+            }
+            reader.readAsDataURL(file)
+        }
+    }
+
     const inputClass = "w-full px-4 py-3 bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-700 rounded-xl text-text-light-primary dark:text-white placeholder:text-text-light-secondary/50 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
     const labelClass = "block text-sm font-medium text-text-light-primary dark:text-gray-300 mb-2"
 
@@ -313,9 +325,15 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
                             <User className="w-10 h-10 text-text-light-secondary/50 dark:text-gray-600" />
                         )}
                     </div>
-                    <button className="absolute bottom-0 right-0 w-8 h-8 bg-primary-500 dark:bg-primary-400 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform">
+                    <label className="absolute bottom-0 right-0 w-8 h-8 bg-primary-500 dark:bg-primary-400 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform cursor-pointer">
                         <Camera className="w-4 h-4" />
-                    </button>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePhotoUpload}
+                            className="hidden"
+                        />
+                    </label>
                 </div>
             </div>
 
