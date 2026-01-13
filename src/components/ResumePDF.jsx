@@ -72,17 +72,19 @@ const styles = StyleSheet.create({
     // Skills
     skillRow: {
         flexDirection: 'row',
-        marginBottom: 2,
+        marginBottom: 3,
     },
     skillLabel: {
         fontWeight: 'bold',
         fontFamily: 'Times-Bold',
         fontSize: 10,
-        width: 100, // Fixed width for labels
+        width: 130, // Wider to fit longer category names
+        flexShrink: 0, // Don't shrink
     },
     skillValue: {
         flex: 1,
         fontSize: 10,
+        lineHeight: 1.3,
     },
     // Experience/Education item
     itemContainer: {
