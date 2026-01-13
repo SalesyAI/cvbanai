@@ -6,6 +6,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer'
 import ResumePDF from './ResumePDF'
 import QuickStartForm from './QuickStartForm'
 import ResumeEditor from './ResumeEditor'
+import { useAuth } from '../context/AuthContext'
 
 const STEPS = [
     { id: 'quick-start', title: 'Quick Start', subtitle: 'Enter basic details' },
@@ -14,6 +15,7 @@ const STEPS = [
 ]
 
 export default function CVGeneratorFlow({ onComplete, onBack }) {
+    const { session } = useAuth()
     const [currentStep, setCurrentStep] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(null)
@@ -31,7 +33,10 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
         try {
             const response = await fetch('/api/generate-resume', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session?.access_token}`
+                },
                 body: JSON.stringify({ quickInput })
             })
 
