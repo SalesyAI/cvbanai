@@ -1,13 +1,21 @@
 import { useState, useRef, useEffect } from 'react'
 import {
-    User, Mail, Phone, MapPin, Briefcase, GraduationCap, Building2, ChevronDown
+    User, Mail, Phone, MapPin, Briefcase, GraduationCap, Building2, ChevronDown, Plus, Trash2, CheckSquare, Square
 } from 'lucide-react'
 import {
-    JOB_TITLE_SUGGESTIONS, EXPERIENCE_LEVELS, EDUCATION_LEVELS,
+    JOB_TITLE_SUGGESTIONS, EXPERIENCE_LEVELS,
     COMMON_DEGREES, COMMON_MAJORS
 } from '../data/jobRoleTemplates'
 
-const YEARS = Array.from({ length: 10 }, (_, i) => 2026 - i)
+const YEARS = Array.from({ length: 15 }, (_, i) => 2026 - i)
+
+// Standard education levels for Bangladesh context
+const EDUCATION_TIERS = [
+    { id: 'masters', label: "Master's / Post-Graduation", type: 'degree' },
+    { id: 'bachelors', label: "Bachelor's / Honors", type: 'degree' },
+    { id: 'hsc', label: 'HSC / A-Level / Diploma', type: 'school' },
+    { id: 'ssc', label: 'SSC / O-Level', type: 'school' },
+]
 
 export default function QuickStartForm({ onSubmit, isLoading }) {
     const [formData, setFormData] = useState({
@@ -21,12 +29,8 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
         targetJobTitle: '',
         experienceLevel: '',
 
-        // Education (5 fields)
-        highestEducation: '',
-        degree: '',
-        major: '',
-        institution: '',
-        passingYear: '',
+        // Education (New structure)
+        education: {}, // Will store objects keyed by tier id (e.g., 'bachelors': { ... })
 
         // Optional Experience (2 fields)
         currentCompany: '',
@@ -40,6 +44,38 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
     // Update field helper
     const updateField = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }))
+    }
+
+    // Toggle education tier
+    const toggleEducation = (tierId) => {
+        setFormData(prev => {
+            const current = { ...prev.education }
+            if (current[tierId]) {
+                delete current[tierId]
+            } else {
+                // Initialize empty fields for this tier
+                current[tierId] = {
+                    level: EDUCATION_TIERS.find(t => t.id === tierId).label,
+                    degree: '',
+                    major: '', // or Group for school
+                    institution: '',
+                    passingYear: '',
+                    result: ''
+                }
+            }
+            return { ...prev, education: current }
+        })
+    }
+
+    // Update specific education field
+    const updateEducationField = (tierId, field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            education: {
+                ...prev.education,
+                [tierId]: { ...prev.education[tierId], [field]: value }
+            }
+        }))
     }
 
     // Job title autocomplete
@@ -71,8 +107,9 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
     }
 
     // Validation
+    const hasEducation = Object.keys(formData.education).length > 0
     const isValid = formData.fullName && formData.email && formData.targetJobTitle &&
-        formData.experienceLevel && formData.highestEducation
+        formData.experienceLevel && hasEducation
 
     const inputClass = "w-full px-4 py-3 bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-700 rounded-xl text-text-light-primary dark:text-white placeholder:text-text-light-secondary/50 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
     const labelClass = "block text-sm font-medium text-text-light-primary dark:text-gray-300 mb-2"
@@ -206,89 +243,139 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
                 </div>
             </div>
 
-            {/* Section 3: Education */}
+            {/* Section 3: Education Details */}
             <div className={sectionClass}>
                 <h3 className="text-sm font-semibold text-primary-500 dark:text-primary-400 uppercase tracking-wide flex items-center gap-2">
-                    <GraduationCap className="w-4 h-4" /> Education
+                    <GraduationCap className="w-4 h-4" /> Education Details <span className="text-red-500">*</span>
                 </h3>
 
-                {/* Education Level */}
-                <div>
-                    <label className={labelClass}>Highest Education <span className="text-red-500">*</span></label>
-                    <div className="relative">
-                        <select
-                            value={formData.highestEducation}
-                            onChange={(e) => updateField('highestEducation', e.target.value)}
-                            className={`${inputClass} appearance-none cursor-pointer`}
-                            required
-                        >
-                            <option value="">Select education level</option>
-                            {EDUCATION_LEVELS.map(level => (
-                                <option key={level.value} value={level.value}>{level.label}</option>
-                            ))}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-light-secondary/50 dark:text-gray-500 pointer-events-none" />
-                    </div>
-                </div>
+                <div className="space-y-3">
+                    <p className="text-sm text-text-light-secondary dark:text-gray-400 mb-2">Select all that apply:</p>
 
-                {/* Degree & Major */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label className={labelClass}>Degree</label>
-                        <input
-                            type="text"
-                            value={formData.degree}
-                            onChange={(e) => updateField('degree', e.target.value)}
-                            className={inputClass}
-                            placeholder="e.g., BBA, BSc, MBA"
-                            list="degree-suggestions"
-                        />
-                        <datalist id="degree-suggestions">
-                            {COMMON_DEGREES.map(deg => <option key={deg} value={deg} />)}
-                        </datalist>
-                    </div>
-                    <div>
-                        <label className={labelClass}>Major / Field</label>
-                        <input
-                            type="text"
-                            value={formData.major}
-                            onChange={(e) => updateField('major', e.target.value)}
-                            className={inputClass}
-                            placeholder="e.g., Marketing, Computer Science"
-                            list="major-suggestions"
-                        />
-                        <datalist id="major-suggestions">
-                            {COMMON_MAJORS.map(major => <option key={major} value={major} />)}
-                        </datalist>
-                    </div>
-                </div>
+                    {EDUCATION_TIERS.map((tier) => {
+                        const isSelected = !!formData.education[tier.id]
+                        const data = formData.education[tier.id] || {}
 
-                {/* Institution & Year */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label className={labelClass}>Institution</label>
-                        <input
-                            type="text"
-                            value={formData.institution}
-                            onChange={(e) => updateField('institution', e.target.value)}
-                            className={inputClass}
-                            placeholder="University / College name"
-                        />
-                    </div>
-                    <div>
-                        <label className={labelClass}>Passing Year</label>
-                        <div className="relative">
-                            <select
-                                value={formData.passingYear}
-                                onChange={(e) => updateField('passingYear', e.target.value)}
-                                className={`${inputClass} appearance-none cursor-pointer`}
-                            >
-                                <option value="">Select year</option>
-                                {YEARS.map(year => <option key={year} value={year}>{year}</option>)}
-                            </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-light-secondary/50 dark:text-gray-500 pointer-events-none" />
-                        </div>
-                    </div>
+                        return (
+                            <div key={tier.id} className={`border rounded-xl transition-all ${isSelected
+                                    ? 'border-primary-500 bg-primary-50/10 dark:bg-primary-500/5'
+                                    : 'border-light-200 dark:border-dark-700 hover:border-light-300 dark:hover:border-dark-600'
+                                }`}>
+                                {/* Checkbox Header */}
+                                <label className="flex items-center gap-3 p-4 cursor-pointer select-none">
+                                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isSelected
+                                            ? 'bg-primary-500 border-primary-500 text-white'
+                                            : 'border-text-light-secondary/30 dark:border-gray-600 bg-white dark:bg-dark-800'
+                                        }`}>
+                                        {isSelected && <CheckSquare className="w-3.5 h-3.5 fill-current" />}
+                                    </div>
+                                    <input
+                                        type="checkbox"
+                                        checked={isSelected}
+                                        onChange={() => toggleEducation(tier.id)}
+                                        className="hidden"
+                                    />
+                                    <span className={`font-medium ${isSelected ? 'text-primary-600 dark:text-primary-400' : 'text-text-light-primary dark:text-gray-300'}`}>
+                                        {tier.label}
+                                    </span>
+                                </label>
+
+                                {/* Expanded Fields */}
+                                {isSelected && (
+                                    <div className="p-4 pt-0 grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in-up">
+                                        {/* Degree Name (for Bachelors/Masters) */}
+                                        {tier.type === 'degree' && (
+                                            <div>
+                                                <label className={labelClass}>Degree Name</label>
+                                                <input
+                                                    type="text"
+                                                    value={data.degree}
+                                                    onChange={(e) => updateEducationField(tier.id, 'degree', e.target.value)}
+                                                    className={inputClass}
+                                                    placeholder="e.g., BBA, BSc, MBA"
+                                                    list="degree-suggestions"
+                                                />
+                                            </div>
+                                        )}
+
+                                        {/* Major / Group */}
+                                        {tier.type === 'degree' ? (
+                                            <div>
+                                                <label className={labelClass}>Major / Subject</label>
+                                                <input
+                                                    type="text"
+                                                    value={data.major}
+                                                    onChange={(e) => updateEducationField(tier.id, 'major', e.target.value)}
+                                                    className={inputClass}
+                                                    placeholder="e.g., Marketing, CS"
+                                                    list="major-suggestions"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <label className={labelClass}>Group</label>
+                                                <input
+                                                    type="text"
+                                                    value={data.major}
+                                                    onChange={(e) => updateEducationField(tier.id, 'major', e.target.value)}
+                                                    className={inputClass}
+                                                    placeholder="e.g., Science, Business Studies"
+                                                />
+                                            </div>
+                                        )}
+
+                                        {/* Institution */}
+                                        <div className="sm:col-span-2">
+                                            <label className={labelClass}>Institution Name</label>
+                                            <input
+                                                type="text"
+                                                value={data.institution}
+                                                onChange={(e) => updateEducationField(tier.id, 'institution', e.target.value)}
+                                                className={inputClass}
+                                                placeholder="School / College / University"
+                                            />
+                                        </div>
+
+                                        {/* Passing Year */}
+                                        <div>
+                                            <label className={labelClass}>Passing Year</label>
+                                            <div className="relative">
+                                                <select
+                                                    value={data.passingYear}
+                                                    onChange={(e) => updateEducationField(tier.id, 'passingYear', e.target.value)}
+                                                    className={`${inputClass} appearance-none cursor-pointer`}
+                                                >
+                                                    <option value="">Year</option>
+                                                    {YEARS.map(year => <option key={year} value={year}>{year}</option>)}
+                                                </select>
+                                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-light-secondary/50 dark:text-gray-500 pointer-events-none" />
+                                            </div>
+                                        </div>
+
+                                        {/* Result (Optional) */}
+                                        <div>
+                                            <label className={labelClass}>Result / GPA</label>
+                                            <input
+                                                type="text"
+                                                value={data.result}
+                                                onChange={(e) => updateEducationField(tier.id, 'result', e.target.value)}
+                                                className={inputClass}
+                                                placeholder="e.g., 5.00, 3.75"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )
+                    })}
+
+                    {/* Datalists for suggestions */}
+                    <datalist id="degree-suggestions">
+                        {COMMON_DEGREES.map(deg => <option key={deg} value={deg} />)}
+                    </datalist>
+                    <datalist id="major-suggestions">
+                        {COMMON_MAJORS.map(major => <option key={major} value={major} />)}
+                    </datalist>
                 </div>
             </div>
 

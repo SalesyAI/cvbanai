@@ -75,12 +75,19 @@ export default async function handler(req, res) {
         }
 
         // Validate required fields
-        const requiredFields = ['fullName', 'email', 'targetJobTitle', 'experienceLevel', 'highestEducation'];
+        const requiredFields = ['fullName', 'email', 'targetJobTitle', 'experienceLevel'];
         const missingFields = requiredFields.filter(field => !quickInput[field]);
 
         if (missingFields.length > 0) {
             return res.status(400).json({
                 error: `Missing required fields: ${missingFields.join(', ')}`
+            });
+        }
+
+        // Validate education
+        if (!quickInput.education || Object.keys(quickInput.education).length === 0) {
+            return res.status(400).json({
+                error: `At least one education level is required`
             });
         }
 
