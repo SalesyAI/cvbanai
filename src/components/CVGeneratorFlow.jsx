@@ -29,7 +29,7 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
         setError(null)
 
         try {
-            const response = await fetch('http://localhost:3001/api/generate-resume', {
+            const response = await fetch('/api/generate-resume', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ quickInput })
