@@ -73,13 +73,15 @@ const styles = StyleSheet.create({
     skillRow: {
         flexDirection: 'row',
         marginBottom: 3,
+        flexWrap: 'nowrap',
     },
     skillLabel: {
         fontWeight: 'bold',
         fontFamily: 'Times-Bold',
         fontSize: 10,
-        width: 130, // Wider to fit longer category names
-        flexShrink: 0, // Don't shrink
+        width: 150, // Wide enough for longer category names
+        minWidth: 150,
+        flexShrink: 0, // Never shrink
     },
     skillValue: {
         flex: 1,
