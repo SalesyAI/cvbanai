@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import { refineResume } from './gemini.js';
+import { generateFullResume } from '../lib/ai/generateFullResume.js';
 import { generateCoverLetter } from '../lib/ai/generateCoverLetter.js';
 import { calculateAtsScore } from '../lib/ai/calculateAtsScore.js';
 import { createPayment, executePayment } from '../lib/payment/bkash.js';
@@ -109,6 +110,40 @@ app.post('/api/ats-score', async (req, res) => {
     } catch (error) {
         console.error('ATS Score error:', error);
         res.status(500).json({ error: error.message || 'ATS score calculation failed' });
+    }
+});
+
+// Full Resume Generation endpoint (AI-first)
+app.post('/api/generate-resume', async (req, res) => {
+    try {
+        const { quickInput } = req.body;
+
+        if (!quickInput) {
+            return res.status(400).json({ error: 'Missing quickInput in request body' });
+        }
+
+        // Validate required fields
+        const requiredFields = ['fullName', 'email', 'targetJobTitle', 'experienceLevel', 'highestEducation'];
+        const missingFields = requiredFields.filter(field => !quickInput[field]);
+
+        if (missingFields.length > 0) {
+            return res.status(400).json({
+                error: `Missing required fields: ${missingFields.join(', ')}`
+            });
+        }
+
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ error: 'GEMINI_API_KEY not configured.' });
+        }
+
+        console.log(`[API] Generating full resume for: ${quickInput.fullName} - ${quickInput.targetJobTitle}`);
+        const resumeData = await generateFullResume(quickInput, process.env.GEMINI_API_KEY);
+
+        console.log('[API] Full resume generation complete!');
+        res.json({ success: true, resumeData });
+    } catch (error) {
+        console.error('Resume generation error:', error);
+        res.status(500).json({ error: error.message || 'Resume generation failed' });
     }
 });
 
