@@ -272,25 +272,44 @@ const ResumePDF = ({ data }) => {
                             const edu = data.education[key];
                             if (!edu?.institution) return null;
 
-                            // Format degree display
+                            // Format degree display based on type
                             let degreeDisplay = '';
-                            if (key === 'ssc' || key === 'hsc') {
-                                degreeDisplay = edu.subject ? `${EDUCATION_LABELS[key]} in ${edu.subject}` : EDUCATION_LABELS[key];
-                            } else {
+                            let gradeLabel = 'GPA';
+
+                            if (key === 'masters') {
                                 degreeDisplay = edu.degree && edu.major
-                                    ? `${edu.degree} in ${edu.major}`
-                                    : (edu.degree || edu.major || EDUCATION_LABELS[key]);
+                                    ? `Masters of ${edu.major} (${edu.degree}) in ${edu.major}`
+                                    : `Masters Degree${edu.major ? ' in ' + edu.major : ''}`;
+                                gradeLabel = 'CGPA';
+                            } else if (key === 'honors') {
+                                degreeDisplay = edu.degree && edu.major
+                                    ? `Bachelor of ${edu.major} (${edu.degree}) in ${edu.major}`
+                                    : `Bachelor's Degree${edu.major ? ' in ' + edu.major : ''}`;
+                                gradeLabel = 'CGPA';
+                            } else if (key === 'hsc') {
+                                degreeDisplay = `Higher Secondary Certificate (HSC)${edu.subject ? ', ' + edu.subject : ''}`;
+                            } else if (key === 'ssc') {
+                                degreeDisplay = `Secondary School Certificate (SSC)${edu.subject ? ', ' + edu.subject : ''}`;
                             }
+
+                            // Format result display
+                            const resultDisplay = edu.result
+                                ? `${gradeLabel}: ${edu.result}${key === 'masters' || key === 'honors' ? ' out of 4.00' : ' out of 5.00'}`
+                                : '';
 
                             return (
                                 <View key={key} style={styles.eduItem}>
+                                    {/* Row 1: Degree | CGPA/GPA */}
                                     <View style={styles.eduRow}>
                                         <Text style={styles.itemTitle}>{degreeDisplay}</Text>
-                                        <Text style={styles.itemDates}>{edu.passingYear}</Text>
+                                        <Text style={styles.itemDates}>{resultDisplay}</Text>
                                     </View>
+                                    {/* Row 2: Institution | Year */}
                                     <View style={styles.eduRow}>
-                                        <Text style={styles.itemCompany}>{edu.institution}</Text>
-                                        <Text style={styles.itemLocation}>{edu.result}</Text>
+                                        <Text style={styles.itemSubtitle}>{edu.institution}</Text>
+                                        <Text style={styles.itemLocation}>
+                                            {edu.passingYear ? `Year: ${edu.passingYear}` : ''}
+                                        </Text>
                                     </View>
                                 </View>
                             );
