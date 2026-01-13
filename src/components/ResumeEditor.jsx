@@ -53,9 +53,21 @@ function SectionCard({ title, icon: Icon, children, isOpen, onToggle, onRegenera
     )
 }
 
+// Category color classes for visual distinction
+const CATEGORY_COLORS = [
+    'bg-primary-500/10 text-primary-600 dark:text-primary-400',
+    'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+    'bg-green-500/10 text-green-600 dark:text-green-400',
+    'bg-purple-500/10 text-purple-600 dark:text-purple-400',
+    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+]
+
 export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
     const [openSections, setOpenSections] = useState(['summary', 'skills'])
     const [regenerating, setRegenerating] = useState(null)
+    const [editingCategory, setEditingCategory] = useState(null)
+    const [newSkillInput, setNewSkillInput] = useState('')
+    const [newCategoryName, setNewCategoryName] = useState('')
 
     const toggleSection = (section) => {
         setOpenSections(prev =>
@@ -89,28 +101,44 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
         }
     }
 
-    // Skills helpers
-    const [newSkill, setNewSkill] = useState('')
-    const addSkill = () => {
-        if (newSkill.trim() && !resumeData.technicalSkills.includes(newSkill.trim())) {
-            handleFieldChange('technicalSkills', [...resumeData.technicalSkills, newSkill.trim()])
-            setNewSkill('')
-        }
-    }
-    const removeSkill = (skill) => {
-        handleFieldChange('technicalSkills', resumeData.technicalSkills.filter(s => s !== skill))
+    // Skill Category helpers
+    const updateSkillCategory = (catIndex, field, value) => {
+        const updated = [...(resumeData.skillCategories || [])]
+        updated[catIndex] = { ...updated[catIndex], [field]: value }
+        handleFieldChange('skillCategories', updated)
     }
 
-    // Tools helpers
-    const [newTool, setNewTool] = useState('')
-    const addTool = () => {
-        if (newTool.trim() && !resumeData.tools.includes(newTool.trim())) {
-            handleFieldChange('tools', [...resumeData.tools, newTool.trim()])
-            setNewTool('')
+    const addSkillToCategory = (catIndex, skill) => {
+        if (!skill.trim()) return
+        const updated = [...(resumeData.skillCategories || [])]
+        const existingSkills = updated[catIndex].skills || []
+        if (!existingSkills.includes(skill.trim())) {
+            updated[catIndex] = { ...updated[catIndex], skills: [...existingSkills, skill.trim()] }
+            handleFieldChange('skillCategories', updated)
         }
+        setNewSkillInput('')
     }
-    const removeTool = (tool) => {
-        handleFieldChange('tools', resumeData.tools.filter(t => t !== tool))
+
+    const removeSkillFromCategory = (catIndex, skill) => {
+        const updated = [...(resumeData.skillCategories || [])]
+        updated[catIndex] = {
+            ...updated[catIndex],
+            skills: updated[catIndex].skills.filter(s => s !== skill)
+        }
+        handleFieldChange('skillCategories', updated)
+    }
+
+    const addNewCategory = () => {
+        if (!newCategoryName.trim()) return
+        const updated = [...(resumeData.skillCategories || []), { category: newCategoryName.trim(), skills: [] }]
+        handleFieldChange('skillCategories', updated)
+        setNewCategoryName('')
+    }
+
+    const removeCategory = (catIndex) => {
+        if ((resumeData.skillCategories?.length || 0) > 1) {
+            handleFieldChange('skillCategories', resumeData.skillCategories.filter((_, i) => i !== catIndex))
+        }
     }
 
     // Extra-curricular helpers
@@ -289,69 +317,117 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
                 </button>
             </SectionCard>
 
-            {/* Skills */}
+            {/* Categorized Skills */}
             <SectionCard
-                title="Technical Skills"
+                title="Skills"
                 icon={Wrench}
                 isOpen={openSections.includes('skills')}
                 onToggle={() => toggleSection('skills')}
                 onRegenerate={() => handleRegenerate('skills')}
                 regenerating={regenerating === 'skills'}
             >
-                <div className="flex flex-wrap gap-2 mb-3">
-                    {resumeData.technicalSkills?.map((skill, i) => (
-                        <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-500/10 text-primary-600 dark:text-primary-400 rounded-full text-sm">
-                            {skill}
-                            <button onClick={() => removeSkill(skill)} className="hover:text-red-500">
-                                <X className="w-3.5 h-3.5" />
-                            </button>
-                        </span>
-                    ))}
-                </div>
-                <div className="flex gap-2">
-                    <input
-                        type="text"
-                        value={newSkill}
-                        onChange={(e) => setNewSkill(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
-                        className={`flex-1 ${inputClass}`}
-                        placeholder="Add a skill..."
-                    />
-                    <button onClick={addSkill} className="px-4 py-2 bg-primary-500 hover:bg-primary-600 rounded-xl text-white text-sm">
-                        Add
-                    </button>
-                </div>
-            </SectionCard>
+                <div className="space-y-4">
+                    {resumeData.skillCategories?.map((cat, catIndex) => {
+                        const colorClass = CATEGORY_COLORS[catIndex % CATEGORY_COLORS.length]
+                        return (
+                            <div key={catIndex} className="p-3 bg-white dark:bg-dark-900 rounded-lg border border-light-100 dark:border-dark-600">
+                                {/* Category Header */}
+                                <div className="flex items-center justify-between mb-2">
+                                    {editingCategory === catIndex ? (
+                                        <input
+                                            type="text"
+                                            value={cat.category}
+                                            onChange={(e) => updateSkillCategory(catIndex, 'category', e.target.value)}
+                                            onBlur={() => setEditingCategory(null)}
+                                            onKeyPress={(e) => e.key === 'Enter' && setEditingCategory(null)}
+                                            className="text-sm font-semibold text-text-light-primary dark:text-white bg-transparent border-b border-primary-500 focus:outline-none"
+                                            autoFocus
+                                        />
+                                    ) : (
+                                        <span
+                                            className="text-sm font-semibold text-text-light-primary dark:text-white cursor-pointer hover:text-primary-500"
+                                            onClick={() => setEditingCategory(catIndex)}
+                                        >
+                                            {cat.category}
+                                        </span>
+                                    )}
 
-            {/* Tools */}
-            <SectionCard
-                title="Tools & Software"
-                icon={Wrench}
-                isOpen={openSections.includes('tools')}
-                onToggle={() => toggleSection('tools')}
-            >
-                <div className="flex flex-wrap gap-2 mb-3">
-                    {resumeData.tools?.map((tool, i) => (
-                        <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-full text-sm">
-                            {tool}
-                            <button onClick={() => removeTool(tool)} className="hover:text-red-500">
-                                <X className="w-3.5 h-3.5" />
-                            </button>
-                        </span>
-                    ))}
-                </div>
-                <div className="flex gap-2">
-                    <input
-                        type="text"
-                        value={newTool}
-                        onChange={(e) => setNewTool(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTool())}
-                        className={`flex-1 ${inputClass}`}
-                        placeholder="Add a tool..."
-                    />
-                    <button onClick={addTool} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-xl text-white text-sm">
-                        Add
-                    </button>
+                                    <div className="flex items-center gap-1">
+                                        <button
+                                            onClick={() => setEditingCategory(catIndex)}
+                                            className="p-1 text-text-light-secondary hover:text-primary-500"
+                                            title="Rename category"
+                                        >
+                                            <Edit3 className="w-3.5 h-3.5" />
+                                        </button>
+                                        {(resumeData.skillCategories?.length || 0) > 1 && (
+                                            <button
+                                                onClick={() => removeCategory(catIndex)}
+                                                className="p-1 text-text-light-secondary hover:text-red-500"
+                                                title="Remove category"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Skills in Category */}
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                    {cat.skills?.map((skill, skillIndex) => (
+                                        <span key={skillIndex} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm ${colorClass}`}>
+                                            {skill}
+                                            <button onClick={() => removeSkillFromCategory(catIndex, skill)} className="hover:text-red-500">
+                                                <X className="w-3.5 h-3.5" />
+                                            </button>
+                                        </span>
+                                    ))}
+                                </div>
+
+                                {/* Add Skill to Category */}
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={editingCategory === catIndex ? newSkillInput : ''}
+                                        onChange={(e) => { setEditingCategory(catIndex); setNewSkillInput(e.target.value) }}
+                                        onFocus={() => setEditingCategory(catIndex)}
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault()
+                                                addSkillToCategory(catIndex, newSkillInput)
+                                            }
+                                        }}
+                                        className={`flex-1 text-sm ${inputClass}`}
+                                        placeholder={`Add skill to ${cat.category}...`}
+                                    />
+                                    <button
+                                        onClick={() => addSkillToCategory(catIndex, newSkillInput)}
+                                        className="px-3 py-2 bg-primary-500 hover:bg-primary-600 rounded-xl text-white text-sm"
+                                    >
+                                        <Plus className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        )
+                    })}
+
+                    {/* Add New Category */}
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={newCategoryName}
+                            onChange={(e) => setNewCategoryName(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addNewCategory())}
+                            className={`flex-1 ${inputClass}`}
+                            placeholder="New category name (e.g., Cloud Technologies)..."
+                        />
+                        <button
+                            onClick={addNewCategory}
+                            className="px-4 py-2 border-2 border-dashed border-primary-300 dark:border-primary-700 rounded-xl text-primary-500 hover:bg-primary-500/10 text-sm flex items-center gap-1"
+                        >
+                            <Plus className="w-4 h-4" /> Add Category
+                        </button>
+                    </div>
                 </div>
             </SectionCard>
 

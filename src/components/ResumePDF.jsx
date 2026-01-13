@@ -182,7 +182,7 @@ const ResumePDF = ({ data }) => {
     // Check sections
     const hasEducation = Object.values(data.education || {}).some(e => e.institution);
     const hasExperience = data.experience?.some(e => e.position);
-    const hasSkills = data.technicalSkills?.length > 0 || data.tools?.length > 0;
+    const hasSkills = data.skillCategories?.some(cat => cat.skills?.length > 0);
     const hasExtra = data.extraCurricular?.some(e => e.activity);
     const hasLanguages = data.languages?.some(l => l.name);
     const hasReferences = data.references?.some(r => r.fullName);
@@ -220,22 +220,16 @@ const ResumePDF = ({ data }) => {
                     </View>
                 )}
 
-                {/* ===== TECHNICAL SKILLS ===== */}
+                {/* ===== SKILLS (Categorized) ===== */}
                 {hasSkills && (
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Technical Skills</Text>
-                        {data.technicalSkills?.length > 0 && (
-                            <View style={styles.skillRow}>
-                                <Text style={styles.skillLabel}>Technical Skills:</Text>
-                                <Text style={styles.skillValue}>{data.technicalSkills.join(', ')}</Text>
+                        {data.skillCategories.map((cat, i) => cat.skills?.length > 0 && (
+                            <View key={i} style={styles.skillRow}>
+                                <Text style={styles.skillLabel}>{cat.category}:</Text>
+                                <Text style={styles.skillValue}>{cat.skills.join(', ')}</Text>
                             </View>
-                        )}
-                        {data.tools?.length > 0 && (
-                            <View style={styles.skillRow}>
-                                <Text style={styles.skillLabel}>Tools:</Text>
-                                <Text style={styles.skillValue}>{data.tools.join(', ')}</Text>
-                            </View>
-                        )}
+                        ))}
                     </View>
                 )}
 
