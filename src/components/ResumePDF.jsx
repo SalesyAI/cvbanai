@@ -69,24 +69,20 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
         lineHeight: 1.3,
     },
-    // Skills
-    skillRow: {
-        flexDirection: 'row',
-        marginBottom: 3,
-        flexWrap: 'nowrap',
+    // Skills - Stacked layout
+    skillCategory: {
+        marginBottom: 4,
     },
     skillLabel: {
         fontWeight: 'bold',
         fontFamily: 'Times-Bold',
         fontSize: 10,
-        width: 150, // Wide enough for longer category names
-        minWidth: 150,
-        flexShrink: 0, // Never shrink
+        marginBottom: 1,
     },
     skillValue: {
-        flex: 1,
         fontSize: 10,
         lineHeight: 1.3,
+        paddingLeft: 10, // Indent skills under category
     },
     // Experience/Education item
     itemContainer: {
@@ -224,12 +220,12 @@ const ResumePDF = ({ data }) => {
                     </View>
                 )}
 
-                {/* ===== SKILLS (Categorized) ===== */}
+                {/* ===== SKILLS (Stacked Layout) ===== */}
                 {hasSkills && (
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Technical Skills</Text>
                         {data.skillCategories.map((cat, i) => cat.skills?.length > 0 && (
-                            <View key={i} style={styles.skillRow}>
+                            <View key={i} style={styles.skillCategory}>
                                 <Text style={styles.skillLabel}>{cat.category}:</Text>
                                 <Text style={styles.skillValue}>{cat.skills.join(', ')}</Text>
                             </View>
