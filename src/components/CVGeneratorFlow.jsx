@@ -586,7 +586,7 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
                                     placeholder="Company"
                                 />
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-3 mb-3">
                                 <input
                                     type="text"
                                     value={exp.startDate}
@@ -600,6 +600,15 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
                                     onChange={(e) => updateExperience(index, 'endDate', e.target.value)}
                                     className={inputClass}
                                     placeholder="End (Present)"
+                                />
+                            </div>
+                            <div>
+                                <textarea
+                                    value={exp.description || ''}
+                                    onChange={(e) => updateExperience(index, 'description', e.target.value)}
+                                    className={`${inputClass} resize-none`}
+                                    rows={4}
+                                    placeholder="Job description or key achievements (AI can generate this for you)"
                                 />
                             </div>
                         </div>

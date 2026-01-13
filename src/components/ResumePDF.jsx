@@ -250,6 +250,19 @@ const ResumePDF = ({ data }) => {
                                     <Text style={styles.itemDates}>{exp.startDate} – {exp.endDate}</Text>
                                 </View>
                                 <Text style={styles.itemCompany}>{exp.company}</Text>
+                                {/* Render Description/Bullets */}
+                                {exp.description && (
+                                    <View style={{ marginTop: 2 }}>
+                                        {exp.description.split('\n').map((line, idx) => (
+                                            <View key={idx} style={styles.bulletItem}>
+                                                <Text style={styles.bullet}>{line.trim().startsWith('•') ? '' : '•'}</Text>
+                                                <Text style={styles.bulletText}>
+                                                    {line.trim().replace(/^•\s*/, '')}
+                                                </Text>
+                                            </View>
+                                        ))}
+                                    </View>
+                                )}
                             </View>
                         ))}
                     </View>
