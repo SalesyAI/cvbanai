@@ -18,6 +18,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "framer-motion": "^12.26.2",
     "google-spreadsheet": "^5.0.2",
     "lucide-react": "^0.468.0",
     "nodemailer": "^7.0.12",
