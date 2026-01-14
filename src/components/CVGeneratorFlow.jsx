@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
     ArrowLeft, X, Check, Copy, Download, Sparkles, FileCheck
 } from 'lucide-react'
@@ -122,21 +123,48 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
 
     const progress = ((currentStep + 1) / STEPS.length) * 100
 
+    // Page Transitions
+    const pageVariants = {
+        initial: { opacity: 0, y: 20, scale: 0.98 },
+        in: { opacity: 1, y: 0, scale: 1 },
+        out: { opacity: 0, y: -20, scale: 0.98 }
+    }
+
+    const pageTransition = {
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+    }
+
     // Render Step 1: Quick Start
     const renderQuickStart = () => (
-        <div className="animate-fade-in">
+        <motion.div
+            key="quick-start"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+        >
             {error && (
                 <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600 dark:text-red-400 text-sm">
                     {error}
                 </div>
             )}
             <QuickStartForm onSubmit={handleQuickStartSubmit} isLoading={isLoading} />
-        </div>
+        </motion.div>
     )
 
     // Render Step 2: Review & Customize
     const renderReview = () => (
-        <div className="animate-fade-in">
+        <motion.div
+            key="review"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+        >
             {resumeData && (
                 <>
                     {/* Success message */}
@@ -160,17 +188,28 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
                     />
                 </>
             )}
-        </div>
+        </motion.div>
     )
 
     // Render Step 3: Download
     const renderDownload = () => (
-        <div className="space-y-6 animate-fade-in">
+        <motion.div
+            key="download"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-6"
+        >
             {/* Success Header */}
             <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <motion.div
+                    initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}
+                    className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4"
+                >
                     <Check className="w-8 h-8 text-green-500" />
-                </div>
+                </motion.div>
                 <h2 className="text-xl font-bold text-text-light-primary dark:text-white">Your Resume is Ready!</h2>
                 <p className="text-sm text-text-light-secondary dark:text-gray-400">Download your professional resume</p>
             </div>
@@ -226,7 +265,7 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
                     </div>
                 )}
             </div>
-        </div>
+        </motion.div>
     )
 
     const renderStepContent = () => {
@@ -238,67 +277,79 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
         }
     }
 
+    const containerMaxWidth = currentStep === 1 ? 'max-w-3xl' : 'max-w-lg'
+
     return (
-        <div className="min-h-screen flex flex-col bg-white dark:bg-dark-950">
+        <div className="min-h-screen flex flex-col bg-light-50/50 dark:bg-dark-950 transition-colors duration-300">
             {/* Header Removed as per user request */}
 
             {/* Content */}
-            <main ref={contentRef} className="flex-1 overflow-y-auto px-4 py-6">
-                <div className="max-w-lg mx-auto">
-                    {renderStepContent()}
+            <main ref={contentRef} className="flex-1 overflow-y-auto px-4 py-8">
+                <div className={`${containerMaxWidth} mx-auto transition-all duration-500 ease-in-out`}>
+                    <AnimatePresence mode="wait">
+                        {renderStepContent()}
+                    </AnimatePresence>
                 </div>
             </main>
 
             {/* Footer Navigation */}
-            <footer className="sticky bottom-0 z-20 bg-white/95 dark:bg-dark-950/95 backdrop-blur-sm border-t border-light-200 dark:border-dark-700 px-4 py-3">
-                <div className="max-w-lg mx-auto flex items-center justify-between gap-3">
+            <motion.footer
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="sticky bottom-0 z-20 bg-white/80 dark:bg-dark-950/80 backdrop-blur-md border-t border-light-200 dark:border-dark-700 px-4 py-4"
+            >
+                <div className={`${containerMaxWidth} mx-auto flex items-center justify-between gap-3 transition-all duration-500`}>
                     {/* Back Button */}
                     <button
                         onClick={currentStep === 0 ? onBack : goBack}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-text-light-secondary dark:text-gray-400 hover:text-text-light-primary dark:hover:text-white hover:bg-light-100 dark:hover:bg-dark-800 transition-all"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-text-light-secondary dark:text-gray-400 hover:text-text-light-primary dark:hover:text-white hover:bg-light-100 dark:hover:bg-dark-800 transition-all custom-active-scale"
                     >
                         <ArrowLeft className="w-4 h-4" /> {currentStep === 0 ? 'Cancel' : 'Back'}
                     </button>
 
                     {/* Primary Action */}
                     {currentStep === 0 && (
-                        <div className="text-sm text-text-light-secondary dark:text-gray-400">
-                            Fill the form and click Generate
+                        <div className="text-sm text-text-light-secondary dark:text-gray-400 hidden sm:block">
+                            Fill details & generate
                         </div>
                     )}
 
                     {currentStep === 1 && (
-                        <button
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             onClick={proceedToDownload}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all"
+                            className="flex items-center gap-2 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 rounded-xl text-white font-medium shadow-lg shadow-primary-500/20 transition-all"
                         >
                             Continue to Download
-                        </button>
+                        </motion.button>
                     )}
 
                     {currentStep === 2 && resumeData && (
                         <div className="flex items-center gap-2">
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={handleCopyText}
                                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${copied
                                     ? 'bg-green-500/10 text-green-600 dark:text-green-400'
-                                    : 'bg-light-100 dark:bg-dark-700 text-text-light-primary dark:text-white hover:bg-light-200 dark:hover:bg-dark-600'
+                                    : 'bg-light-100 dark:bg-dark-800 text-text-light-primary dark:text-white hover:bg-light-200 dark:hover:bg-dark-700'
                                     }`}
                             >
                                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                                {copied ? 'Copied!' : 'Copy Text'}
-                            </button>
+                                <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy Text'}</span>
+                            </motion.button>
                             <PDFDownloadLink
                                 document={<ResumePDF data={resumeData} />}
                                 fileName={`${resumeData.fullName || 'Resume'}_CV.pdf`}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-500 rounded-xl text-white font-medium transition-all"
+                                className="flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 rounded-xl text-white font-medium shadow-lg shadow-primary-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                             >
                                 <Download className="w-4 h-4" /> Download PDF
                             </PDFDownloadLink>
                         </div>
                     )}
                 </div>
-            </footer>
+            </motion.footer>
         </div>
     )
 }
