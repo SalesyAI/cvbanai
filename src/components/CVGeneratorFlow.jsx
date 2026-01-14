@@ -280,7 +280,7 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
     const containerMaxWidth = currentStep === 1 ? 'max-w-3xl' : 'max-w-lg'
 
     return (
-        <div className="min-h-screen flex flex-col bg-light-50/50 dark:bg-dark-950 transition-colors duration-300">
+        <div className="min-h-screen flex flex-col bg-light-50 dark:bg-dark-950 transition-colors duration-300">
             {/* Header Removed as per user request */}
 
             {/* Content */}
