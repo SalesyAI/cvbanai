@@ -121,11 +121,25 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
     // Loading scanning animation
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center py-32 text-center">
-                <div className="loader mb-8">
-                    <span>Generating Resume</span>
+            <div className="flex flex-col items-center justify-center py-32 text-center px-4">
+                <div className="mb-8 relative">
+                    <motion.div
+                        className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-teal-400 to-primary-600 dark:from-primary-400 dark:via-teal-200 dark:to-primary-400"
+                        animate={{ backgroundPosition: ["0%", "200%"] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                        style={{ backgroundSize: "200% auto" }}
+                    >
+                        Generating Resume
+                    </motion.div>
                 </div>
-                <p className="text-gray-500 font-medium animate-pulse">Analyzing your profile and crafting content...</p>
+                <motion.p
+                    initial={{ opacity: 0.5 }}
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="text-gray-500 dark:text-gray-400 font-medium max-w-xs mx-auto"
+                >
+                    Analyzing your profile and crafting professional content...
+                </motion.p>
             </div>
         )
     }
