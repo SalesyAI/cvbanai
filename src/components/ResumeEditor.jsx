@@ -207,6 +207,33 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
         }
     }
 
+    // Reference helpers
+    const updateReference = (index, field, value) => {
+        const updated = [...(resumeData.references || [])]
+        updated[index] = { ...updated[index], [field]: value }
+        handleFieldChange('references', updated)
+    }
+
+    const addReference = () => {
+        handleFieldChange('references', [
+            ...(resumeData.references || []),
+            { fullName: '', companyPosition: '', phone: '', email: '' }
+        ])
+    }
+
+    const removeReference = (index) => {
+        handleFieldChange('references', (resumeData.references || []).filter((_, i) => i !== index))
+    }
+
+    // Declaration toggle
+    const toggleDeclaration = () => {
+        if (resumeData.declaration) {
+            handleFieldChange('declaration', '')
+        } else {
+            handleFieldChange('declaration', 'I hereby certify that the information provided above is true and correct to the best of my knowledge.')
+        }
+    }
+
     // Photo upload
     const handlePhotoUpload = (e) => {
         const file = e.target.files?.[0]
@@ -616,10 +643,93 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
                 isOpen={openSections.includes('references')}
                 onToggle={() => toggleSection('references')}
             >
-                <div className="p-4 bg-gray-50 dark:bg-dark-800/50 rounded-xl border border-dashed border-gray-300 dark:border-dark-600 text-center">
-                    <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-                        {resumeData.references?.[0]?.fullName || 'References available upon request'}
-                    </p>
+                <div className="space-y-4">
+                    {(resumeData.references || []).map((ref, index) => (
+                        <div key={index} className="p-4 bg-gray-50 dark:bg-dark-800/50 rounded-xl border border-light-200 dark:border-dark-700/50 space-y-3">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm font-medium text-gray-500">Reference {index + 1}</span>
+                                <button
+                                    type="button"
+                                    onClick={() => removeReference(index)}
+                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                            <input
+                                type="text"
+                                value={ref.fullName}
+                                onChange={(e) => updateReference(index, 'fullName', e.target.value)}
+                                className={inputClass}
+                                placeholder="Full Name (e.g. Dr. John Smith)"
+                            />
+                            <input
+                                type="text"
+                                value={ref.companyPosition}
+                                onChange={(e) => updateReference(index, 'companyPosition', e.target.value)}
+                                className={inputClass}
+                                placeholder="Position & Company (e.g. Professor, ABC University)"
+                            />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <input
+                                    type="tel"
+                                    value={ref.phone}
+                                    onChange={(e) => updateReference(index, 'phone', e.target.value)}
+                                    className={inputClass}
+                                    placeholder="Phone"
+                                />
+                                <input
+                                    type="email"
+                                    value={ref.email}
+                                    onChange={(e) => updateReference(index, 'email', e.target.value)}
+                                    className={inputClass}
+                                    placeholder="Email"
+                                />
+                            </div>
+                        </div>
+                    ))}
+                    <button
+                        type="button"
+                        onClick={addReference}
+                        className="w-full py-3 border-2 border-dashed border-gray-200 dark:border-dark-600 rounded-xl text-gray-500 hover:text-primary-600 hover:border-primary-400 transition-all"
+                    >
+                        + Add Reference
+                    </button>
+                    {(!resumeData.references || resumeData.references.length === 0) && (
+                        <p className="text-center text-sm text-gray-400 italic">
+                            No references added. "References available upon request" will be assumed.
+                        </p>
+                    )}
+                </div>
+            </SectionCard>
+
+            {/* Declaration */}
+            <SectionCard
+                title="Declaration"
+                icon={FileText}
+                isOpen={openSections.includes('declaration')}
+                onToggle={() => toggleSection('declaration')}
+            >
+                <div className="space-y-4">
+                    <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={!!resumeData.declaration}
+                            onChange={toggleDeclaration}
+                            className="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                        />
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Include declaration statement
+                        </span>
+                    </label>
+                    {resumeData.declaration && (
+                        <textarea
+                            value={resumeData.declaration}
+                            onChange={(e) => handleFieldChange('declaration', e.target.value)}
+                            className={`${inputClass} min-h-[80px]`}
+                            placeholder="I hereby certify that..."
+                        />
+                    )}
                 </div>
             </SectionCard>
         </div>
