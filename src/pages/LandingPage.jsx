@@ -53,7 +53,7 @@ export default function LandingPage() {
                         <span className="text-sm text-text-light-secondary dark:text-gray-300">AI-Powered Resume Enhancement</span>
                     </div>
 
-                    <h1 className={`text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                    <h1 className={`text-3xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                         Build Resumes That
                         <span className="block gradient-text animate-gradient-shift bg-[length:200%_auto]">Get You Hired</span>
                     </h1>

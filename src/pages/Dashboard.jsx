@@ -593,7 +593,7 @@ export default function Dashboard() {
 
                                 <button
                                     onClick={(e) => handleDeleteResume(e, resume.id)}
-                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                                     title="Delete resume"
                                 >
                                     <Trash className="w-4 h-4" />

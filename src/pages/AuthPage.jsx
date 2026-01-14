@@ -163,7 +163,7 @@ export default function AuthPage() {
                                             onChange={(e) => setFullName(e.target.value)}
                                             placeholder="John Doe"
                                             required
-                                            className="w-full pl-12 pr-4 py-3 bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-600 rounded-xl text-text-light-primary dark:text-white placeholder:text-text-light-secondary/50 dark:placeholder:text-gray-500"
+                                            className="w-full pl-12 pr-4 py-3 bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-600 rounded-xl text-text-light-primary dark:text-white placeholder:text-text-light-secondary/50 dark:placeholder:text-gray-500 text-base"
                                         />
                                     </div>
                                 </div>
@@ -180,7 +180,7 @@ export default function AuthPage() {
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="you@example.com"
                                         required
-                                        className="w-full pl-12 pr-4 py-3 bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-600 rounded-xl text-text-light-primary dark:text-white placeholder:text-text-light-secondary/50 dark:placeholder:text-gray-500"
+                                        className="w-full pl-12 pr-4 py-3 bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-600 rounded-xl text-text-light-primary dark:text-white placeholder:text-text-light-secondary/50 dark:placeholder:text-gray-500 text-base"
                                     />
                                 </div>
                             </div>
@@ -197,7 +197,7 @@ export default function AuthPage() {
                                         placeholder="••••••••"
                                         required
                                         minLength={6}
-                                        className="w-full pl-12 pr-12 py-3 bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-600 rounded-xl text-text-light-primary dark:text-white placeholder:text-text-light-secondary/50 dark:placeholder:text-gray-500"
+                                        className="w-full pl-12 pr-12 py-3 bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-600 rounded-xl text-text-light-primary dark:text-white placeholder:text-text-light-secondary/50 dark:placeholder:text-gray-500 text-base"
                                     />
                                     <button
                                         type="button"
