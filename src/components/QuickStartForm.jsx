@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import {
     JOB_TITLE_SUGGESTIONS, EXPERIENCE_LEVELS,
-    COMMON_DEGREES, COMMON_MAJORS
+    COMMON_DEGREES, COMMON_MAJORS, BACHELOR_DEGREES, MASTER_DEGREES
 } from '../data/jobRoleTemplates'
 
 const YEARS = Array.from({ length: 15 }, (_, i) => 2026 - i)
@@ -125,7 +125,7 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
                 {['Basic Info', 'Career Goal', 'Education', 'Status'].map((label, i) => (
                     <div key={i} className={`flex flex-col items-center gap-2 ${i <= step ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400'}`}>
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${i === step ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30' :
-                                i < step ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30' : 'bg-gray-100 dark:bg-dark-800'
+                            i < step ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30' : 'bg-gray-100 dark:bg-dark-800'
                             }`}>
                             {i < step ? '✓' : i + 1}
                         </div>
@@ -275,8 +275,8 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
                                     <div
                                         key={tier.id}
                                         className={`border transition-all ${isSelected
-                                                ? 'border-primary-500 bg-primary-50/50 dark:bg-primary-900/10'
-                                                : 'border-gray-200 dark:border-dark-600 hover:border-primary-300'
+                                            ? 'border-primary-500 bg-primary-50/50 dark:bg-primary-900/10'
+                                            : 'border-gray-200 dark:border-dark-600 hover:border-primary-300'
                                             } rounded-xl overflow-hidden`}
                                     >
                                         <label className="flex items-center gap-3 p-4 cursor-pointer select-none">
@@ -287,8 +287,8 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
                                                 className="hidden"
                                             />
                                             <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isSelected
-                                                    ? 'bg-primary-600 border-primary-600'
-                                                    : 'bg-white dark:bg-dark-800 border-gray-300 dark:border-gray-500'
+                                                ? 'bg-primary-600 border-primary-600'
+                                                : 'bg-white dark:bg-dark-800 border-gray-300 dark:border-gray-500'
                                                 }`}>
                                                 {isSelected && <CheckSquare className="w-3.5 h-3.5 text-white" />}
                                             </div>
@@ -306,7 +306,7 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
                                                         onChange={(e) => updateEducationField(tier.id, 'degree', e.target.value)}
                                                         className={inputClass}
                                                         placeholder="Degree Name (e.g. BBA)"
-                                                        list="degree-suggestions"
+                                                        list={tier.id === 'masters' ? 'master-degrees' : tier.id === 'bachelors' ? 'bachelor-degrees' : 'degree-suggestions'}
                                                     />
                                                 )}
 
@@ -350,7 +350,8 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
                             })}
                         </div>
                         {/* Datalists */}
-                        <datalist id="degree-suggestions">{COMMON_DEGREES.map(d => <option key={d} value={d} />)}</datalist>
+                        <datalist id="bachelor-degrees">{BACHELOR_DEGREES.map(d => <option key={d} value={d} />)}</datalist>
+                        <datalist id="master-degrees">{MASTER_DEGREES.map(d => <option key={d} value={d} />)}</datalist>
                         <datalist id="major-suggestions">{COMMON_MAJORS.map(m => <option key={m} value={m} />)}</datalist>
                     </div>
                 )}
@@ -400,8 +401,8 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
                     onClick={prevStep}
                     disabled={step === 0}
                     className={`px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2 ${step === 0
-                            ? 'opacity-0 pointer-events-none'
-                            : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-700'
+                        ? 'opacity-0 pointer-events-none'
+                        : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-700'
                         }`}
                 >
                     <ChevronLeft className="w-4 h-4" /> Back
@@ -420,8 +421,8 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
                         onClick={nextStep}
                         disabled={!isStepValid()}
                         className={`px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 transition-all ${isStepValid()
-                                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:shadow-lg transform hover:-translate-y-0.5'
-                                : 'bg-gray-200 dark:bg-dark-700 text-gray-400 cursor-not-allowed'
+                            ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:shadow-lg transform hover:-translate-y-0.5'
+                            : 'bg-gray-200 dark:bg-dark-700 text-gray-400 cursor-not-allowed'
                             }`}
                     >
                         Next Step <ChevronRight className="w-4 h-4" />

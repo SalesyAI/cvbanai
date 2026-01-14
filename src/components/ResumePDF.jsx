@@ -220,6 +220,56 @@ const ResumePDF = ({ data }) => {
                     </View>
                 )}
 
+                {/* ===== EDUCATION (Moved here) ===== */}
+                {hasEducation && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Education</Text>
+                        {['masters', 'honors', 'hsc', 'ssc'].map(key => {
+                            const edu = data.education[key];
+                            if (!edu?.institution) return null;
+
+                            // Format degree display based on type
+                            let degreeDisplay = '';
+                            let gradeLabel = 'GPA';
+
+                            if (key === 'masters' || key === 'honors') {
+                                // Use the degree name exactly as provided (e.g. "M.S.S" or "Master of Social Science (M.S.S)")
+                                // Append major if available
+                                degreeDisplay = edu.degree
+                                    ? `${edu.degree}${edu.major ? ' in ' + edu.major : ''}`
+                                    : `${key === 'masters' ? "Master's Degree" : "Bachelor's Degree"}${edu.major ? ' in ' + edu.major : ''}`;
+                                gradeLabel = 'CGPA';
+                            } else if (key === 'hsc') {
+                                degreeDisplay = `Higher Secondary Certificate (HSC)${edu.major ? ', ' + edu.major : ''}`;
+                            } else if (key === 'ssc') {
+                                degreeDisplay = `Secondary School Certificate (SSC)${edu.major ? ', ' + edu.major : ''}`;
+                            }
+
+                            // Format result display
+                            const resultDisplay = edu.result
+                                ? `${gradeLabel}: ${edu.result}${key === 'masters' || key === 'honors' ? ' out of 4.00' : ' out of 5.00'}`
+                                : '';
+
+                            return (
+                                <View key={key} style={styles.eduItem}>
+                                    {/* Row 1: Degree | CGPA/GPA */}
+                                    <View style={styles.eduRow}>
+                                        <Text style={styles.itemTitle}>{degreeDisplay}</Text>
+                                        <Text style={styles.itemDates}>{resultDisplay}</Text>
+                                    </View>
+                                    {/* Row 2: Institution | Year */}
+                                    <View style={styles.eduRow}>
+                                        <Text style={styles.itemSubtitle}>{edu.institution}</Text>
+                                        <Text style={styles.itemLocation}>
+                                            {edu.passingYear ? `Year: ${edu.passingYear}` : ''}
+                                        </Text>
+                                    </View>
+                                </View>
+                            );
+                        })}
+                    </View>
+                )}
+
                 {/* ===== SKILLS (Stacked Layout) ===== */}
                 {hasSkills && (
                     <View style={styles.section}>
@@ -259,59 +309,6 @@ const ResumePDF = ({ data }) => {
                                 )}
                             </View>
                         ))}
-                    </View>
-                )}
-
-                {/* ===== EDUCATION ===== */}
-                {hasEducation && (
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Education</Text>
-                        {['masters', 'honors', 'hsc', 'ssc'].map(key => {
-                            const edu = data.education[key];
-                            if (!edu?.institution) return null;
-
-                            // Format degree display based on type
-                            let degreeDisplay = '';
-                            let gradeLabel = 'GPA';
-
-                            if (key === 'masters') {
-                                degreeDisplay = edu.degree && edu.major
-                                    ? `Masters of ${edu.major} (${edu.degree}) in ${edu.major}`
-                                    : `Masters Degree${edu.major ? ' in ' + edu.major : ''}`;
-                                gradeLabel = 'CGPA';
-                            } else if (key === 'honors') {
-                                degreeDisplay = edu.degree && edu.major
-                                    ? `Bachelor of ${edu.major} (${edu.degree}) in ${edu.major}`
-                                    : `Bachelor's Degree${edu.major ? ' in ' + edu.major : ''}`;
-                                gradeLabel = 'CGPA';
-                            } else if (key === 'hsc') {
-                                degreeDisplay = `Higher Secondary Certificate (HSC)${edu.subject ? ', ' + edu.subject : ''}`;
-                            } else if (key === 'ssc') {
-                                degreeDisplay = `Secondary School Certificate (SSC)${edu.subject ? ', ' + edu.subject : ''}`;
-                            }
-
-                            // Format result display
-                            const resultDisplay = edu.result
-                                ? `${gradeLabel}: ${edu.result}${key === 'masters' || key === 'honors' ? ' out of 4.00' : ' out of 5.00'}`
-                                : '';
-
-                            return (
-                                <View key={key} style={styles.eduItem}>
-                                    {/* Row 1: Degree | CGPA/GPA */}
-                                    <View style={styles.eduRow}>
-                                        <Text style={styles.itemTitle}>{degreeDisplay}</Text>
-                                        <Text style={styles.itemDates}>{resultDisplay}</Text>
-                                    </View>
-                                    {/* Row 2: Institution | Year */}
-                                    <View style={styles.eduRow}>
-                                        <Text style={styles.itemSubtitle}>{edu.institution}</Text>
-                                        <Text style={styles.itemLocation}>
-                                            {edu.passingYear ? `Year: ${edu.passingYear}` : ''}
-                                        </Text>
-                                    </View>
-                                </View>
-                            );
-                        })}
                     </View>
                 )}
 

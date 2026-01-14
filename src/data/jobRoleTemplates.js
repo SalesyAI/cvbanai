@@ -89,19 +89,29 @@ export const EDUCATION_LEVELS = [
     { value: 'masters', label: "Master's Degree" },
 ];
 
-export const COMMON_DEGREES = [
-    // Business
-    'BBA', 'MBA', 'B.Com', 'M.Com',
-    // Science & Engineering
-    'BSc', 'MSc', 'B.Tech', 'M.Tech', 'BE', 'ME',
-    // Arts & Humanities  
-    'BA', 'MA', 'BFA', 'MFA',
-    // Law
-    'LLB', 'LLM',
-    // Medical
-    'MBBS', 'BDS', 'B.Pharm', 'M.Pharm',
-    // Other
-    'B.Ed', 'M.Ed', 'BCA', 'MCA', 'B.Arch',
+export const BACHELOR_DEGREES = [
+    "Bachelor of Science (Honours) (B.Sc. Hons)",
+    "Bachelor of Arts (Honours) (B.A. Hons)",
+    "Bachelor of Business Administration (B.B.A.)",
+    "Bachelor of Social Science (Honours) (B.S.S. Hons)",
+    "Bachelor of Law (L.L.B. Hons)",
+    "Bachelor of Science and Engineering (B.Sc. Engg)",
+    "Bachelor of Pharmacy (B. Pharm)",
+    "Bachelor of Education (B.Ed.)",
+    "Bachelor of Physical Education (B.P.E Hons)",
+    "Bachelor Degree (Pass Course)"
+];
+
+export const MASTER_DEGREES = [
+    "Master of Science (M.Sc.)",
+    "Master of Arts (M.A.)",
+    "Masters of Business Administration (M.B.A)",
+    "Masters of Social Science (M.S.S)",
+    "Masters of Law (L.L.M.)",
+    "Master of Science and Engineering (M.Sc. Engg)",
+    "Master of Education (M. Ed.)",
+    "English Language & Teaching (MA in ELT)",
+    "Bachelor of Law (L.L.B. Hons)"
 ];
 
 export const COMMON_MAJORS = [
