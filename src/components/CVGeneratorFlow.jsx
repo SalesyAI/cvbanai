@@ -240,29 +240,7 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
 
     return (
         <div className="min-h-screen flex flex-col bg-white dark:bg-dark-950">
-            {/* Header with Progress */}
-            <header className="sticky top-0 z-20 bg-white/95 dark:bg-dark-950/95 backdrop-blur-sm border-b border-light-200 dark:border-dark-700 px-4 py-3">
-                <div className="max-w-lg mx-auto">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-text-light-primary dark:text-white">
-                            Step {currentStep + 1} of {STEPS.length}
-                        </span>
-                        <button onClick={onBack} className="text-sm text-text-light-secondary hover:text-text-light-primary dark:text-gray-400 dark:hover:text-white transition-colors">
-                            <X className="w-5 h-5" />
-                        </button>
-                    </div>
-                    <div className="h-2 bg-light-200 dark:bg-dark-700 rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-gradient-to-r from-primary-500 to-accent-400 rounded-full transition-all duration-500"
-                            style={{ width: `${progress}%` }}
-                        />
-                    </div>
-                    <div className="mt-3">
-                        <h1 className="text-lg font-bold text-text-light-primary dark:text-white">{STEPS[currentStep].title}</h1>
-                        <p className="text-sm text-text-light-secondary dark:text-gray-400">{STEPS[currentStep].subtitle}</p>
-                    </div>
-                </div>
-            </header>
+            {/* Header Removed as per user request */}
 
             {/* Content */}
             <main ref={contentRef} className="flex-1 overflow-y-auto px-4 py-6">
