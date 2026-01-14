@@ -66,7 +66,7 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
     const [openSections, setOpenSections] = useState(['summary', 'skills'])
     const [regenerating, setRegenerating] = useState(null)
     const [editingCategory, setEditingCategory] = useState(null)
-    const [newSkillInput, setNewSkillInput] = useState('')
+    const [skillInputs, setSkillInputs] = useState({})
     const [newCategoryName, setNewCategoryName] = useState('')
 
     const toggleSection = (section) => {
@@ -108,15 +108,24 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
         handleFieldChange('skillCategories', updated)
     }
 
-    const addSkillToCategory = (catIndex, skill) => {
-        if (!skill.trim()) return
+    const handleSkillInputChange = (catIndex, value) => {
+        setSkillInputs(prev => ({ ...prev, [catIndex]: value }))
+    }
+
+    const addSkillToCategory = (catIndex) => {
+        const skill = skillInputs[catIndex]
+        if (!skill?.trim()) return
+
         const updated = [...(resumeData.skillCategories || [])]
         const existingSkills = updated[catIndex].skills || []
+
         if (!existingSkills.includes(skill.trim())) {
             updated[catIndex] = { ...updated[catIndex], skills: [...existingSkills, skill.trim()] }
             handleFieldChange('skillCategories', updated)
         }
-        setNewSkillInput('')
+
+        // Clear input for this category
+        setSkillInputs(prev => ({ ...prev, [catIndex]: '' }))
     }
 
     const removeSkillFromCategory = (catIndex, skill) => {
@@ -354,6 +363,7 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
 
                                     <div className="flex items-center gap-1">
                                         <button
+                                            type="button"
                                             onClick={() => setEditingCategory(catIndex)}
                                             className="p-1 text-text-light-secondary hover:text-primary-500"
                                             title="Rename category"
@@ -362,6 +372,7 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
                                         </button>
                                         {(resumeData.skillCategories?.length || 0) > 1 && (
                                             <button
+                                                type="button"
                                                 onClick={() => removeCategory(catIndex)}
                                                 className="p-1 text-text-light-secondary hover:text-red-500"
                                                 title="Remove category"
@@ -377,7 +388,11 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
                                     {cat.skills?.map((skill, skillIndex) => (
                                         <span key={skillIndex} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm ${colorClass}`}>
                                             {skill}
-                                            <button onClick={() => removeSkillFromCategory(catIndex, skill)} className="hover:text-red-500">
+                                            <button
+                                                type="button"
+                                                onClick={() => removeSkillFromCategory(catIndex, skill)}
+                                                className="hover:text-red-500"
+                                            >
                                                 <X className="w-3.5 h-3.5" />
                                             </button>
                                         </span>
@@ -388,20 +403,20 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
                                 <div className="flex gap-2">
                                     <input
                                         type="text"
-                                        value={editingCategory === catIndex ? newSkillInput : ''}
-                                        onChange={(e) => { setEditingCategory(catIndex); setNewSkillInput(e.target.value) }}
-                                        onFocus={() => setEditingCategory(catIndex)}
+                                        value={skillInputs[catIndex] || ''}
+                                        onChange={(e) => handleSkillInputChange(catIndex, e.target.value)}
                                         onKeyPress={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault()
-                                                addSkillToCategory(catIndex, newSkillInput)
+                                                addSkillToCategory(catIndex)
                                             }
                                         }}
                                         className={`flex-1 text-sm ${inputClass}`}
                                         placeholder={`Add skill to ${cat.category}...`}
                                     />
                                     <button
-                                        onClick={() => addSkillToCategory(catIndex, newSkillInput)}
+                                        type="button"
+                                        onClick={() => addSkillToCategory(catIndex)}
                                         className="px-3 py-2 bg-primary-500 hover:bg-primary-600 rounded-xl text-white text-sm"
                                     >
                                         <Plus className="w-4 h-4" />
@@ -422,6 +437,7 @@ export default function ResumeEditor({ resumeData, onUpdate, onRegenerate }) {
                             placeholder="New category name (e.g., Cloud Technologies)..."
                         />
                         <button
+                            type="button"
                             onClick={addNewCategory}
                             className="px-4 py-2 border-2 border-dashed border-primary-300 dark:border-primary-700 rounded-xl text-primary-500 hover:bg-primary-500/10 text-sm flex items-center gap-1"
                         >
