@@ -332,6 +332,9 @@ button:active:not(:disabled),
 
 .loader span {
   display: block;
+  will-change: clip-path;
+  animation: cut 2s infinite;
+  transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .loader:hover {
@@ -391,6 +394,24 @@ button:active:not(:disabled),
 
   75% {
     top: 100%;
+  }
+}
+
+@keyframes cut {
+  0% {
+    clip-path: inset(0 0 0 0);
+  }
+
+  25% {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  50% {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  75% {
+    clip-path: inset(0 0 0 0);
   }
 }
 
