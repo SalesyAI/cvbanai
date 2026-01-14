@@ -231,40 +231,7 @@ export default function CVGeneratorFlow({ onComplete, onBack }) {
                 </div>
             </div>
 
-            {/* Resume Preview Card */}
-            <div className="bg-white dark:bg-dark-800 border border-light-200 dark:border-dark-700 rounded-xl p-6 shadow-lg">
-                <div className="border-b border-light-200 dark:border-dark-700 pb-4 mb-4">
-                    <h3 className="text-2xl font-bold text-text-light-primary dark:text-white">{resumeData?.fullName}</h3>
-                    <p className="text-sm text-text-light-secondary dark:text-gray-400 mt-1">
-                        {[resumeData?.email, resumeData?.phone, resumeData?.location].filter(Boolean).join(' • ')}
-                    </p>
-                </div>
-
-                {resumeData?.careerObjective && (
-                    <div className="mb-4">
-                        <h4 className="text-xs font-semibold text-primary-500 uppercase tracking-wide mb-2">Career Objective</h4>
-                        <p className="text-sm text-text-light-primary dark:text-gray-300">{resumeData.careerObjective}</p>
-                    </div>
-                )}
-
-                {resumeData?.technicalSkills?.length > 0 && (
-                    <div className="mb-4">
-                        <h4 className="text-xs font-semibold text-primary-500 uppercase tracking-wide mb-2">Skills</h4>
-                        <div className="flex flex-wrap gap-1.5">
-                            {resumeData.technicalSkills.map((skill, i) => (
-                                <span key={i} className="px-2 py-0.5 bg-light-100 dark:bg-dark-700 text-text-light-primary dark:text-gray-300 rounded text-xs">{skill}</span>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {resumeData?.tools?.length > 0 && (
-                    <div>
-                        <h4 className="text-xs font-semibold text-primary-500 uppercase tracking-wide mb-2">Tools</h4>
-                        <p className="text-sm text-text-light-secondary dark:text-gray-400">{resumeData.tools.join(', ')}</p>
-                    </div>
-                )}
-            </div>
+            {/* Resume Preview Card Removed as per user request */}
         </motion.div>
     )
 
