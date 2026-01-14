@@ -122,15 +122,22 @@ export default function QuickStartForm({ onSubmit, isLoading }) {
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center py-32 text-center px-4">
-                <div className="mb-8 relative">
-                    <motion.div
-                        className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-teal-400 to-primary-600 dark:from-primary-400 dark:via-teal-200 dark:to-primary-400"
-                        animate={{ backgroundPosition: ["0%", "200%"] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        style={{ backgroundSize: "200% auto" }}
-                    >
+                <div className="mb-8 relative inline-block">
+                    <h2 className="text-3xl md:text-4xl font-bold text-primary-600 dark:text-primary-400">
                         Generating Resume
-                    </motion.div>
+                    </h2>
+                    {/* Scanning Bar */}
+                    <motion.div
+                        className="absolute left-0 w-full h-1.5 bg-amber-500 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.6)] z-10"
+                        initial={{ top: 0, opacity: 0.8 }}
+                        animate={{ top: ["0%", "100%"], opacity: [0.8, 1, 0.8] }}
+                        transition={{
+                            duration: 2,
+                            ease: "easeInOut",
+                            repeat: Infinity,
+                            repeatType: "reverse"
+                        }}
+                    />
                 </div>
                 <motion.p
                     initial={{ opacity: 0.5 }}
