@@ -314,7 +314,8 @@ button:active:not(:disabled),
    ================================= */
 .loader {
   max-width: fit-content;
-  color: #0D9488; /* teal-600 */
+  color: #0D9488;
+  /* teal-600 */
   font-size: 40px;
   font-family: inherit;
   font-weight: 700;
@@ -325,22 +326,22 @@ button:active:not(:disabled),
 }
 
 .dark .loader {
-  color: #2DD4BF; /* teal-400 */
+  color: #2DD4BF;
+  /* teal-400 */
 }
 
 .loader span {
   display: block;
-  will-change: clip-path;
-  animation: cut 2s infinite;
-  transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .loader:hover {
-  color: #115E59; /* teal-800 */
+  color: #115E59;
+  /* teal-800 */
 }
 
 .dark .loader:hover {
-  color: #5EEAD4; /* teal-300 */
+  color: #5EEAD4;
+  /* teal-300 */
 }
 
 .loader::after {
@@ -349,7 +350,8 @@ button:active:not(:disabled),
   width: 100%;
   height: 6px;
   border-radius: 4px;
-  background-color: rgba(245, 158, 11, 0.6); /* amber-500 */
+  background-color: rgba(245, 158, 11, 0.6);
+  /* amber-500 */
   top: 0;
   left: 0;
   filter: blur(10px);
@@ -364,7 +366,8 @@ button:active:not(:disabled),
   width: 100%;
   height: 5px;
   border-radius: 4px;
-  background-color: #F59E0B; /* amber-500 */
+  background-color: #F59E0B;
+  /* amber-500 */
   top: 0;
   left: 0;
   animation: scan 2s infinite;
@@ -374,17 +377,21 @@ button:active:not(:disabled),
 }
 
 @keyframes scan {
-  0% { top: 0%; }
-  25% { top: 100%; }
-  50% { top: 0%; }
-  75% { top: 100%; }
-}
+  0% {
+    top: 0%;
+  }
 
-@keyframes cut {
-  0% { clip-path: inset(0 0 0 0); }
-  25% { clip-path: inset(100% 0 0 0); }
-  50% { clip-path: inset(0 0 100% 0); }
-  75% { clip-path: inset(0 0 0 0); }
+  25% {
+    top: 100%;
+  }
+
+  50% {
+    top: 0%;
+  }
+
+  75% {
+    top: 100%;
+  }
 }
 
 @keyframes wiggle {
