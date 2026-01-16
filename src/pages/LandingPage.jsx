@@ -6,13 +6,43 @@ import ThemeToggle from '../components/ThemeToggle'
 
 export default function LandingPage() {
     const [isVisible, setIsVisible] = useState(false)
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+    const [atsScore, setAtsScore] = useState(0)
 
     useEffect(() => {
         setIsVisible(true)
+        // Animate ATS Score count up
+        let start = 0
+        const end = 98
+        const duration = 2000
+        const increment = end / (duration / 16)
+
+        const timer = setInterval(() => {
+            start += increment
+            if (start >= end) {
+                setAtsScore(end)
+                clearInterval(timer)
+            } else {
+                setAtsScore(Math.floor(start))
+            }
+        }, 16)
+
+        return () => clearInterval(timer)
     }, [])
 
+    const handleMouseMove = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        setMousePos({ x, y })
+    }
+
     return (
-        <div className="min-h-screen mesh-gradient mesh-animate overflow-x-hidden selection:bg-teal-500/30">
+        <div
+            className="min-h-screen mesh-gradient mesh-animate overflow-x-hidden selection:bg-teal-500/30 spotlight-group"
+            onMouseMove={handleMouseMove}
+            style={{ '--mouse-x': `${mousePos.x}px`, '--mouse-y': `${mousePos.y}px` }}
+        >
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-8 border-b border-light-200/50 dark:border-dark-700/30 backdrop-blur-md">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -57,7 +87,7 @@ export default function LandingPage() {
 
                         <h1 className={`text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                             Your Career, <br />
-                            <span className="gradient-text">Hyper-Scaled.</span>
+                            <span className="text-gradient-aurora font-black">Hyper-Scaled.</span>
                         </h1>
 
                         <p className={`text-lg md:text-xl text-text-light-secondary dark:text-gray-400 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>

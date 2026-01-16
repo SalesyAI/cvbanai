@@ -294,6 +294,120 @@ body {
   background-clip: text;
 }
 
+/* =================================
+   ULTRA-PREMIUM POLISH
+   ================================= */
+
+/* 1. Aurora Text Gradient */
+.text-gradient-aurora {
+  background: linear-gradient(to right, #2DD4BF, #3B82F6, #A855F7, #2DD4BF);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: aurora 4s linear infinite;
+}
+
+@keyframes aurora {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* 2. Noise Texture (Matte Finish) */
+.noise-bg {
+  position: relative;
+}
+
+.noise-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+
+/* 3. Scanner Line Animation */
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #2DD4BF, transparent);
+  opacity: 0.8;
+  box-shadow: 0 0 15px rgba(45, 212, 191, 0.5);
+  animation: scan 3s ease-in-out infinite;
+  z-index: 20;
+}
+
+@keyframes scan {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+/* 4. Spotlight Effect Support */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+
+/* The glowing border following mouse */
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y),
+      rgba(45, 212, 191, 0.4),
+      transparent 40%);
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+
+.spotlight-group:hover .spotlight-card::after {
+  opacity: 1;
+}
+
+/* Inner glow following mouse */
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.03),
+      transparent 40%);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+
+.spotlight-group:hover .spotlight-card::before {
+  opacity: 1;
+}
+
 /* Loading dots animation */
 .loading-dots {
   display: inline-block;
