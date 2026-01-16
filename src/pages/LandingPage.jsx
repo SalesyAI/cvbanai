@@ -115,7 +115,7 @@ export default function LandingPage() {
                     <div className={`relative hidden lg:block perspective-1000 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
                         <div className="hero-card-stack relative w-full aspect-square max-w-md mx-auto">
                             {/* Card 1: Resume - Back */}
-                            <div className="absolute top-0 right-0 w-3/4 aspect-[3/4] glass-card rounded-2xl p-4 shadow-2xl transform translate-x-12 -translate-y-8 -rotate-6 opacity-60 z-0 border border-white/20">
+                            <div className="absolute top-0 right-0 w-3/4 aspect-[3/4] glass-card noise-bg rounded-2xl p-4 shadow-2xl transform translate-x-12 -translate-y-8 -rotate-6 opacity-60 z-0 border border-white/20">
                                 <div className="space-y-3 opacity-50">
                                     <div className="h-4 w-1/3 bg-slate-300 dark:bg-slate-600 rounded"></div>
                                     <div className="h-2 w-full bg-slate-200 dark:bg-slate-700/50 rounded"></div>
@@ -125,7 +125,8 @@ export default function LandingPage() {
                             </div>
 
                             {/* Card 2: LinkedIn - Middle */}
-                            <div className="absolute top-8 right-8 w-3/4 aspect-[3/4] bg-[#0A66C2] rounded-2xl p-6 shadow-2xl transform translate-x-6 -translate-y-4 -rotate-3 z-10 text-white border border-white/10">
+                            <div className="absolute top-8 right-8 w-3/4 aspect-[3/4] bg-[#0A66C2] noise-bg rounded-2xl p-6 shadow-2xl transform translate-x-6 -translate-y-4 -rotate-3 z-10 text-white border border-white/10 overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent pointer-events-none"></div>
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="w-12 h-12 rounded-full bg-white/20"></div>
                                     <div>
@@ -143,7 +144,8 @@ export default function LandingPage() {
                             </div>
 
                             {/* Card 3: Dashboard - Front */}
-                            <div className="absolute top-16 right-16 w-3/4 aspect-[3/4] glass-card bg-white/90 dark:bg-slate-900/90 rounded-2xl p-6 shadow-2xl transform z-20 border border-teal-500/30 backdrop-blur-xl">
+                            <div className="absolute top-16 right-16 w-3/4 aspect-[3/4] glass-card noise-bg spotlight-card bg-white/90 dark:bg-slate-900/90 rounded-2xl p-6 shadow-2xl transform z-20 border border-teal-500/30 backdrop-blur-xl">
+                                <div className="scan-line"></div>
                                 <div className="flex items-center justify-between mb-8">
                                     <Logo className="h-6" />
                                     <div className="h-8 w-8 rounded-full bg-teal-100 dark:bg-teal-900/30"></div>
@@ -151,7 +153,7 @@ export default function LandingPage() {
 
                                 <div className="grid grid-cols-2 gap-3 mb-6">
                                     <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-900/20 border border-teal-100 dark:border-teal-800/30">
-                                        <div className="text-2xl font-bold text-teal-600">98%</div>
+                                        <div className="text-2xl font-bold text-teal-600">{atsScore}%</div>
                                         <div className="text-[10px] uppercase text-teal-800/60 dark:text-teal-400/60">ATS Score</div>
                                     </div>
                                     <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/30">
