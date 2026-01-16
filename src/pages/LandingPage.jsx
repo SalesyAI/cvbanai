@@ -113,9 +113,9 @@ export default function LandingPage() {
 
                     {/* Right Column: 3D Visuals */}
                     <div className={`relative hidden lg:block perspective-1000 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
-                        <div className="hero-card-stack relative w-full aspect-square max-w-md mx-auto">
+                        <div className="hero-card-stack relative w-full aspect-square max-w-md mx-auto flex items-center justify-center">
                             {/* Card 1: Resume - Back */}
-                            <div className="absolute top-0 right-0 w-3/4 aspect-[3/4] glass-card noise-bg rounded-2xl p-4 shadow-2xl transform translate-x-12 -translate-y-8 -rotate-6 opacity-60 z-0 border border-white/20">
+                            <div className="absolute left-1/2 top-1/2 w-3/4 aspect-[3/4] glass-card noise-bg rounded-2xl p-4 shadow-2xl transform -translate-x-[65%] -translate-y-[60%] -rotate-12 scale-90 opacity-60 z-0 border border-white/20 origin-center transition-all duration-500 hover:-translate-x-[70%]">
                                 <div className="space-y-3 opacity-50">
                                     <div className="h-4 w-1/3 bg-slate-300 dark:bg-slate-600 rounded"></div>
                                     <div className="h-2 w-full bg-slate-200 dark:bg-slate-700/50 rounded"></div>
@@ -125,7 +125,7 @@ export default function LandingPage() {
                             </div>
 
                             {/* Card 2: LinkedIn - Middle */}
-                            <div className="absolute top-8 right-8 w-3/4 aspect-[3/4] bg-[#0A66C2] noise-bg rounded-2xl p-6 shadow-2xl transform translate-x-6 -translate-y-4 -rotate-3 z-10 text-white border border-white/10 overflow-hidden">
+                            <div className="absolute left-1/2 top-1/2 w-3/4 aspect-[3/4] bg-[#0A66C2] noise-bg rounded-2xl p-6 shadow-2xl transform -translate-x-[55%] -translate-y-[55%] -rotate-6 scale-95 z-10 text-white border border-white/10 overflow-hidden origin-center transition-all duration-500 hover:-translate-x-[60%] hover:-rotate-12">
                                 <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent pointer-events-none"></div>
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="w-12 h-12 rounded-full bg-white/20"></div>
@@ -144,7 +144,7 @@ export default function LandingPage() {
                             </div>
 
                             {/* Card 3: Dashboard - Front */}
-                            <div className="absolute top-16 right-16 w-3/4 aspect-[3/4] glass-card noise-bg spotlight-card bg-white/90 dark:bg-slate-900/90 rounded-2xl p-6 shadow-2xl transform z-20 border border-teal-500/30 backdrop-blur-xl">
+                            <div className="absolute left-1/2 top-1/2 w-3/4 aspect-[3/4] glass-card noise-bg spotlight-card bg-white/90 dark:bg-slate-900/90 rounded-2xl p-6 shadow-2xl transform -translate-x-1/2 -translate-y-1/2 z-20 border border-teal-500/30 backdrop-blur-xl origin-center transition-all duration-500 hover:scale-[1.02]">
                                 <div className="scan-line"></div>
                                 <div className="flex items-center justify-between mb-8">
                                     <Logo className="h-6" />
