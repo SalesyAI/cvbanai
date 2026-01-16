@@ -197,9 +197,101 @@ body {
   0% {
     background-position: 0% 0%;
   }
+
   100% {
     background-position: 100% 100%;
   }
+}
+
+/* =================================
+   PREMIUM HERO ANIMATIONS
+   ================================= */
+
+/* Infinite Marquee */
+.marquee-container {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* 3D Tilt Effect */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.hero-card-stack {
+  transform: rotateY(-12deg) rotateX(5deg) rotateZ(-2deg);
+  transition: transform 0.1s ease-out;
+}
+
+.hero-card-stack:hover {
+  transform: rotateY(-5deg) rotateX(2deg) rotateZ(0deg) scale(1.02);
+}
+
+/* Floating Orbs for Premium Background */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  opacity: 0.6;
+  animation: floatOrb 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.orb-1 {
+  top: -10%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.3) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+.orb-2 {
+  bottom: 0%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(94, 234, 212, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+  animation-delay: -5s;
+}
+
+@keyframes floatOrb {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(-30px, 50px) scale(1.1);
+  }
+}
+
+/* Premium Text Gradient */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #FDE68A 0%, #D97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Loading dots animation */

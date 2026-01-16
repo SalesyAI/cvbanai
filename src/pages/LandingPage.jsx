@@ -37,45 +37,141 @@ export default function LandingPage() {
                 </div>
             </nav>
 
-            {/* Hero Section */}
-            <section className="pt-32 pb-16 md:pt-40 md:pb-24 px-6 md:px-8 relative z-10">
-                <div className="max-w-5xl mx-auto text-center relative">
-                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-card mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
-                        </span>
-                        <span className="text-xs font-semibold tracking-wide uppercase text-text-light-secondary dark:text-gray-300">The Complete Career Ecosystem</span>
+            {/* Premium Hero Section */}
+            <section className="pt-32 pb-16 md:pt-40 md:pb-32 px-6 md:px-8 relative z-10 overflow-hidden">
+                {/* Background Orbs */}
+                <div className="orb orb-1"></div>
+                <div className="orb orb-2"></div>
+
+                <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
+
+                    {/* Left Column: Text & CTA */}
+                    <div className="text-center lg:text-left">
+                        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-card mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                            </span>
+                            <span className="text-xs font-bold tracking-wide uppercase text-teal-600 dark:text-teal-400">New: LinkedIn AI Agent</span>
+                        </div>
+
+                        <h1 className={`text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                            Your Career, <br />
+                            <span className="gradient-text">Hyper-Scaled.</span>
+                        </h1>
+
+                        <p className={`text-lg md:text-xl text-text-light-secondary dark:text-gray-400 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                            The all-in-one ecosystem for ambitious professionals. Build perfect resumes, optimize your LinkedIn, and launch your portfolio—powered by elite AI.
+                        </p>
+
+                        <div className={`flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                            <Link
+                                to="/auth?mode=signup"
+                                className="group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-600 dark:bg-primary-500 dark:hover:bg-primary-400 rounded-xl text-white font-semibold text-lg transition-all hover:shadow-xl hover:shadow-primary-500/20 hover:-translate-y-1 active:scale-95"
+                            >
+                                Start Free <span className="opacity-70 font-normal text-sm ml-1">(No CC required)</span>
+                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                            <Link
+                                to="/pricing"
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 glass-card hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-xl text-text-light-primary dark:text-white font-semibold text-lg transition-all hover:-translate-y-1 active:scale-95 backdrop-blur-md"
+                            >
+                                See Examples
+                            </Link>
+                        </div>
                     </div>
 
-                    <h1 className={`text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                        Your Career Path, <br className="hidden md:block" />
-                        <span className="gradient-text">Accelerated by AI.</span>
-                    </h1>
+                    {/* Right Column: 3D Visuals */}
+                    <div className={`relative hidden lg:block perspective-1000 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
+                        <div className="hero-card-stack relative w-full aspect-square max-w-md mx-auto">
+                            {/* Card 1: Resume - Back */}
+                            <div className="absolute top-0 right-0 w-3/4 aspect-[3/4] glass-card rounded-2xl p-4 shadow-2xl transform translate-x-12 -translate-y-8 -rotate-6 opacity-60 z-0 border border-white/20">
+                                <div className="space-y-3 opacity-50">
+                                    <div className="h-4 w-1/3 bg-slate-300 dark:bg-slate-600 rounded"></div>
+                                    <div className="h-2 w-full bg-slate-200 dark:bg-slate-700/50 rounded"></div>
+                                    <div className="h-2 w-5/6 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
+                                    <div className="h-32 w-full bg-slate-100 dark:bg-slate-800/50 rounded mt-4"></div>
+                                </div>
+                            </div>
 
-                    <p className={`text-lg md:text-xl text-text-light-secondary dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                        Build a professional resume for free. Then upgrade to automate your LinkedIn presence and launch a custom portfolio.
-                    </p>
+                            {/* Card 2: LinkedIn - Middle */}
+                            <div className="absolute top-8 right-8 w-3/4 aspect-[3/4] bg-[#0A66C2] rounded-2xl p-6 shadow-2xl transform translate-x-6 -translate-y-4 -rotate-3 z-10 text-white border border-white/10">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-12 h-12 rounded-full bg-white/20"></div>
+                                    <div>
+                                        <div className="h-3 w-24 bg-white/30 rounded mb-2"></div>
+                                        <div className="h-2 w-16 bg-white/20 rounded"></div>
+                                    </div>
+                                </div>
+                                <div className="h-2 w-full bg-white/10 rounded mb-2"></div>
+                                <div className="h-2 w-full bg-white/10 rounded mb-2"></div>
+                                <div className="h-2 w-3/4 bg-white/10 rounded mb-6"></div>
 
-                    <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                        <Link
-                            to="/auth?mode=signup"
-                            className="group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-600 dark:bg-primary-500 dark:hover:bg-primary-400 rounded-xl text-white font-semibold text-lg transition-all hover:shadow-xl hover:shadow-primary-500/20 hover:-translate-y-1 active:scale-95"
-                        >
-                            Build Resume Free
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                        <Link
-                            to="/pricing"
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 glass-card hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-xl text-text-light-primary dark:text-white font-semibold text-lg transition-all hover:-translate-y-1 active:scale-95 backdrop-blur-md"
-                        >
-                            Explore Premium
-                        </Link>
+                                <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs">
+                                    <Sparkles className="w-3 h-3 mr-1" /> AI Optimized
+                                </div>
+                            </div>
+
+                            {/* Card 3: Dashboard - Front */}
+                            <div className="absolute top-16 right-16 w-3/4 aspect-[3/4] glass-card bg-white/90 dark:bg-slate-900/90 rounded-2xl p-6 shadow-2xl transform z-20 border border-teal-500/30 backdrop-blur-xl">
+                                <div className="flex items-center justify-between mb-8">
+                                    <Logo className="h-6" />
+                                    <div className="h-8 w-8 rounded-full bg-teal-100 dark:bg-teal-900/30"></div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3 mb-6">
+                                    <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-900/20 border border-teal-100 dark:border-teal-800/30">
+                                        <div className="text-2xl font-bold text-teal-600">98%</div>
+                                        <div className="text-[10px] uppercase text-teal-800/60 dark:text-teal-400/60">ATS Score</div>
+                                    </div>
+                                    <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/30">
+                                        <div className="text-2xl font-bold text-purple-600">5.0</div>
+                                        <div className="text-[10px] uppercase text-purple-800/60 dark:text-purple-400/60">Stars</div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="h-3 w-1/2 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
+                                    <div className="h-12 w-full bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-300 dark:border-slate-700"></div>
+                                </div>
+
+                                <div className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-xl border border-light-200 dark:border-dark-700">
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
+                                            <Check className="w-4 h-4 text-green-600" />
+                                        </div>
+                                        <div>
+                                            <div className="text-sm font-bold">Hired!</div>
+                                            <div className="text-xs text-gray-500">Just now</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <p className={`mt-8 text-sm text-text-light-secondary dark:text-gray-500 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-                        Join 10,000+ professionals landing jobs at top tech companies.
-                    </p>
+                {/* Infinite Marquee - Trusted By */}
+                <div className="mt-20 md:mt-24 relative max-w-7xl mx-auto">
+                    <p className="text-center text-sm font-semibold text-gray-400 uppercase tracking-widest mb-8">Trusted by professionals at</p>
+
+                    <div className="marquee-container overflow-hidden whitespace-nowrap py-4">
+                        <div className="inline-block animate-scroll">
+                            {/* Repeated twice for seamless loop */}
+                            <div className="inline-flex items-center gap-12 md:gap-20 px-4">
+                                {['Google', 'Microsoft', 'Amazon', 'Spotify', 'Shopify', 'Tesla', 'Adobe', 'Meta'].map((company, i) => (
+                                    <span key={i} className="text-2xl md:text-3xl font-extrabold text-slate-300 dark:text-slate-700/50 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-default">
+                                        {company}
+                                    </span>
+                                ))}
+                                {['Google', 'Microsoft', 'Amazon', 'Spotify', 'Shopify', 'Tesla', 'Adobe', 'Meta'].map((company, i) => (
+                                    <span key={`dup-${i}`} className="text-2xl md:text-3xl font-extrabold text-slate-300 dark:text-slate-700/50 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-default">
+                                        {company}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
