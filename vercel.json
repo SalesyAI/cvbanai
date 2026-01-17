@@ -7,10 +7,21 @@
             "runtime": "nodejs18.x"
         }
     },
-    "rewrites": [
+    "routes": [
         {
-            "source": "/((?!api/).*)",
-            "destination": "/index.html"
+            "src": "/api/auth/(.*)",
+            "dest": "/api/auth/[[...all]].js"
+        },
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/$1"
+        },
+        {
+            "handle": "filesystem"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/index.html"
         }
     ]
 }
