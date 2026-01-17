@@ -11,6 +11,16 @@ export const useAuth = () => {
     return context
 }
 
+// Helper to extract error message from BetterAuth error objects
+const extractErrorMessage = (err) => {
+    if (!err) return 'An error occurred'
+    if (typeof err === 'string') return err
+    if (err.message) return err.message
+    if (err.code) return err.code
+    if (err.statusText) return err.statusText
+    return JSON.stringify(err)
+}
+
 export const AuthProvider = ({ children }) => {
     // Use BetterAuth's useSession hook
     const { data: session, isPending: loading, error } = useSession()
@@ -34,12 +44,12 @@ export const AuthProvider = ({ children }) => {
                 })
 
                 if (result.error) {
-                    return { data: null, error: result.error }
+                    return { data: null, error: { message: extractErrorMessage(result.error) } }
                 }
 
                 return { data: result.data, error: null }
             } catch (err) {
-                return { data: null, error: err }
+                return { data: null, error: { message: extractErrorMessage(err) } }
             }
         },
 
@@ -53,12 +63,12 @@ export const AuthProvider = ({ children }) => {
                 })
 
                 if (result.error) {
-                    return { data: null, error: result.error }
+                    return { data: null, error: { message: extractErrorMessage(result.error) } }
                 }
 
                 return { data: result.data, error: null }
             } catch (err) {
-                return { data: null, error: err }
+                return { data: null, error: { message: extractErrorMessage(err) } }
             }
         },
 
@@ -68,7 +78,7 @@ export const AuthProvider = ({ children }) => {
                 await authClient.signOut()
                 return { error: null }
             } catch (err) {
-                return { error: err }
+                return { error: { message: extractErrorMessage(err) } }
             }
         },
 
@@ -81,12 +91,12 @@ export const AuthProvider = ({ children }) => {
                 })
 
                 if (result.error) {
-                    return { data: null, error: result.error }
+                    return { data: null, error: { message: extractErrorMessage(result.error) } }
                 }
 
                 return { data: result.data, error: null }
             } catch (err) {
-                return { data: null, error: err }
+                return { data: null, error: { message: extractErrorMessage(err) } }
             }
         },
 
@@ -99,12 +109,12 @@ export const AuthProvider = ({ children }) => {
                 })
 
                 if (result.error) {
-                    return { error: result.error }
+                    return { error: { message: extractErrorMessage(result.error) } }
                 }
 
                 return { error: null }
             } catch (err) {
-                return { error: err }
+                return { error: { message: extractErrorMessage(err) } }
             }
         }
     }
