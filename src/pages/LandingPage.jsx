@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { FileText, Sparkles, Zap, Shield, ArrowRight, Check, Star, Linkedin, Globe, MessageCircle } from 'lucide-react'
+import { FileText, Sparkles, Zap, Shield, ArrowRight, Check, Star, Linkedin, Globe, MessageCircle, Briefcase, Award, TrendingUp } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Logo from '../components/Logo'
 import ThemeToggle from '../components/ThemeToggle'
 
@@ -85,13 +86,13 @@ export default function LandingPage() {
                             <span className="text-xs font-bold tracking-wide uppercase text-teal-600 dark:text-teal-400">New: LinkedIn AI Agent</span>
                         </div>
 
-                        <h1 className={`text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                            Your Career, <br />
-                            <span className="text-gradient-aurora font-black">Hyper-Scaled.</span>
+                        <h1 className={`text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[0.95] tracking-tight transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+                            Own the <br />
+                            <span className="text-gradient-aurora">Future of Work.</span>
                         </h1>
 
-                        <p className={`text-lg md:text-xl text-text-light-secondary dark:text-gray-400 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                            The all-in-one ecosystem for ambitious professionals. Build perfect resumes, optimize your LinkedIn, and launch your portfolio—powered by elite AI.
+                        <p className={`text-lg md:text-2xl text-text-light-secondary dark:text-gray-400 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+                            The elite ecosystem for modern professionals. Build high-impact resumes, dominate LinkedIn, and launch your brand with agentic AI.
                         </p>
 
                         <div className={`flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -112,74 +113,163 @@ export default function LandingPage() {
                     </div>
 
                     {/* Right Column: 3D Visuals */}
-                    <div className={`relative hidden lg:block perspective-1000 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
-                        <div className="hero-card-stack relative w-full aspect-square max-w-md mx-auto flex items-center justify-center">
-                            {/* Card 1: Resume - Back */}
-                            <div className="absolute left-1/2 top-1/2 w-3/4 aspect-[3/4] glass-card noise-bg rounded-2xl p-4 shadow-2xl transform -translate-x-[65%] -translate-y-[60%] -rotate-12 scale-90 opacity-60 z-0 border border-white/20 origin-center transition-all duration-500 hover:-translate-x-[70%]">
-                                <div className="space-y-3 opacity-50">
-                                    <div className="h-4 w-1/3 bg-slate-300 dark:bg-slate-600 rounded"></div>
-                                    <div className="h-2 w-full bg-slate-200 dark:bg-slate-700/50 rounded"></div>
-                                    <div className="h-2 w-5/6 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
-                                    <div className="h-32 w-full bg-slate-100 dark:bg-slate-800/50 rounded mt-4"></div>
+                    <div className="relative hidden lg:block perspective-1000">
+                        <motion.div
+                            className="hero-card-stack relative w-full aspect-square max-w-md mx-auto flex items-center justify-center"
+                            initial="initial"
+                            animate="animate"
+                            whileHover="hover"
+                        >
+                            {/* Card 1: Resume - Back (Bottom) */}
+                            <motion.div
+                                variants={{
+                                    initial: { x: "-65%", y: "-60%", rotate: -12, scale: 0.9, opacity: 0 },
+                                    animate: { x: "-65%", y: "-60%", rotate: -12, scale: 0.9, opacity: 0.6, transition: { duration: 0.8, delay: 0.6 } },
+                                    hover: { x: "-85%", y: "-70%", rotate: -20, scale: 0.95, opacity: 0.8 }
+                                }}
+                                className="absolute left-1/2 top-1/2 w-[85%] aspect-[3/4] glass-card noise-bg rounded-2xl p-6 shadow-2xl z-0 border border-white/20 origin-center"
+                            >
+                                <div className="space-y-4 opacity-50">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="w-10 h-10 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+                                        <div className="space-y-2">
+                                            <div className="h-3 w-24 bg-slate-300 dark:bg-slate-600 rounded"></div>
+                                            <div className="h-2 w-16 bg-slate-200 dark:bg-slate-700 rounded"></div>
+                                        </div>
+                                    </div>
+                                    <div className="h-3 w-1/3 bg-slate-300 dark:bg-slate-600 rounded"></div>
+                                    <div className="space-y-2">
+                                        <div className="h-2 w-full bg-slate-200 dark:bg-slate-700/50 rounded"></div>
+                                        <div className="h-2 w-5/6 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
+                                        <div className="h-2 w-4/5 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
+                                    </div>
+                                    <div className="pt-4 grid grid-cols-2 gap-2">
+                                        {[1, 2, 3, 4].map(i => (
+                                            <div key={i} className="h-8 bg-slate-100 dark:bg-slate-800/50 rounded border border-slate-200 dark:border-slate-700/50"></div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Card 2: LinkedIn - Middle */}
-                            <div className="absolute left-1/2 top-1/2 w-3/4 aspect-[3/4] bg-[#0A66C2] noise-bg rounded-2xl p-6 shadow-2xl transform -translate-x-[55%] -translate-y-[55%] -rotate-6 scale-95 z-10 text-white border border-white/10 overflow-hidden origin-center transition-all duration-500 hover:-translate-x-[60%] hover:-rotate-12">
-                                <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent pointer-events-none"></div>
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-12 h-12 rounded-full bg-white/20"></div>
+                            <motion.div
+                                variants={{
+                                    initial: { x: "-55%", y: "-55%", rotate: -6, scale: 0.95, opacity: 0 },
+                                    animate: { x: "-55%", y: "-55%", rotate: -6, scale: 0.95, opacity: 1, transition: { duration: 0.8, delay: 0.8 } },
+                                    hover: { x: "-65%", y: "-55%", rotate: -10, scale: 1, zIndex: 30 }
+                                }}
+                                className="absolute left-1/2 top-1/2 w-[85%] aspect-[3/4] bg-white dark:bg-[#0A66C2] noise-bg rounded-2xl p-8 shadow-2xl z-10 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10 overflow-hidden origin-center"
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="relative">
+                                        <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-white/20 border-4 border-white dark:border-white/10 flex items-center justify-center text-xl font-bold opacity-50">JD</div>
+                                        <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white dark:border-[#0A66C2]"></div>
+                                    </div>
                                     <div>
-                                        <div className="h-3 w-24 bg-white/30 rounded mb-2"></div>
-                                        <div className="h-2 w-16 bg-white/20 rounded"></div>
+                                        <div className="h-4 w-32 bg-slate-200 dark:bg-white/30 rounded mb-2"></div>
+                                        <div className="h-3 w-48 bg-slate-100 dark:bg-white/20 rounded"></div>
                                     </div>
                                 </div>
-                                <div className="h-2 w-full bg-white/10 rounded mb-2"></div>
-                                <div className="h-2 w-full bg-white/10 rounded mb-2"></div>
-                                <div className="h-2 w-3/4 bg-white/10 rounded mb-6"></div>
-
-                                <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs">
-                                    <Sparkles className="w-3 h-3 mr-1" /> AI Optimized
+                                <div className="space-y-3 mb-8">
+                                    <div className="h-2.5 w-full bg-slate-100 dark:bg-white/10 rounded"></div>
+                                    <div className="h-2.5 w-full bg-slate-100 dark:bg-white/10 rounded"></div>
+                                    <div className="h-2.5 w-3/4 bg-slate-100 dark:bg-white/10 rounded"></div>
                                 </div>
-                            </div>
+
+                                <div className="grid grid-cols-1 gap-3">
+                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-white/10 border border-slate-100 dark:border-white/20">
+                                        <TrendingUp className="w-4 h-4 text-primary-500 dark:text-white" />
+                                        <div className="text-xs font-semibold uppercase tracking-wider opacity-80">Profile views up 450%</div>
+                                    </div>
+                                    <div className="inline-flex items-center self-start px-4 py-2 rounded-full bg-primary-500 text-white text-xs font-bold shadow-lg shadow-primary-500/20">
+                                        <Sparkles className="w-3.5 h-3.5 mr-2" /> AI Optimized
+                                    </div>
+                                </div>
+                            </motion.div>
 
                             {/* Card 3: Dashboard - Front */}
-                            <div className="absolute left-1/2 top-1/2 w-3/4 aspect-[3/4] glass-card noise-bg spotlight-card bg-white/90 dark:bg-slate-900/90 rounded-2xl p-6 shadow-2xl transform -translate-x-1/2 -translate-y-1/2 z-20 border border-teal-500/30 backdrop-blur-xl origin-center transition-all duration-500 hover:scale-[1.02]">
+                            <motion.div
+                                variants={{
+                                    initial: { x: "-50%", y: "-50%", rotate: 0, scale: 1, opacity: 0 },
+                                    animate: { x: "-50%", y: "-50%", rotate: 0, scale: 1, opacity: 1, transition: { duration: 0.8, delay: 1.0 } },
+                                    hover: { scale: 1.05, zIndex: 40 }
+                                }}
+                                className="absolute left-1/2 top-1/2 w-[85%] aspect-[3/4] glass-card noise-bg spotlight-card bg-white/95 dark:bg-slate-900/95 rounded-2xl p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] z-20 border border-teal-500/30 backdrop-blur-2xl origin-center"
+                            >
                                 <div className="scan-line"></div>
-                                <div className="flex items-center justify-between mb-8">
-                                    <Logo className="h-6" />
-                                    <div className="h-8 w-8 rounded-full bg-teal-100 dark:bg-teal-900/30"></div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3 mb-6">
-                                    <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-900/20 border border-teal-100 dark:border-teal-800/30">
-                                        <div className="text-2xl font-bold text-teal-600">{atsScore}%</div>
-                                        <div className="text-[10px] uppercase text-teal-800/60 dark:text-teal-400/60">ATS Score</div>
-                                    </div>
-                                    <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/30">
-                                        <div className="text-2xl font-bold text-purple-600">5.0</div>
-                                        <div className="text-[10px] uppercase text-purple-800/60 dark:text-purple-400/60">Stars</div>
+                                <div className="flex items-center justify-between mb-10">
+                                    <Logo className="h-7" />
+                                    <div className="flex -space-x-2">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className={`w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold`}>
+                                                {String.fromCharCode(64 + i)}
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
-                                    <div className="h-3 w-1/2 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
-                                    <div className="h-12 w-full bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-300 dark:border-slate-700"></div>
+                                <div className="grid grid-cols-2 gap-4 mb-8">
+                                    <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-900/20 border border-teal-100 dark:border-teal-800/30 group/stat overflow-hidden relative">
+                                        <div className="absolute -right-2 -top-2 w-12 h-12 bg-teal-500/10 rounded-full blur-xl group-hover/stat:bg-teal-500/20 transition-colors"></div>
+                                        <div className="text-3xl font-black text-teal-600 dark:text-teal-400 mb-1 leading-none">{atsScore}%</div>
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-teal-800/40 dark:text-teal-400/40">ATS Success</div>
+                                    </div>
+                                    <div className="p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/30 group/stat overflow-hidden relative">
+                                        <div className="absolute -right-2 -top-2 w-12 h-12 bg-purple-500/10 rounded-full blur-xl group-hover/stat:bg-purple-500/20 transition-colors"></div>
+                                        <div className="text-3xl font-black text-purple-600 dark:text-purple-400 mb-1 leading-none">AI</div>
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-purple-800/40 dark:text-purple-400/40">Powered</div>
+                                    </div>
                                 </div>
 
-                                <div className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-xl border border-light-200 dark:border-dark-700">
-                                    <div className="flex items-center gap-3">
-                                        <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
-                                            <Check className="w-4 h-4 text-green-600" />
+                                <div className="space-y-4 mb-8">
+                                    <div className="flex justify-between items-end mb-1">
+                                        <div className="h-3 w-24 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
+                                        <div className="text-[10px] font-bold text-teal-500">OPTIMIZING...</div>
+                                    </div>
+                                    <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                        <motion.div
+                                            className="h-full bg-teal-500"
+                                            initial={{ width: 0 }}
+                                            animate={{ width: "85%" }}
+                                            transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="h-1 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <motion.div
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 1.5 }}
+                                    className="absolute -bottom-8 -left-8 bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 z-30"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-green-100 dark:bg-green-500/20 p-3 rounded-xl">
+                                            <Award className="w-6 h-6 text-green-600 dark:text-green-400" />
                                         </div>
                                         <div>
-                                            <div className="text-sm font-bold">Hired!</div>
-                                            <div className="text-xs text-gray-500">Just now</div>
+                                            <div className="text-sm font-black text-slate-800 dark:text-white">Dream Job Landed!</div>
+                                            <div className="text-xs font-medium text-slate-500 dark:text-slate-400">Software Engineer @ Meta</div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                </motion.div>
+
+                                <motion.div
+                                    animate={{
+                                        y: [0, -10, 0],
+                                    }}
+                                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                                    className="absolute -top-6 -right-6 bg-primary-500 p-4 rounded-2xl shadow-xl shadow-primary-500/20 z-30 transform rotate-12"
+                                >
+                                    <Zap className="w-6 h-6 text-white" />
+                                </motion.div>
+                            </motion.div>
+                        </motion.div>
                     </div>
                 </div>
 
