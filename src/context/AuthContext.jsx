@@ -17,7 +17,24 @@ const extractErrorMessage = (err) => {
     if (typeof err === 'string') return err
     if (err.message) return err.message
     if (err.code) return err.code
+
+    // Handle error objects with status codes
+    if (err.status) {
+        if (err.statusText && err.statusText !== '') return err.statusText
+        if (err.status === 500) return 'Server error. Please try again later.'
+        if (err.status === 400) return 'Invalid request. Please check your information.'
+        if (err.status === 401) return 'Unauthorized. Please check your credentials.'
+        if (err.status === 404) return 'Service not found. Please try again.'
+        return `Error ${err.status}: Something went wrong.`
+    }
+
     if (err.statusText) return err.statusText
+
+    // Last resort - avoid showing raw JSON objects
+    if (typeof err === 'object') {
+        return 'An unexpected error occurred. Please try again.'
+    }
+
     return JSON.stringify(err)
 }
 

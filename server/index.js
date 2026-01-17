@@ -8,6 +8,7 @@ import { generateFullResume } from '../lib/ai/generateFullResume.js';
 import { generateCoverLetter } from '../lib/ai/generateCoverLetter.js';
 import { calculateAtsScore } from '../lib/ai/calculateAtsScore.js';
 import { createPayment, executePayment } from '../lib/payment/bkash.js';
+import { auth } from '../lib/auth.js';
 
 // Load environment variables
 dotenv.config();
@@ -30,10 +31,69 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors({
     origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With']
 }));
 app.use(express.json());
+
+// BetterAuth routes - handle all /api/auth/* requests
+app.all('/api/auth/*', async (req, res) => {
+    try {
+        // Build full URL
+        const protocol = req.protocol;
+        const host = req.get('host');
+        const url = new URL(req.url, `${protocol}://${host}`);
+
+        // Convert Express request to Web Request
+        const headers = new Headers();
+        Object.entries(req.headers).forEach(([key, value]) => {
+            if (value) {
+                if (Array.isArray(value)) {
+                    value.forEach(v => headers.append(key, v));
+                } else {
+                    headers.set(key, value);
+                }
+            }
+        });
+
+        // Get body for POST/PUT/PATCH
+        let body = undefined;
+        if (req.method !== 'GET' && req.method !== 'HEAD') {
+            body = JSON.stringify(req.body);
+        }
+
+        // Create Web Request
+        const webRequest = new Request(url.toString(), {
+            method: req.method,
+            headers: headers,
+            body: body
+        });
+
+        // Call BetterAuth handler
+        const response = await auth.handler(webRequest);
+
+        // Copy response headers
+        response.headers.forEach((value, key) => {
+            if (key.toLowerCase() !== 'content-encoding' &&
+                key.toLowerCase() !== 'transfer-encoding') {
+                res.setHeader(key, value);
+            }
+        });
+
+        // Get response body
+        const responseBody = await response.text();
+
+        // Send response
+        res.status(response.status).send(responseBody);
+    } catch (error) {
+        console.error('Auth handler error:', error.message);
+        res.status(500).json({
+            error: 'Authentication service error',
+            message: error.message
+        });
+    }
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
