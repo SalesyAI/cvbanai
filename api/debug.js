@@ -27,8 +27,13 @@ export default async function handler(req, res) {
 
         // 2. Check Database Connection
         if (process.env.DATABASE_URL) {
+            // FIX: Strip sslmode to allow rejectUnauthorized: false to work
+            const url = new URL(process.env.DATABASE_URL);
+            url.searchParams.delete('sslmode');
+            const connectionString = url.toString();
+
             const pool = new Pool({
-                connectionString: process.env.DATABASE_URL,
+                connectionString: connectionString,
                 ssl: { rejectUnauthorized: false },
                 connectionTimeoutMillis: 5000 // 5s timeout
             });
