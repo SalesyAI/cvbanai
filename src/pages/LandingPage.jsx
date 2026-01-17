@@ -124,149 +124,172 @@ export default function LandingPage() {
                             <motion.div
                                 variants={{
                                     initial: { x: "-65%", y: "-60%", rotate: -12, scale: 0.9, opacity: 0 },
-                                    animate: { x: "-65%", y: "-60%", rotate: -12, scale: 0.9, opacity: 0.6, transition: { duration: 0.8, delay: 0.6 } },
-                                    hover: { x: "-85%", y: "-70%", rotate: -20, scale: 0.95, opacity: 0.8 }
+                                    animate: {
+                                        x: "-65%", y: "-60%", rotate: -12, scale: 0.9, opacity: 0.8,
+                                        transition: { duration: 0.8, delay: 0.6 }
+                                    },
+                                    hover: { x: "-85%", y: "-70%", rotate: -20, scale: 0.95, opacity: 0.9 }
                                 }}
-                                className="absolute left-1/2 top-1/2 w-[85%] aspect-[3/4] glass-card noise-bg rounded-2xl p-6 shadow-2xl z-0 border border-white/20 origin-center"
+                                animate="animate"
+                                className="absolute left-1/2 top-1/2 w-[85%] aspect-[3/4] glass-frosted rounded-2xl p-6 shadow-xl z-0 border border-white/40 origin-center"
                             >
-                                <div className="space-y-4 opacity-50">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-10 h-10 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+                                <motion.div
+                                    animate={{ y: [-5, 5, -5] }}
+                                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                                    className="h-full w-full"
+                                >
+                                    <div className="space-y-4 opacity-70">
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <div className="w-10 h-10 rounded-full bg-slate-300 dark:bg-slate-600 shimer"></div>
+                                            <div className="space-y-2">
+                                                <div className="h-3 w-24 bg-slate-300 dark:bg-slate-600 rounded"></div>
+                                                <div className="h-2 w-16 bg-slate-200 dark:bg-slate-700 rounded"></div>
+                                            </div>
+                                        </div>
+                                        <div className="h-3 w-1/3 bg-slate-300 dark:bg-slate-600 rounded"></div>
                                         <div className="space-y-2">
-                                            <div className="h-3 w-24 bg-slate-300 dark:bg-slate-600 rounded"></div>
-                                            <div className="h-2 w-16 bg-slate-200 dark:bg-slate-700 rounded"></div>
+                                            <div className="h-2 w-full bg-slate-200 dark:bg-slate-700/50 rounded"></div>
+                                            <div className="h-2 w-5/6 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
+                                            <div className="h-2 w-4/5 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
                                         </div>
                                     </div>
-                                    <div className="h-3 w-1/3 bg-slate-300 dark:bg-slate-600 rounded"></div>
-                                    <div className="space-y-2">
-                                        <div className="h-2 w-full bg-slate-200 dark:bg-slate-700/50 rounded"></div>
-                                        <div className="h-2 w-5/6 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
-                                        <div className="h-2 w-4/5 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
-                                    </div>
-                                    <div className="pt-4 grid grid-cols-2 gap-2">
-                                        {[1, 2, 3, 4].map(i => (
-                                            <div key={i} className="h-8 bg-slate-100 dark:bg-slate-800/50 rounded border border-slate-200 dark:border-slate-700/50"></div>
-                                        ))}
-                                    </div>
-                                </div>
+                                </motion.div>
                             </motion.div>
 
                             {/* Card 2: LinkedIn - Middle */}
                             <motion.div
                                 variants={{
                                     initial: { x: "-55%", y: "-55%", rotate: -6, scale: 0.95, opacity: 0 },
-                                    animate: { x: "-55%", y: "-55%", rotate: -6, scale: 0.95, opacity: 1, transition: { duration: 0.8, delay: 0.8 } },
+                                    animate: {
+                                        x: "-55%", y: "-55%", rotate: -6, scale: 0.95, opacity: 1,
+                                        transition: { duration: 0.8, delay: 0.8 }
+                                    },
                                     hover: { x: "-65%", y: "-55%", rotate: -10, scale: 1, zIndex: 30 }
                                 }}
-                                className="absolute left-1/2 top-1/2 w-[85%] aspect-[3/4] bg-white dark:bg-[#0A66C2] noise-bg rounded-2xl p-8 shadow-2xl z-10 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10 overflow-hidden origin-center"
+                                className="absolute left-1/2 top-1/2 w-[85%] aspect-[3/4] glass-frosted rounded-2xl p-8 shadow-2xl z-10 text-slate-800 dark:text-white border border-white/40 overflow-hidden origin-center"
                             >
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                                <div className="flex items-center gap-4 mb-8">
-                                    <div className="relative">
-                                        <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-white/20 border-4 border-white dark:border-white/10 flex items-center justify-center text-xl font-bold opacity-50">JD</div>
-                                        <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white dark:border-[#0A66C2]"></div>
+                                <motion.div
+                                    animate={{ y: [-8, 8, -8] }}
+                                    transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                    className="h-full w-full relative"
+                                >
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="relative">
+                                            <div className="w-16 h-16 rounded-full bg-white/50 border-4 border-white dark:border-white/10 flex items-center justify-center text-xl font-bold text-teal-700">JD</div>
+                                            <div className="absolute -bottom-1 -right-1 bg-teal-500 w-4 h-4 rounded-full border-2 border-white"></div>
+                                        </div>
+                                        <div>
+                                            <div className="h-4 w-32 bg-slate-400/30 rounded mb-2"></div>
+                                            <div className="h-3 w-48 bg-slate-400/20 rounded"></div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div className="h-4 w-32 bg-slate-200 dark:bg-white/30 rounded mb-2"></div>
-                                        <div className="h-3 w-48 bg-slate-100 dark:bg-white/20 rounded"></div>
-                                    </div>
-                                </div>
-                                <div className="space-y-3 mb-8">
-                                    <div className="h-2.5 w-full bg-slate-100 dark:bg-white/10 rounded"></div>
-                                    <div className="h-2.5 w-full bg-slate-100 dark:bg-white/10 rounded"></div>
-                                    <div className="h-2.5 w-3/4 bg-slate-100 dark:bg-white/10 rounded"></div>
-                                </div>
 
-                                <div className="grid grid-cols-1 gap-3">
-                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-white/10 border border-slate-100 dark:border-white/20">
-                                        <TrendingUp className="w-4 h-4 text-primary-500 dark:text-white" />
-                                        <div className="text-xs font-semibold uppercase tracking-wider opacity-80">Profile views up 450%</div>
+                                    <div className="space-y-3 mb-8">
+                                        <div className="h-2.5 w-full bg-slate-400/20 rounded"></div>
+                                        <div className="h-2.5 w-full bg-slate-400/20 rounded"></div>
+                                        <div className="h-2.5 w-3/4 bg-slate-400/20 rounded"></div>
                                     </div>
-                                    <div className="inline-flex items-center self-start px-4 py-2 rounded-full bg-primary-500 text-white text-xs font-bold shadow-lg shadow-primary-500/20">
-                                        <Sparkles className="w-3.5 h-3.5 mr-2" /> AI Optimized
+
+                                    <div className="grid grid-cols-1 gap-3">
+                                        <div className="flex items-center gap-3 p-3 rounded-xl bg-white/40 border border-white/50 backdrop-blur-sm">
+                                            <TrendingUp className="w-4 h-4 text-teal-600" />
+                                            <div className="text-xs font-semibold uppercase tracking-wider text-teal-800 dark:text-teal-100">Profile views up 450%</div>
+                                        </div>
+                                        <div className="inline-flex items-center self-start px-4 py-2 rounded-full bg-teal-500 text-white text-xs font-bold shadow-lg shadow-teal-500/20">
+                                            <Sparkles className="w-3.5 h-3.5 mr-2" /> AI Optimized
+                                        </div>
                                     </div>
-                                </div>
+                                </motion.div>
                             </motion.div>
 
                             {/* Card 3: Dashboard - Front */}
                             <motion.div
                                 variants={{
                                     initial: { x: "-50%", y: "-50%", rotate: 0, scale: 1, opacity: 0 },
-                                    animate: { x: "-50%", y: "-50%", rotate: 0, scale: 1, opacity: 1, transition: { duration: 0.8, delay: 1.0 } },
+                                    animate: {
+                                        x: "-50%", y: "-50%", rotate: 0, scale: 1, opacity: 1,
+                                        transition: { duration: 0.8, delay: 1.0 }
+                                    },
                                     hover: { scale: 1.05, zIndex: 40 }
                                 }}
-                                className="absolute left-1/2 top-1/2 w-[85%] aspect-[3/4] glass-card noise-bg spotlight-card bg-white/95 dark:bg-slate-900/95 rounded-2xl p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] z-20 border border-teal-500/30 backdrop-blur-2xl origin-center"
+                                className="absolute left-1/2 top-1/2 w-[85%] aspect-[3/4] glass-frosted bg-white/40 dark:bg-slate-900/40 rounded-2xl p-8 shadow-[0_30px_60px_-15px_rgba(20,184,166,0.15)] z-20 border border-white/60 backdrop-blur-2xl origin-center"
                             >
-                                <div className="scan-line"></div>
-                                <div className="flex items-center justify-between mb-10">
-                                    <Logo className="h-7" />
-                                    <div className="flex -space-x-2">
-                                        {[1, 2, 3].map(i => (
-                                            <div key={i} className={`w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold`}>
-                                                {String.fromCharCode(64 + i)}
+                                <motion.div
+                                    animate={{ y: [-10, 10, -10] }}
+                                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                                    className="h-full w-full relative"
+                                >
+                                    <div className="scan-line"></div>
+                                    <div className="flex items-center justify-between mb-10">
+                                        <Logo className="h-7" />
+                                        <div className="flex -space-x-2">
+                                            {[1, 2, 3].map(i => (
+                                                <div key={i} className={`w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 bg-teal-50 dark:bg-teal-900/50 flex items-center justify-center text-[10px] font-bold text-teal-700 dark:text-teal-300`}>
+                                                    {String.fromCharCode(64 + i)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4 mb-8">
+                                        <div className="p-4 rounded-2xl bg-teal-50/50 dark:bg-teal-900/30 border border-teal-100 dark:border-teal-800/30">
+                                            <div className="text-3xl font-black text-teal-600 dark:text-teal-400 mb-1 leading-none">{atsScore}%</div>
+                                            <div className="text-[10px] font-bold uppercase tracking-widest text-teal-800/60 dark:text-teal-300/60">ATS Success</div>
+                                        </div>
+                                        <div className="p-4 rounded-2xl bg-white/50 dark:bg-white/10 border border-white/60 dark:border-white/10">
+                                            <div className="text-3xl font-black text-teal-600 dark:text-teal-400 mb-1 leading-none">AI</div>
+                                            <div className="text-[10px] font-bold uppercase tracking-widest text-teal-800/60 dark:text-teal-300/60">Powered</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4 mb-8">
+                                        <div className="flex justify-between items-end mb-1">
+                                            <div className="h-3 w-24 bg-slate-300/50 rounded"></div>
+                                            <div className="text-[10px] font-bold text-teal-600 animate-pulse">OPTIMIZING...</div>
+                                        </div>
+                                        <div className="h-2 w-full bg-slate-100 dark:bg-slate-800/50 rounded-full overflow-hidden">
+                                            <motion.div
+                                                className="h-full bg-gradient-to-r from-teal-400 to-teal-600"
+                                                initial={{ width: 0 }}
+                                                animate={{ width: "85%" }}
+                                                transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {[1, 2, 3].map(i => (
+                                                <div key={i} className="h-1 bg-slate-200/50 rounded-full"></div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <motion.div
+                                        initial={{ y: 20, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{ delay: 1.5 }}
+                                        className="absolute -bottom-8 -left-8 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-white/50 dark:border-slate-600 z-30"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-xl">
+                                                <Award className="w-6 h-6 text-green-600 dark:text-green-400" />
                                             </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4 mb-8">
-                                    <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-900/20 border border-teal-100 dark:border-teal-800/30 group/stat overflow-hidden relative">
-                                        <div className="absolute -right-2 -top-2 w-12 h-12 bg-teal-500/10 rounded-full blur-xl group-hover/stat:bg-teal-500/20 transition-colors"></div>
-                                        <div className="text-3xl font-black text-teal-600 dark:text-teal-400 mb-1 leading-none">{atsScore}%</div>
-                                        <div className="text-[10px] font-bold uppercase tracking-widest text-teal-800/40 dark:text-teal-400/40">ATS Success</div>
-                                    </div>
-                                    <div className="p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/30 group/stat overflow-hidden relative">
-                                        <div className="absolute -right-2 -top-2 w-12 h-12 bg-purple-500/10 rounded-full blur-xl group-hover/stat:bg-purple-500/20 transition-colors"></div>
-                                        <div className="text-3xl font-black text-purple-600 dark:text-purple-400 mb-1 leading-none">AI</div>
-                                        <div className="text-[10px] font-bold uppercase tracking-widest text-purple-800/40 dark:text-purple-400/40">Powered</div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4 mb-8">
-                                    <div className="flex justify-between items-end mb-1">
-                                        <div className="h-3 w-24 bg-slate-200 dark:bg-slate-700/50 rounded"></div>
-                                        <div className="text-[10px] font-bold text-teal-500">OPTIMIZING...</div>
-                                    </div>
-                                    <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                        <motion.div
-                                            className="h-full bg-teal-500"
-                                            initial={{ width: 0 }}
-                                            animate={{ width: "85%" }}
-                                            transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        {[1, 2, 3].map(i => (
-                                            <div key={i} className="h-1 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 1.5 }}
-                                    className="absolute -bottom-8 -left-8 bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 z-30"
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <div className="bg-green-100 dark:bg-green-500/20 p-3 rounded-xl">
-                                            <Award className="w-6 h-6 text-green-600 dark:text-green-400" />
+                                            <div>
+                                                <div className="text-sm font-black text-slate-800 dark:text-white">Dream Job Landed!</div>
+                                                <div className="text-xs font-medium text-slate-500 dark:text-slate-400">Software Engineer @ Meta</div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <div className="text-sm font-black text-slate-800 dark:text-white">Dream Job Landed!</div>
-                                            <div className="text-xs font-medium text-slate-500 dark:text-slate-400">Software Engineer @ Meta</div>
-                                        </div>
-                                    </div>
-                                </motion.div>
+                                    </motion.div>
 
-                                <motion.div
-                                    animate={{
-                                        y: [0, -10, 0],
-                                    }}
-                                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                    className="absolute -top-6 -right-6 bg-primary-500 p-4 rounded-2xl shadow-xl shadow-primary-500/20 z-30 transform rotate-12"
-                                >
-                                    <Zap className="w-6 h-6 text-white" />
+                                    <motion.div
+                                        animate={{
+                                            y: [0, -12, 0],
+                                            rotate: [12, 0, 12]
+                                        }}
+                                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                        className="absolute -top-6 -right-6 bg-gradient-to-br from-teal-400 to-teal-600 p-4 rounded-2xl shadow-xl shadow-teal-500/30 z-30 transform rotate-12"
+                                    >
+                                        <Zap className="w-6 h-6 text-white" />
+                                    </motion.div>
                                 </motion.div>
                             </motion.div>
                         </motion.div>
