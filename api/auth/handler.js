@@ -1,21 +1,3 @@
-import { auth } from '../../lib/auth.js';
-
-export const config = {
-    api: {
-        bodyParser: false // BetterAuth handles body parsing itself
-    }
-};
-
-// Helper to collect raw body from stream
-async function getRawBody(req) {
-    return new Promise((resolve, reject) => {
-        const chunks = [];
-        req.on('data', (chunk) => chunks.push(chunk));
-        req.on('end', () => resolve(Buffer.concat(chunks)));
-        req.on('error', reject);
-    });
-}
-
 export default async function handler(req, res) {
     // Set CORS headers
     const origin = req.headers.origin || req.headers.referer || '*';
@@ -30,6 +12,9 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Dynamic import to prevent top-level crashes if env vars are missing
+        const { auth } = await import('../../lib/auth.js');
+
         // Build the full URL
         const protocol = req.headers['x-forwarded-proto'] || 'https';
         const host = req.headers['x-forwarded-host'] || req.headers.host;
@@ -47,12 +32,12 @@ export default async function handler(req, res) {
             }
         }
 
-        // Get raw body for POST/PUT/PATCH requests
+        // Handle Body
         let body = undefined;
         if (req.method !== 'GET' && req.method !== 'HEAD') {
-            const rawBody = await getRawBody(req);
-            if (rawBody.length > 0) {
-                body = rawBody;
+            // Vercel/Express automatically parses JSON if content-type is json
+            if (req.body) {
+                body = typeof req.body === 'object' ? JSON.stringify(req.body) : req.body;
             }
         }
 
@@ -66,9 +51,8 @@ export default async function handler(req, res) {
         // Call BetterAuth handler
         const response = await auth.handler(webRequest);
 
-        // Copy response headers to Node.js response
+        // Copy response headers
         response.headers.forEach((value, key) => {
-            // Skip some headers that Node.js handles differently
             if (key.toLowerCase() !== 'content-encoding' &&
                 key.toLowerCase() !== 'transfer-encoding') {
                 res.setHeader(key, value);
@@ -82,10 +66,17 @@ export default async function handler(req, res) {
         return res.status(response.status).send(responseBody);
 
     } catch (error) {
-        console.error('Auth handler error:', error.message, error.stack);
+        console.error('Auth handler error:', error);
+
+        // Return detailed error for debugging (remove in prod if needed, but useful now)
         return res.status(500).json({
-            error: 'Authentication service error',
-            message: error.message
+            error: 'Authentication Function Error',
+            message: error.message,
+            stack: error.stack,
+            envCheck: {
+                hasDB: !!process.env.DATABASE_URL,
+                hasAuthSecret: !!process.env.BETTER_AUTH_SECRET
+            }
         });
     }
 }
