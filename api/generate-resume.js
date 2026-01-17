@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { generateFullResume } from '../lib/ai/generateFullResume.js';
+import { requireAuth } from '../lib/auth-utils.js';
 
 // Simple in-memory rate limiting (resets on cold start)
 const rateLimitMap = new Map();
@@ -27,7 +27,8 @@ export default async function handler(req, res) {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     // Handle preflight
     if (req.method === 'OPTIONS') {
@@ -39,25 +40,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        // ========== AUTHENTICATION ==========
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ error: 'Missing or invalid authorization header' });
-        }
-
-        const token = authHeader.replace('Bearer ', '');
-
-        // Verify token with Supabase
-        const supabase = createClient(
-            process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
-            process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
-        );
-
-        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-        if (authError || !user) {
-            return res.status(401).json({ error: 'Invalid or expired session' });
-        }
+        // ========== AUTHENTICATION (BetterAuth) ==========
+        const user = await requireAuth(req, res);
+        if (!user) return; // Response already sent by requireAuth
 
         // ========== RATE LIMITING ==========
         if (!checkRateLimit(user.id)) {

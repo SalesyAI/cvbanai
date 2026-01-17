@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { createContext, useContext } from 'react'
+import { authClient, useSession } from '../lib/auth-client'
 
 const AuthContext = createContext({})
 
@@ -12,63 +12,100 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null)
-    const [session, setSession] = useState(null)
-    const [loading, setLoading] = useState(true)
+    // Use BetterAuth's useSession hook
+    const { data: session, isPending: loading, error } = useSession()
 
-    useEffect(() => {
-        // Get initial session
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-            setUser(session?.user ?? null)
-            setLoading(false)
-        })
-
-        // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (event, session) => {
-                setSession(session)
-                setUser(session?.user ?? null)
-                setLoading(false)
-            }
-        )
-
-        return () => subscription.unsubscribe()
-    }, [])
+    const user = session?.user ?? null
 
     const value = {
         user,
         session,
         loading,
+        error,
+
+        // Sign up with email and password
         signUp: async (email, password, fullName) => {
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: { full_name: fullName }
+            try {
+                const result = await authClient.signUp.email({
+                    email,
+                    password,
+                    name: fullName,
+                    callbackURL: '/dashboard'
+                })
+
+                if (result.error) {
+                    return { data: null, error: result.error }
                 }
-            })
-            return { data, error }
+
+                return { data: result.data, error: null }
+            } catch (err) {
+                return { data: null, error: err }
+            }
         },
+
+        // Sign in with email and password
         signIn: async (email, password) => {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            })
-            return { data, error }
-        },
-        signOut: async () => {
-            const { error } = await supabase.auth.signOut()
-            return { error }
-        },
-        signInWithGoogle: async () => {
-            const { data, error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: `${window.location.origin}/dashboard`
+            try {
+                const result = await authClient.signIn.email({
+                    email,
+                    password,
+                    callbackURL: '/dashboard'
+                })
+
+                if (result.error) {
+                    return { data: null, error: result.error }
                 }
-            })
-            return { data, error }
+
+                return { data: result.data, error: null }
+            } catch (err) {
+                return { data: null, error: err }
+            }
+        },
+
+        // Sign out
+        signOut: async () => {
+            try {
+                await authClient.signOut()
+                return { error: null }
+            } catch (err) {
+                return { error: err }
+            }
+        },
+
+        // Sign in with Google OAuth
+        signInWithGoogle: async () => {
+            try {
+                const result = await authClient.signIn.social({
+                    provider: 'google',
+                    callbackURL: '/dashboard'
+                })
+
+                if (result.error) {
+                    return { data: null, error: result.error }
+                }
+
+                return { data: result.data, error: null }
+            } catch (err) {
+                return { data: null, error: err }
+            }
+        },
+
+        // Resend verification email
+        resendVerificationEmail: async (email) => {
+            try {
+                const result = await authClient.sendVerificationEmail({
+                    email,
+                    callbackURL: '/dashboard'
+                })
+
+                if (result.error) {
+                    return { error: result.error }
+                }
+
+                return { error: null }
+            } catch (err) {
+                return { error: err }
+            }
         }
     }
 

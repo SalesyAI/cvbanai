@@ -1,0 +1,28 @@
+# CodeRabbit Configuration
+# Documentation: https://docs.coderabbit.ai/
+
+language: "en-US"
+
+reviews:
+  # Enable automatic reviews on every PR
+  auto_review: true
+  # Enable incremental reviews on new commits
+  auto_incremental_review: true
+  # High-level summary of the PR
+  summary: true
+  # Generate a poem about the changes (optional, set to false to disable)
+  poem: false
+
+# Files or paths to ignore during review
+path_filters:
+  - "!dist/**"
+  - "!node_modules/**"
+  - "!artifact/**"
+  - "!.gemini/**"
+
+# Specific instructions for the AI reviewer
+path_instructions:
+  - path: "src/**/*.css"
+    instructions: "Ensure CSS follows the glassmorphism and premium design standards established in the project."
+  - path: "src/**/*.jsx"
+    instructions: "Check for proper React hooks usage and ensure responsive design principles are followed."
