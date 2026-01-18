@@ -40,6 +40,16 @@ export default function AuthPage() {
         setAwaitingVerification(false)
     }, [searchParams])
 
+    // Handle error from URL (e.g., from Google OAuth redirect)
+    useEffect(() => {
+        const urlError = searchParams.get('error')
+        if (urlError === 'unable_to_link_account') {
+            setError('This Google account\'s email is already registered with a password. Please sign in with your email and password instead, or use a different Google account.')
+            // Clear the error from URL to avoid showing it again on refresh
+            window.history.replaceState({}, '', '/auth')
+        }
+    }, [searchParams])
+
     // User-friendly error messages
     const getErrorMessage = (error) => {
         const message = error?.message || error?.toString() || ''
