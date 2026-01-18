@@ -104,7 +104,8 @@ export const AuthProvider = ({ children }) => {
             try {
                 const result = await authClient.signIn.social({
                     provider: 'google',
-                    callbackURL: '/dashboard'
+                    callbackURL: '/dashboard',
+                    errorCallbackURL: '/auth'
                 })
 
                 if (result.error) {
