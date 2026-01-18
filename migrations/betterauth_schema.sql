@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS "account" (
     "providerId" TEXT NOT NULL,
     "accessToken" TEXT,
     "refreshToken" TEXT,
+    "idToken" TEXT,
     "accessTokenExpiresAt" TIMESTAMP,
     "refreshTokenExpiresAt" TIMESTAMP,
     "scope" TEXT,
