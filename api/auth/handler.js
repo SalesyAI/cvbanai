@@ -52,12 +52,28 @@ export default async function handler(req, res) {
         const response = await auth.handler(webRequest);
 
         // Copy response headers
+        // Copy response headers
         response.headers.forEach((value, key) => {
             if (key.toLowerCase() !== 'content-encoding' &&
-                key.toLowerCase() !== 'transfer-encoding') {
+                key.toLowerCase() !== 'transfer-encoding' &&
+                key.toLowerCase() !== 'set-cookie') { // Skip Set-Cookie here, verify later
                 res.setHeader(key, value);
             }
         });
+
+        // Explicitly handle Set-Cookie
+        if (response.headers.getSetCookie) {
+            const cookies = response.headers.getSetCookie();
+            if (cookies && cookies.length > 0) {
+                res.setHeader('Set-Cookie', cookies);
+            }
+        } else {
+            // Fallback (older Node versions might not have getSetCookie)
+            const cookieHeader = response.headers.get('Set-Cookie');
+            if (cookieHeader) {
+                res.setHeader('Set-Cookie', cookieHeader);
+            }
+        }
 
         // Get response body
         const responseBody = await response.text();
