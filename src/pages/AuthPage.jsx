@@ -87,9 +87,16 @@ export default function AuthPage() {
             if (isSignUp) {
                 const { error } = await signUp(email, password, fullName)
                 if (error) throw error
-                // Show verification pending state
-                setAwaitingVerification(true)
-                setSuccess('Account created! Please check your email to verify your account.')
+
+                // Since we've disabled mandatory email verification, we should 
+                // try to sign the user in immediately to get them into the app.
+                // In many BetterAuth configs, signUp already creates the session,
+                // but an explicit signIn ensures stability.
+                await signIn(email, password)
+
+                const from = location.state?.from
+                const destination = from ? (from.pathname + from.search) : '/dashboard'
+                navigate(destination, { replace: true })
             } else {
                 const { error } = await signIn(email, password)
                 if (error) {
