@@ -13,7 +13,7 @@ function App() {
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<LandingPage />} />
-                    <Route path="/auth" element={<AuthPage />} />
+                    <Route path="/auth/*" element={<AuthPage />} />
 
                     {/* Protected Routes */}
                     <Route

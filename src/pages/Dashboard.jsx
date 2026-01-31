@@ -49,6 +49,7 @@ export default function Dashboard() {
     const createResume = useMutation(api.resumes.create)
     const updateResume = useMutation(api.resumes.update)
     const deleteResumeMutation = useMutation(api.resumes.deleteResume)
+    const syncUser = useMutation(api.users.syncUser)
 
     // Convex actions
     const refineResumeAction = useAction(api.ai.refineResume)
@@ -76,10 +77,29 @@ export default function Dashboard() {
     const displayName = clerkUser?.fullName || clerkUser?.firstName || clerkUser?.emailAddresses?.[0]?.emailAddress?.split('@')[0] || 'User'
     const firstName = clerkUser?.firstName || displayName.split(' ')[0]
 
+    // Sync user to Convex on first load if not synced yet
+    useEffect(() => {
+        const ensureUserSynced = async () => {
+            if (clerkUser && convexUser === null) {
+                // User exists in Clerk but not in Convex - sync them
+                try {
+                    await syncUser({
+                        clerkId: clerkUser.id,
+                        email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
+                        name: clerkUser.fullName || clerkUser.firstName || '',
+                        imageUrl: clerkUser.imageUrl || '',
+                    })
+                } catch (error) {
+                    console.error('Error syncing user:', error)
+                }
+            }
+        }
+        ensureUserSynced()
+    }, [clerkUser, convexUser, syncUser])
+
     useEffect(() => {
         setIsVisible(true)
         if (clerkUser) {
-            handle
             handlePaymentCallback()
         }
     }, [clerkUser])
