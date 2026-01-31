@@ -9,6 +9,7 @@ import { generateCoverLetter } from '../lib/ai/generateCoverLetter.js';
 import { calculateAtsScore } from '../lib/ai/calculateAtsScore.js';
 import { createPayment, executePayment } from '../lib/payment/bkash.js';
 import { auth } from '../lib/auth.js';
+import signupHandler from '../api/webhooks/on-signup.js';
 
 // Load environment variables
 dotenv.config();
@@ -204,6 +205,17 @@ app.post('/api/generate-resume', async (req, res) => {
     } catch (error) {
         console.error('Resume generation error:', error);
         res.status(500).json({ error: error.message || 'Resume generation failed' });
+    }
+});
+
+// Webhooks
+app.all('/api/webhooks/on-signup', async (req, res) => {
+    console.log('[Server] Webhook received:', req.method, req.url);
+    try {
+        await signupHandler(req, res);
+    } catch (err) {
+        console.error('[Server] Webhook handler error:', err);
+        res.status(500).json({ error: 'Webhook processing failed' });
     }
 });
 
