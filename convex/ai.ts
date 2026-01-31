@@ -51,12 +51,33 @@ export const refineResume = action({
         resumeData: v.any(),
     },
     handler: async (ctx, args) => {
-        const { refineResume: refineFn } = await import("../server/gemini.js");
         const geminiApiKey = process.env.GEMINI_API_KEY;
 
         if (!geminiApiKey) throw new Error("GEMINI_API_KEY not configured");
 
-        const refinedData = await refineFn(args.resumeData, geminiApiKey);
+        // Use Gemini API directly for refinement
+        const { GoogleGenerativeAI } = await import("@google/generative-ai");
+        const genAI = new GoogleGenerativeAI(geminiApiKey);
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+        const prompt = `Refine the following resume data to make it more professional and ATS-friendly. Return the refined data in the same JSON format:
+        
+${JSON.stringify(args.resumeData, null, 2)}
+
+Enhance:
+- Summary: Make it more impactful
+- Work history descriptions: Use action verbs
+- Keep the same structure
+
+Return only valid JSON.`;
+
+        const result = await model.generateContent(prompt);
+        const text = result.response.text();
+
+        // Extract JSON from response
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        const refinedData = jsonMatch ? JSON.parse(jsonMatch[0]) : args.resumeData;
+
         return { refinedData };
     },
 });
