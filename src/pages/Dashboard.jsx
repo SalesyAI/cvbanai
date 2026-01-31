@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useUser } from '@clerk/clerk-react'
+import { useQuery, useMutation, useAction } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 import {
     FileText, Plus, LogOut, User, Home, Linkedin, Globe, Lock, Check, ArrowRight,
     Sparkles, ChevronRight, Copy, Download, Trash, Edit, Clock
@@ -15,7 +17,6 @@ import PaymentModal from '../components/PaymentModal'
 import LinkedInOptimizerWorkflow from '../components/LinkedInOptimizerWorkflow'
 import PortfolioWhatsAppModal from '../components/PortfolioWhatsAppModal'
 import CVGeneratorFlow from '../components/CVGeneratorFlow'
-import { resumeService } from '../services/resumeService'
 
 const VIEWS = {
     HOME: 'home',
@@ -30,64 +31,68 @@ const VIEWS = {
 }
 
 export default function Dashboard() {
-    const { user, signOut, session } = useAuth()
+    const { user: clerkUser, isLoaded } = useUser()
     const navigate = useNavigate()
     const [searchParams, setSearchParams] = useSearchParams()
+
+    // Convex queries
+    const convexUser = useQuery(
+        api.users.getCurrentUser,
+        clerkUser ? { clerkId: clerkUser.id } : "skip"
+    )
+    const resumes = useQuery(
+        api.resumes.getByUser,
+        convexUser ? { userId: convexUser._id } : "skip"
+    )
+
+    // Convex mutations
+    const createResume = useMutation(api.resumes.create)
+    const updateResume = useMutation(api.resumes.update)
+    const deleteResumeMutation = useMutation(api.resumes.deleteResume)
+
+    // Convex actions
+    const refineResumeAction = useAction(api.ai.refineResume)
 
     const [currentView, setCurrentView] = useState(VIEWS.HOME)
     const [activeTab, setActiveTab] = useState('home')
     const [resumeData, setResumeData] = useState(null)
     const [refinedData, setRefinedData] = useState(null)
     const [currentResumeId, setCurrentResumeId] = useState(null)
-    const [recentResumes, setRecentResumes] = useState([])
     const [showToast, setShowToast] = useState(false)
     const [toastMessage, setToastMessage] = useState('')
     const [isVisible, setIsVisible] = useState(false)
-    const [isLoadingResumes, setIsLoadingResumes] = useState(true)
 
     // Payment state
     const [showPaymentSuccess, setShowPaymentSuccess] = useState(false)
     const [showContextualPayment, setShowContextualPayment] = useState(false)
     const [showPortfolioWhatsApp, setShowPortfolioWhatsApp] = useState(false)
     const [paymentProductId, setPaymentProductId] = useState('linkedin')
-    const [paymentStatus, setPaymentStatus] = useState(null) // 'success' | 'failed' | 'cancelled'
+    const [paymentStatus, setPaymentStatus] = useState(null)
     const [paymentTrxID, setPaymentTrxID] = useState(null)
     const [isProcessingPayment, setIsProcessingPayment] = useState(false)
     const [hasLinkedInAccess, setHasLinkedInAccess] = useState(false)
     const [hasPortfolioAccess, setHasPortfolioAccess] = useState(false)
 
-    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
-    const firstName = displayName.split(' ')[0]
+    const displayName = clerkUser?.fullName || clerkUser?.firstName || clerkUser?.emailAddresses?.[0]?.emailAddress?.split('@')[0] || 'User'
+    const firstName = clerkUser?.firstName || displayName.split(' ')[0]
 
     useEffect(() => {
         setIsVisible(true)
-        if (user) {
-            loadResumes()
-            checkPurchaseStatus()
+        if (clerkUser) {
+            handle
             handlePaymentCallback()
         }
-    }, [user])
+    }, [clerkUser])
 
     // Check if user has purchased premium services
     const checkPurchaseStatus = async () => {
-        try {
-            // Check LinkedIn purchase
-            const linkedinRes = await fetch('/api/payment/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: user.id, productId: 'linkedin' })
-            })
-            const linkedinData = await linkedinRes.json()
-            setHasLinkedInAccess(linkedinData.hasPurchased || false)
+        if (!convexUser) return
 
-            // Check Portfolio purchase
-            const portfolioRes = await fetch('/api/payment/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: user.id, productId: 'portfolio' })
-            })
-            const portfolioData = await portfolioRes.json()
-            setHasPortfolioAccess(portfolioData.hasPurchased || false)
+        try {
+            // This would need to be implemented as Convex queries
+            // For now, we'll skip this until payment verification is setup in Convex
+            setHasLinkedInAccess(false)
+            setHasPortfolioAccess(false)
         } catch (error) {
             console.error('Error checking purchase status:', error)
         }
@@ -125,31 +130,19 @@ export default function Dashboard() {
         }
     }
 
-    const loadResumes = async () => {
-        try {
-            setIsLoadingResumes(true)
-            const resumes = await resumeService.getUserResumes()
-            setRecentResumes(resumes || [])
-        } catch (error) {
-            console.error('Error loading resumes:', error)
-            showToastNotification('Failed to load recent resumes')
-        } finally {
-            setIsLoadingResumes(false)
-        }
-    }
+
 
     const handleTabClick = (tabId) => {
         setActiveTab(tabId)
         if (tabId === 'home') {
             setCurrentView(VIEWS.HOME)
-            loadResumes() // Refresh list when returning home
         }
         else if (tabId === 'linkedin') setCurrentView(VIEWS.LINKEDIN)
         else if (tabId === 'portfolio') setCurrentView(VIEWS.PORTFOLIO)
     }
 
     const handleLogout = async () => {
-        await signOut()
+        await clerkUser?.signOut()
         navigate('/')
     }
 
@@ -161,46 +154,44 @@ export default function Dashboard() {
     }
 
     const handleFormComplete = async (formData) => {
+        if (!convexUser) return
+
         setResumeData(formData)
         setCurrentView(VIEWS.REFINING)
 
         try {
-            // Save initial draft
+            // Save initial draft using Convex
             let resumeId = currentResumeId
             if (!resumeId) {
-                const newResume = await resumeService.createResume(user.id, formData)
-                resumeId = newResume.id
+                const newResumeId = await createResume({
+                    userId: convexUser._id,
+                    fullName: formData.fullName || '',
+                    email: formData.email || '',
+                    phone: formData.phone,
+                    location: formData.location,
+                    summary: formData.summary,
+                    experience: formData.workHistory || [],
+                    education: formData.education || [],
+                    skills: formData.skills || [],
+                    projects: formData.projects,
+                    certifications: formData.certifications,
+                    languages: formData.languages,
+                })
+                resumeId = newResumeId
                 setCurrentResumeId(resumeId)
-            } else {
-                await resumeService.updateResume(resumeId, { content: formData })
             }
 
-            // AI Refinement
-            const response = await fetch('/api/refine', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session?.access_token}`
-                },
-                body: JSON.stringify({ resumeData: formData }),
-            })
-
-            let refined = null
-            if (!response.ok) {
-                console.warn('Backend API failed, using simulation')
-                refined = simulateRefinement(formData)
-            } else {
-                const { refinedData } = await response.json()
-                refined = refinedData
-            }
-
+            // AI Refinement using Convex action
+            const result = await refineResumeAction({ resumeData: formData })
+            const refined = result.refinedData
             setRefinedData(refined)
 
-            // Save refined data to DB
-            if (resumeId) {
-                await resumeService.updateResume(resumeId, {
-                    content: refined,
-                    status: 'refined'
+            // Update with refined data
+            if (resumeId && refined) {
+                await updateResume({
+                    id: resumeId,
+                    summary: refined.summary,
+                    experience: refined.workHistory,
                 })
             }
 
@@ -235,8 +226,7 @@ export default function Dashboard() {
         e.stopPropagation()
         if (confirm('Are you sure you want to delete this resume?')) {
             try {
-                await resumeService.deleteResume(id)
-                setRecentResumes(prev => prev.filter(r => r.id !== id))
+                await deleteResumeMutation({ id })
                 showToastNotification('Resume deleted')
             } catch (error) {
                 console.error('Error deleting resume:', error)
@@ -278,7 +268,6 @@ export default function Dashboard() {
         setResumeData(null)
         setRefinedData(null)
         setCurrentResumeId(null)
-        loadResumes()
     }
 
     // === RENDER VIEWS ===
@@ -525,19 +514,18 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Recent Resumes */}
             <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: '0.4s' }}>
                 <div className="flex items-center justify-between mb-3">
                     <h2 className="font-semibold">Recent Resumes</h2>
-                    {recentResumes.length > 0 && (
+                    {resumes && resumes.length > 0 && (
                         <span className="text-xs text-text-light-secondary dark:text-gray-500 bg-light-100 dark:bg-dark-800 px-2 py-0.5 rounded-full">
-                            {recentResumes.length} saved
+                            {resumes.length} saved
                         </span>
                     )}
                 </div>
 
                 {/* Loading State */}
-                {isLoadingResumes && recentResumes.length === 0 && (
+                {resumes === undefined && (
                     <div className="glass rounded-xl p-8 text-center animate-pulse">
                         <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg mx-auto mb-3"></div>
                         <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 mx-auto rounded"></div>
@@ -545,7 +533,7 @@ export default function Dashboard() {
                 )}
 
                 {/* Empty State */}
-                {!isLoadingResumes && recentResumes.length === 0 && (
+                {resumes && resumes.length === 0 && (
                     <div className="glass rounded-xl p-8 text-center hover:glow-mint transition-all duration-300">
                         <FileText className="w-10 h-10 text-text-light-secondary/20 dark:text-gray-700 mx-auto mb-3" />
                         <p className="text-text-light-secondary dark:text-gray-500 text-sm mb-4">No resumes yet</p>
@@ -559,12 +547,12 @@ export default function Dashboard() {
                 )}
 
                 {/* Resumes Grid */}
-                {recentResumes.length > 0 && (
+                {resumes && resumes.length > 0 && (
                     <div className="space-y-3">
-                        {recentResumes.map((resume, i) => (
+                        {resumes.map((resume, i) => (
                             <div
-                                key={resume.id}
-                                onClick={() => handleResumeSelect(resume)}
+                                key={resume._id}
+                                onClick={() => handleResumeSelect({ id: resume._id, content: { ...resume } })}
                                 className="group glass p-4 rounded-xl flex items-center justify-between hover:bg-light-100 dark:hover:bg-dark-800 transition-all duration-200 cursor-pointer stagger-item border-l-4 border-transparent hover:border-primary-500"
                                 style={{ animationDelay: `${i * 0.05}s` }}
                             >
@@ -574,25 +562,23 @@ export default function Dashboard() {
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                                            {resume.title}
+                                            {resume.fullName || 'Untitled Resume'}
                                         </h3>
                                         <div className="flex items-center gap-3 text-xs text-text-light-secondary dark:text-gray-500">
                                             <span className="flex items-center gap-1">
                                                 <Clock className="w-3 h-3" />
-                                                {new Date(resume.updated_at).toLocaleDateString()}
+                                                {new Date(resume.updatedAt).toLocaleDateString()}
                                             </span>
-                                            {resume.status === 'refined' && (
-                                                <span className="text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                                    <Sparkles className="w-3 h-3" />
-                                                    Enhanced
-                                                </span>
-                                            )}
+                                            <span className="text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                                                <Sparkles className="w-3 h-3" />
+                                                Enhanced
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <button
-                                    onClick={(e) => handleDeleteResume(e, resume.id)}
+                                    onClick={(e) => handleDeleteResume(e, resume._id)}
                                     className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                                     title="Delete resume"
                                 >

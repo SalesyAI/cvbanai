@@ -1,11 +1,11 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '@clerk/clerk-react'
 
 export default function ProtectedRoute({ children }) {
-    const { user, loading } = useAuth()
+    const { isLoaded, isSignedIn } = useAuth()
     const location = useLocation()
 
-    if (loading) {
+    if (!isLoaded) {
         return (
             <div className="min-h-screen animated-bg flex items-center justify-center">
                 <div className="text-center">
@@ -19,8 +19,7 @@ export default function ProtectedRoute({ children }) {
         )
     }
 
-    if (!user) {
-        // Redirect to auth page but save the intended destination
+    if (!isSignedIn) {
         return <Navigate to="/auth" state={{ from: location }} replace />
     }
 
